@@ -207,5 +207,3 @@ const PlantParent = () => {
 };
 
 export default PlantParent;
-
-npm start;
