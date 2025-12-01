@@ -38,15 +38,39 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 80px 40px;
+
+  background-image: url('assets/hero.gif');
+  background-size: cover;      /* fills the whole area */
+  background-position: center; /* centers the image */
+  background-repeat: no-repeat;
 }
 
 .hero-text h1 {
   font-size: 48px;
+  padding: 20px;
+}
+
+.hero-text p {
+  padding: 20px;
+}
+
+.hero-buttons {
+  padding: 20px;
+  padding-top: 10px;
 }
 
 .hero-text span {
   color: #4caf50;
 }
+
+.hero-text {
+background: rgba(255, 255, 255, 0.35);
+backdrop-filter: blur(12px);
+padding: 30px;
+border-radius: 16px;
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
 
 .primary-btn, .secondary-btn {
   padding: 12px 20px;
