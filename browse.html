@@ -8,13 +8,12 @@
   </head>
 
   <body>
-    <!-- Navigation -->
     <nav>
       <div class="nav-brand">
          
         <span>🌱</span>
         <a href="index.html" class="hero-logo">
-        <span>Plant Parent</span>
+        <span>PLANT PARENT</span>
         </a>
       </div>
       <ul class="nav-links">
@@ -24,7 +23,6 @@
       </ul>
     </nav>
 
-    <!-- Main Content -->
     <div class="main-content">
       <div class="page-header">
         <h1>Browse Plants</h1>
@@ -32,20 +30,16 @@
       </div>
 
       <div class="browse-layout">
-        <!-- Sidebar -->
         <aside class="sidebar">
-          <!-- Search -->
           <div class="filter-section">
             <input type="text" class="search-input" placeholder="🔍 Search plants..." />
           </div>
 
-          <!-- Filters Header -->
           <div class="filter-header">
             <h3>Filters</h3>
             <button class="clear-btn">✕ Clear All</button>
           </div>
 
-          <!-- Checkboxes -->
           <div class="filter-section">
             <div class="checkbox-group">
               <label class="checkbox-label">
@@ -63,7 +57,6 @@
             </div>
           </div>
 
-          <!-- Sunlight -->
           <div class="filter-section">
             <h4 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem;">Sunlight</h4>
             <div class="radio-group">
@@ -86,7 +79,6 @@
             </div>
           </div>
 
-          <!-- Difficulty -->
           <div class="filter-section">
             <h4 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem;">Difficulty</h4>
             <div class="radio-group">
@@ -106,21 +98,16 @@
           </div>
         </aside>
 
-        <!-- Main Content -->
         <div class="results-section">
-          <!-- Results Header -->
           <div class="results-header">
             <p class="results-info">
               Showing <strong>0</strong> of <strong>0</strong> plants
             </p>
             <div class="active-filters">
-              <!-- Filter chips will be added here dynamically -->
-            </div>
+              </div>
           </div>
 
-          <!-- Plant Grid -->
           <div class="plant-grid">
-            <!-- Plants will be loaded here dynamically -->
             <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
               <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
               <p style="color: hsl(var(--muted-foreground));">Loading plants...</p>
@@ -507,14 +494,19 @@
       }
 
       function createPlantCard(plant) {
-        const emoji = getPlantEmoji(plant.display_pid);
+        const emoji = plant.emoji || getPlantEmoji(plant.display_pid) || '🌱';
         const wateringFreq = getWateringFrequency(plant);
         const sunlight = getSunlightInfo(plant);
         const tags = getPlantTags(plant);
 
         return `
           <a href="#" class="plant-card" data-pid="${plant.pid}">
-            <div class="plant-image">${emoji}</div>
+            <div class="plant-image" style="height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+              ${plant.image_url 
+                ? `<img src="${plant.image_url}" alt="${plant.display_pid} image" loading="lazy" style="width: 100%; object-fit: cover;" onerror="this.outerHTML = '<span style=\\'font-size: 3rem;\\'>${emoji}</span>'">` 
+                : `<span style="font-size: 3rem;">${emoji}</span>`
+              }
+            </div>
             <div class="plant-content">
               <div class="plant-name">${plant.display_pid || 'Unknown Plant'}</div>
               <div class="plant-scientific">${plant.alias || ''}</div>
@@ -620,12 +612,11 @@
 
       // Plant Detail Panel Functions
       async function openPlantDetail(pid) {
-  const plant = allPlants.find(p => p.pid === pid);
-  if (!plant) return;
+        const plant = allPlants.find(p => p.pid === pid);
+        if (!plant) return;
 
-  // No API call needed — detail panel uses local JSON data
-  showPlantPanel(plant);
-}
+        showPlantPanel(plant);
+      }
 
       function showPlantPanel(plant) {
         // Remove existing panel if any
@@ -633,6 +624,8 @@
         if (existingPanel) {
           existingPanel.remove();
         }
+        
+        const emoji = plant.emoji || getPlantEmoji(plant.display_pid) || '🌱';
 
         // Create panel
         const panel = document.createElement('div');
@@ -646,20 +639,14 @@
             </div>
             
             <div class="panel-body">
-              ${plant.image_url ? `
-                <div class="panel-image">
-                  <img src="${plant.image_url}" alt="${plant.display_pid}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                  <div class="panel-image-fallback" style="display: none;">
-                    <span class="panel-emoji">${getPlantEmoji(plant.display_pid)}</span>
-                  </div>
-                </div>
-              ` : `
-                <div class="panel-image">
-                  <div class="panel-image-fallback">
-                    <span class="panel-emoji">${getPlantEmoji(plant.display_pid)}</span>
-                  </div>
-                </div>
-              `}
+              <div class="panel-image">
+                ${plant.image_url 
+                  ? `<img src="${plant.image_url}" alt="${plant.display_pid} image" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.outerHTML = '<div class=\\'panel-image-fallback\\' style=\\'display: flex;\\'><span class=\\'panel-emoji\\'>${emoji}</span></div>'">` 
+                  : `<div class="panel-image-fallback" style="display: flex;">
+                      <span class="panel-emoji">${emoji}</span>
+                    </div>`
+                }
+              </div>
               
               <div class="panel-info">
                 ${plant.alias ? `<p class="panel-scientific">${plant.alias}</p>` : ''}
