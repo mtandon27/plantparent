@@ -4,26 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Browse Plants - Plant Parent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css" />
   </head>
 
   <body>
+  
   <nav>
     <a href="index.html" class="nav-brand">
-      <span>🌱</span>
+      <img src="assets/logo.png" alt="Plant Parent Logo">
       <span>PLANT PARENT</span>
     </a>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="#">Browse</a></li>
+      <li><a href="browse.html" style="color: var(--color-accent); font-weight:700; border-bottom: 2px solid var(--color-accent);">Browse</a></li>
       <li><a href="journal.html">Journal</a></li>
     </ul>
-  </nav>
+</nav>
 
-    <div class="main-content">
-      <div class="page-header">
+
+    <div class="full-width-container">
+      <div class="page-header" style="margin-bottom: 2rem;">
         <h1>Browse Plants</h1>
-        <p>Find the perfect plant for your home and lifestyle</p>
+        <p class="subtitle">Find the perfect plant for your home and lifestyle</p>
       </div>
 
       <div class="browse-layout">
@@ -32,217 +37,103 @@
             <input type="text" class="search-input" placeholder="🔍 Search plants..." />
           </div>
 
-          <div class="filter-header">
+          <div class="filter-header" style="display:flex; justify-content:space-between; margin-bottom:1rem;">
             <h3>Filters</h3>
-            <button class="clear-btn">✕ Clear All</button>
+            <button class="clear-btn" style="background:none; border:none; cursor:pointer; text-decoration:underline;">Clear All</button>
           </div>
 
           <div class="filter-section">
-            <div class="checkbox-group">
-              <label class="checkbox-label">
-                <input type="checkbox" id="pet-friendly" />
-                <span>Pet Friendly ❤️</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" id="low-maintenance" />
-                <span>Low Maintenance 🛠️</span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" id="air-purifying" />
-                <span>Air Purifying 🌬️</span>
-              </label>
+            <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px;">
+              <label class="checkbox-label"><input type="checkbox" id="pet-friendly" /> Pet Friendly ❤️</label>
+              <label class="checkbox-label"><input type="checkbox" id="low-maintenance" /> Low Maintenance 🛠️</label>
+              <label class="checkbox-label"><input type="checkbox" id="air-purifying" /> Air Purifying 🌬️</label>
             </div>
           </div>
-
+          
           <div class="filter-section">
-            <h4 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem;">Sunlight</h4>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="sunlight" value="full-sun" />
-                <span>☀️ Full Sun</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="sunlight" value="partial-sun" />
-                <span>⛅ Partial Sun</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="sunlight" value="partial-shade" />
-                <span>🌤️ Partial Shade</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="sunlight" value="full-shade" />
-                <span>🌑 Full Shade</span>
-              </label>
+            <h4>Sunlight</h4>
+            <div class="radio-group" style="display:flex; flex-direction:column; gap:8px;">
+               <label><input type="radio" name="sunlight" value="full-sun"> ☀️ Full Sun</label>
+               <label><input type="radio" name="sunlight" value="partial-sun"> ⛅ Partial Sun</label>
+               <label><input type="radio" name="sunlight" value="partial-shade"> 🌤️ Partial Shade</label>
+               <label><input type="radio" name="sunlight" value="full-shade"> 🌑 Full Shade</label>
             </div>
           </div>
-
+          
           <div class="filter-section">
-            <h4 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem;">Difficulty</h4>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="difficulty" value="easy" />
-                <span>🌱 Easy</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="difficulty" value="medium" />
-                <span>🌿 Medium</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="difficulty" value="hard" />
-                <span>🌳 Hard</span>
-              </label>
-            </div>
+             <h4>Difficulty</h4>
+             <div class="radio-group" style="display:flex; flex-direction:column; gap:8px;">
+               <label><input type="radio" name="difficulty" value="easy"> 🌱 Easy</label>
+               <label><input type="radio" name="difficulty" value="medium"> 🌿 Medium</label>
+               <label><input type="radio" name="difficulty" value="hard"> 🌳 Hard</label>
+             </div>
           </div>
         </aside>
 
-        <div class="results-section">
-          <div class="results-header">
-            <p class="results-info">
-              Showing <strong>0</strong> of <strong>0</strong> plants
-            </p>
-            <div class="active-filters">
-              </div>
+        <div class="results-section" style="flex: 1;">
+          <div class="results-header" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+             <p class="results-info" style="font-family: var(--font-heading); font-style: italic;">Showing specimens</p>
+             <div class="active-filters" style="display: flex; gap: 0.5rem; flex-wrap: wrap;"></div>
           </div>
 
           <div class="plant-grid">
-            <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
-              <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
-              <p style="color: hsl(var(--muted-foreground));">Loading plants...</p>
-            </div>
-          </div>
+             </div>
         </div>
       </div>
     </div>
 
-    <script>
+    <div class="plant-detail-panel" id="detail-panel">
+        <div class="panel-overlay" id="panel-overlay"></div>
+        <div class="panel-content">
+            <div class="panel-header" style="padding: 1.5rem; border-bottom: 2px solid var(--color-ink); display: flex; justify-content: space-between; align-items: center;">
+                <h2 id="panel-title">Plant Name</h2>
+                <button class="panel-close" id="panel-close-btn" style="background:none; border:2px solid var(--color-ink); width:30px; height:30px; cursor:pointer;">✕</button>
+            </div>
+            
+            <div class="panel-body" style="padding:1.5rem; overflow-y:auto; flex:1;">
+                <div id="panel-image-container" class="panel-image" style="height:250px; background:#f4f4f4; display:flex; justify-content:center; align-items:center; border:1px solid #ddd; margin-bottom:1rem;">
+                    </div>
+                
+                <p id="panel-alias" style="font-style:italic; color:var(--color-accent); font-family:var(--font-heading); font-size:1.2rem; margin-bottom:1rem;">
+                    Scientific Name
+                </p>
 
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+                    <div style="background:#f9f9f9; padding:10px; border:1px solid #eee;">
+                        <strong>Watering</strong><br>
+                        <span id="panel-water">Weekly</span>
+                    </div>
+                    <div style="background:#f9f9f9; padding:10px; border:1px solid #eee;">
+                        <strong>Light</strong><br>
+                        <span id="panel-sun">High</span>
+                    </div>
+                </div>
+
+                <div id="panel-safety">
+                    </div>
+            </div>
+            
+            <div style="padding:1rem; border-top:2px solid var(--color-ink); display:flex; gap:1rem;">
+                <button class="btn" id="btn-save" style="flex:1;">💾 Save</button>
+                <button class="btn" id="btn-journal" style="flex:1; background:var(--color-ink); color:white;">+ Journal</button>
+            </div>
+        </div>
+    </div>
+    <script>
       let allPlants = [];
       let filteredPlants = [];
       let currentPage = 1;
-      let isLoading = false;
 
-      // Fallback plant data for when API is not available
+      // Fallback Data
       const fallbackPlants = [
-        {
-          pid: 'monstera-deliciosa',
-          display_pid: 'Monstera Deliciosa',
-          alias: 'Monstera deliciosa',
-          min_watering_benchmark_days: 7,
-          max_watering_benchmark_days: 10,
-          min_light_lux: 4500,
-          toxicity: false,
-          tags: ['low-maintenance', 'air-purifying']
-        },
-        {
-          pid: 'pothos',
-          display_pid: 'Pothos',
-          alias: 'Epipremnum aureum',
-          min_watering_benchmark_days: 10,
-          max_watering_benchmark_days: 14,
-          min_light_lux: 2500,
-          toxicity: false,
-          tags: ['low-maintenance', 'pet-friendly']
-        },
-        {
-          pid: 'snake-plant',
-          display_pid: 'Snake Plant',
-          alias: 'Sansevieria trifasciata',
-          min_watering_benchmark_days: 21,
-          max_watering_benchmark_days: 30,
-          min_light_lux: 8000,
-          toxicity: true,
-          tags: ['low-maintenance', 'air-purifying']
-        },
-        {
-          pid: 'fiddle-leaf-fig',
-          display_pid: 'Fiddle Leaf Fig',
-          alias: 'Ficus lyrata',
-          min_watering_benchmark_days: 7,
-          max_watering_benchmark_days: 10,
-          min_light_lux: 8500,
-          toxicity: true,
-          tags: ['air-purifying']
-        },
-        {
-          pid: 'spider-plant',
-          display_pid: 'Spider Plant',
-          alias: 'Chlorophytum comosum',
-          min_watering_benchmark_days: 10,
-          max_watering_benchmark_days: 14,
-          min_light_lux: 6000,
-          toxicity: false,
-          tags: ['low-maintenance', 'pet-friendly', 'air-purifying']
-        },
-        {
-          pid: 'peace-lily',
-          display_pid: 'Peace Lily',
-          alias: 'Spathiphyllum wallisii',
-          min_watering_benchmark_days: 10,
-          max_watering_benchmark_days: 14,
-          min_light_lux: 4000,
-          toxicity: true,
-          tags: ['air-purifying']
-        },
-        {
-          pid: 'jade-plant',
-          display_pid: 'Jade Plant',
-          alias: 'Crassula ovata',
-          min_watering_benchmark_days: 21,
-          max_watering_benchmark_days: 30,
-          min_light_lux: 8000,
-          toxicity: false,
-          tags: ['low-maintenance']
-        },
-        {
-          pid: 'zz-plant',
-          display_pid: 'ZZ Plant',
-          alias: 'Zamioculcas zamiifolia',
-          min_watering_benchmark_days: 21,
-          max_watering_benchmark_days: 30,
-          min_light_lux: 2000,
-          toxicity: true,
-          tags: ['low-maintenance']
-        },
-        {
-          pid: 'rubber-plant',
-          display_pid: 'Rubber Plant',
-          alias: 'Ficus elastica',
-          min_watering_benchmark_days: 7,
-          max_watering_benchmark_days: 10,
-          min_light_lux: 8500,
-          toxicity: true,
-          tags: ['air-purifying']
-        },
-        {
-          pid: 'philodendron',
-          display_pid: 'Philodendron',
-          alias: 'Philodendron hederaceum',
-          min_watering_benchmark_days: 7,
-          max_watering_benchmark_days: 10,
-          min_light_lux: 4500,
-          toxicity: true,
-          tags: ['low-maintenance']
-        },
-        {
-          pid: 'aloe-vera',
-          display_pid: 'Aloe Vera',
-          alias: 'Aloe barbadensis',
-          min_watering_benchmark_days: 21,
-          max_watering_benchmark_days: 30,
-          min_light_lux: 8000,
-          toxicity: false,
-          tags: ['low-maintenance', 'pet-friendly']
-        },
-        {
-          pid: 'bamboo-palm',
-          display_pid: 'Bamboo Palm',
-          alias: 'Chamaedorea seifrizii',
-          min_watering_benchmark_days: 7,
-          max_watering_benchmark_days: 10,
-          min_light_lux: 5000,
-          toxicity: false,
-          tags: ['air-purifying', 'pet-friendly']
-        }
+        { pid: 'monstera-deliciosa', display_pid: 'Monstera Deliciosa', alias: 'Monstera deliciosa', min_watering_benchmark_days: 7, min_light_lux: 4500, toxicity: false, tags: ['low-maintenance', 'air-purifying'] },
+        { pid: 'pothos', display_pid: 'Pothos', alias: 'Epipremnum aureum', min_watering_benchmark_days: 10, min_light_lux: 2500, toxicity: false, tags: ['low-maintenance', 'pet-friendly'] },
+        { pid: 'snake-plant', display_pid: 'Snake Plant', alias: 'Sansevieria trifasciata', min_watering_benchmark_days: 21, min_light_lux: 8000, toxicity: true, tags: ['low-maintenance', 'air-purifying'] },
+        { pid: 'fiddle-leaf-fig', display_pid: 'Fiddle Leaf Fig', alias: 'Ficus lyrata', min_watering_benchmark_days: 7, min_light_lux: 8500, toxicity: true, tags: ['air-purifying'] },
+        { pid: 'spider-plant', display_pid: 'Spider Plant', alias: 'Chlorophytum comosum', min_watering_benchmark_days: 10, min_light_lux: 6000, toxicity: false, tags: ['low-maintenance', 'pet-friendly', 'air-purifying'] },
+        { pid: 'peace-lily', display_pid: 'Peace Lily', alias: 'Spathiphyllum wallisii', min_watering_benchmark_days: 10, min_light_lux: 4000, toxicity: true, tags: ['air-purifying'] },
+        { pid: 'jade-plant', display_pid: 'Jade Plant', alias: 'Crassula ovata', min_watering_benchmark_days: 21, min_light_lux: 8000, toxicity: false, tags: ['low-maintenance'] },
+        { pid: 'zz-plant', display_pid: 'ZZ Plant', alias: 'Zamioculcas zamiifolia', min_watering_benchmark_days: 21, min_light_lux: 2000, toxicity: true, tags: ['low-maintenance'] }
       ];
 
       // DOM Elements
@@ -268,34 +159,22 @@
         plantGrid.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
             <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
-            <p style="color: hsl(var(--muted-foreground));">Loading plants...</p>
+            <p style="color: var(--color-ink);">Loading specimens...</p>
           </div>
         `;
       }
 
       async function loadPlants() {
-  try {
-    console.log("Loading plants from local JSON...");
-
-    const response = await fetch("plants.json");
-
-    if (!response.ok) {
-      throw new Error("plants.json not found or unreadable");
-    }
-
-    const data = await response.json();
-
-    // `plants` array inside the file
-    allPlants = data.plants || [];
-
-    console.log(`🌿 Loaded ${allPlants.length} plants from plants.json`);
-    return;
-
-  } catch (err) {
-    console.error("Failed to load plants.json, using fallback:", err);
-    allPlants = fallbackPlants;
-  }
-}
+        try {
+          const response = await fetch("plants.json");
+          if (!response.ok) throw new Error("plants.json not found");
+          const data = await response.json();
+          allPlants = data.plants || [];
+        } catch (err) {
+          console.warn("Using fallback data");
+          allPlants = fallbackPlants;
+        }
+      }
 
       function setupEventListeners() {
         searchInput.addEventListener('input', debounce(applyFilters, 300));
@@ -316,80 +195,33 @@
         const selectedDifficulty = Array.from(difficultyRadios).find(r => r.checked)?.value;
 
         filteredPlants = allPlants.filter(plant => {
-          // Search filter
           if (searchTerm) {
             const displayName = (plant.display_pid || '').toLowerCase();
             const alias = (plant.alias || '').toLowerCase();
-            const pid = (plant.pid || '').toLowerCase();
-            if (!displayName.includes(searchTerm) && 
-                !alias.includes(searchTerm) && 
-                !pid.includes(searchTerm)) {
-              return false;
-            }
+            if (!displayName.includes(searchTerm) && !alias.includes(searchTerm)) return false;
           }
-
-          // Pet friendly filter (non-toxic plants)
-          if (petFriendly) {
-            // If toxicity is explicitly true, filter it out
-            if (plant.toxicity === true || plant.toxicity === "true") {
-              return false;
-            }
-          }
-
-          // Low maintenance filter (watering weekly or less frequently)
+          if (petFriendly && (plant.toxicity === true || plant.toxicity === "true")) return false;
           if (lowMaintenance) {
             const minDays = plant.min_watering_benchmark_days || 0;
             if (minDays < 7) return false;
           }
-
-          // Air purifying filter - common air purifying plants
           if (airPurifying) {
-            const airPurifyingKeywords = [
-              'pothos', 'spider', 'snake', 'peace lily', 'bamboo', 
-              'dracaena', 'ficus', 'philodendron', 'ivy', 'palm',
-              'chlorophytum', 'sansevieria', 'spathiphyllum', 'epipremnum'
-            ];
-            const hasTag = plant.tags?.includes('air-purifying');
-            const displayName = (plant.display_pid || '').toLowerCase();
-            const alias = (plant.alias || '').toLowerCase();
-            const pid = (plant.pid || '').toLowerCase();
-            
-            const matches = airPurifyingKeywords.some(keyword => 
-              displayName.includes(keyword) || 
-              alias.includes(keyword) || 
-              pid.includes(keyword)
-            );
-            
-            if (!hasTag && !matches) return false;
+             const isAP = plant.tags?.includes('air-purifying');
+             if (!isAP) return false;
           }
-
-          // Sunlight filter
           if (selectedSunlight) {
             const minLux = plant.min_light_lux || 0;
-            
-            // Convert lux to approximate sunlight categories
-            // Full shade: 0-3000 lux
-            // Partial shade: 3000-5000 lux
-            // Partial sun: 5000-8000 lux
-            // Full sun: 8000+ lux
-            
             if (selectedSunlight === 'full-shade' && minLux >= 3000) return false;
             if (selectedSunlight === 'partial-shade' && (minLux < 3000 || minLux >= 5000)) return false;
             if (selectedSunlight === 'partial-sun' && (minLux < 5000 || minLux >= 8000)) return false;
             if (selectedSunlight === 'full-sun' && minLux < 8000) return false;
           }
-
-          // Difficulty filter based on watering frequency
           if (selectedDifficulty) {
             const minDays = plant.min_watering_benchmark_days || 0;
-            // Easy: watering every 7+ days
-            // Medium: watering every 4-10 days
-            // Hard: watering every 1-3 days
             if (selectedDifficulty === 'easy' && minDays < 7) return false;
             if (selectedDifficulty === 'medium' && (minDays < 4 || minDays > 10)) return false;
             if (selectedDifficulty === 'hard' && minDays > 3) return false;
           }
-
           return true;
         });
 
@@ -399,42 +231,18 @@
 
       function updateActiveFilters() {
         const chips = [];
-
-        if (petFriendlyCheckbox.checked) {
-          chips.push({ text: 'Pet Friendly', class: 'pet-friendly', index: 0 });
-        }
-        if (lowMaintenanceCheckbox.checked) {
-          chips.push({ text: 'Low Maintenance', class: 'low-maintenance', index: 1 });
-        }
-        if (airPurifyingCheckbox.checked) {
-          chips.push({ text: 'Air Purifying', class: 'air-purifying', index: 2 });
-        }
-
+        if (petFriendlyCheckbox.checked) chips.push({ text: 'Pet Friendly', index: 0 });
+        if (lowMaintenanceCheckbox.checked) chips.push({ text: 'Low Maintenance', index: 1 });
+        if (airPurifyingCheckbox.checked) chips.push({ text: 'Air Purifying', index: 2 });
         const selectedSunlight = Array.from(sunlightRadios).find(r => r.checked);
-        if (selectedSunlight) {
-          const sunlightLabels = {
-            'full-sun': '☀️ Full Sun',
-            'partial-sun': '⛅ Partial Sun',
-            'partial-shade': '🌤️ Partial Shade',
-            'full-shade': '🌑 Full Shade'
-          };
-          chips.push({ text: sunlightLabels[selectedSunlight.value], class: 'sunlight', index: 3 });
-        }
-
+        if (selectedSunlight) chips.push({ text: 'Sunlight', index: 3 });
         const selectedDifficulty = Array.from(difficultyRadios).find(r => r.checked);
-        if (selectedDifficulty) {
-          const difficultyLabels = {
-            'easy': '🌱 Easy',
-            'medium': '🌿 Medium',
-            'hard': '🌳 Hard'
-          };
-          chips.push({ text: difficultyLabels[selectedDifficulty.value], class: 'difficulty', index: 4 });
-        }
+        if (selectedDifficulty) chips.push({ text: 'Difficulty', index: 4 });
 
         activeFiltersContainer.innerHTML = chips.map(chip => `
-          <div class="filter-chip ${chip.class}">
+          <div class="tag" style="display:inline-flex; align-items:center; gap:5px; background:#f0f7f4; border:1px solid #ccc; font-size:0.8rem; padding:2px 8px; border-radius:12px;">
             ${chip.text}
-            <button data-index="${chip.index}">✕</button>
+            <button data-index="${chip.index}" style="border:none; background:none; cursor:pointer; color:var(--color-ink); font-weight:bold;">✕</button>
           </div>
         `).join('');
 
@@ -462,17 +270,15 @@
       }
 
       function renderPlants() {
-        resultsInfo.innerHTML = `
-          Showing <strong>${filteredPlants.length}</strong> of <strong>${allPlants.length}</strong> plants
-        `;
+        resultsInfo.innerHTML = `Showing <strong>${filteredPlants.length}</strong> of <strong>${allPlants.length}</strong> specimens`;
 
         if (filteredPlants.length === 0) {
           plantGrid.innerHTML = `
-            <div class="empty-state">
-              <div class="empty-state-icon">🔍</div>
-              <h3>No plants found</h3>
-              <p>Try adjusting your filters or search terms</p>
-              <button class="btn btn-primary" onclick="clearAllFilters()">Clear Filters</button>
+            <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+              <div style="font-size: 3rem;">🔍</div>
+              <h3>No specimens found</h3>
+              <p>Try adjusting your search criteria</p>
+              <button class="btn" onclick="clearAllFilters()">Clear Filters</button>
             </div>
           `;
           return;
@@ -480,56 +286,51 @@
 
         plantGrid.innerHTML = filteredPlants.map(plant => createPlantCard(plant)).join('');
         
-        // Add click event listeners to plant cards
         document.querySelectorAll('.plant-card').forEach(card => {
-          card.addEventListener('click', async (e) => {
+          card.addEventListener('click', (e) => {
             e.preventDefault();
             const pid = card.dataset.pid;
-            await openPlantDetail(pid);
+            openPlantDetail(pid);
           });
         });
       }
 
       function createPlantCard(plant) {
-        const emoji = plant.emoji || getPlantEmoji(plant.display_pid) || '🌱';
-        const wateringFreq = getWateringFrequency(plant);
-        const sunlight = getSunlightInfo(plant);
+        const emoji = getPlantEmoji(plant.display_pid);
+        const waterFreq = getWateringFrequency(plant);
+        const sunInfo = getSunlightInfo(plant).split(' ')[0] + ' ' + getSunlightInfo(plant).split(' ').slice(1).join(' ');
         const tags = getPlantTags(plant);
 
         return `
-          <a href="#" class="plant-card" data-pid="${plant.pid}">
-            <div class="plant-image" style="height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-              ${plant.image_url 
-                ? `<img src="${plant.image_url}" alt="${plant.display_pid} image" loading="lazy" style="width: 100%; object-fit: cover;" onerror="this.outerHTML = '<span style=\\'font-size: 3rem;\\'>${emoji}</span>'">` 
-                : `<span style="font-size: 3rem;">${emoji}</span>`
-              }
+          <div class="plant-card" data-pid="${plant.pid}">
+            <div class="card-image">
+               ${plant.image_url 
+                 ? `<img src="${plant.image_url}" alt="${plant.display_pid}" onerror="this.parentNode.innerHTML='<div class=\\'img-placeholder\\'>${emoji}</div>'">` 
+                 : `<div class="img-placeholder">${emoji}</div>`
+               }
             </div>
-            <div class="plant-content">
-              <div class="plant-name">${plant.display_pid || 'Unknown Plant'}</div>
-              <div class="plant-scientific">${plant.alias || ''}</div>
-              <div class="plant-details">
-                <div class="plant-detail">💧 ${wateringFreq}</div>
-                <div class="plant-detail">${sunlight}</div>
-              </div>
-              <div class="plant-tags">
-                ${tags.map(tag => `<span class="plant-tag">${tag}</span>`).join('')}
-              </div>
+            <div class="card-details">
+               <h3>${plant.display_pid || 'Unknown'}</h3>
+               <div class="scientific-name">${plant.alias || ''}</div>
+               <div class="plant-meta">
+                  <div class="meta-item">💧 ${waterFreq}</div>
+                  <div class="meta-item">${sunInfo}</div>
+               </div>
+               <div class="tags">
+                  ${tags.map(t => `<span class="tag">${t}</span>`).join('')}
+               </div>
             </div>
-          </a>
+          </div>
         `;
       }
 
+      // --- UTILITY FUNCTIONS ---
       function getPlantEmoji(name) {
-        const nameMap = {
-          'monstera': '🪴', 'pothos': '🌿', 'snake': '🗡️', 'fiddle': '🌳',
-          'spider': '🕷️', 'peace lily': '⚪', 'jade': '🌵', 'zz': '✨',
-          'rubber': '🛢️', 'philodendron': '💚', 'aloe': '🌵', 'bamboo': '🎋',
-          'ficus': '🌳', 'dracaena': '🌿', 'palm': '🌴', 'ivy': '🍃'
-        };
-        const lowerName = (name || '').toLowerCase();
-        for (const [key, emoji] of Object.entries(nameMap)) {
-          if (lowerName.includes(key)) return emoji;
-        }
+        const n = (name || '').toLowerCase();
+        if (n.includes('monstera')) return '🪴';
+        if (n.includes('snake')) return '🗡️';
+        if (n.includes('fig')) return '🌳';
+        if (n.includes('pothos')) return '🌿';
         return '🌱';
       }
 
@@ -538,244 +339,97 @@
         if (minDays >= 28) return 'Monthly';
         if (minDays >= 14) return 'Bi-weekly';
         if (minDays >= 7) return 'Weekly';
-        if (minDays >= 3) return 'Twice weekly';
         return 'Frequent';
       }
 
       function getSunlightInfo(plant) {
         const minLux = plant.min_light_lux || 0;
-        
-        if (minLux >= 8000) return '☀️ Full sun';
-        if (minLux >= 5000) return '⛅ Partial sun';
-        if (minLux >= 3000) return '🌤️ Partial shade';
-        return '🌑 Full shade';
+        if (minLux >= 8000) return '☀️ Full Sun';
+        if (minLux >= 5000) return '⛅ Partial Sun';
+        if (minLux >= 3000) return '🌤️ Partial Shade';
+        return '🌑 Full Shade';
       }
 
       function getPlantTags(plant) {
-        const tags = [];
-        const minDays = plant.min_watering_benchmark_days || 0;
-        
-        // Low maintenance (watering weekly or less frequently)
-        if (minDays >= 7 || plant.tags?.includes('low-maintenance')) {
-          tags.push('Low maintenance');
-        }
-        
-        // Pet friendly (non-toxic)
-        if (plant.toxicity !== true && plant.toxicity !== "true") {
-          tags.push('Pet friendly');
-        }
-        
-        // Air purifying - check common air purifying plants
-        const airPurifyingKeywords = [
-          'pothos', 'spider', 'snake', 'peace lily', 'bamboo',
-          'dracaena', 'ficus', 'philodendron', 'ivy', 'palm',
-          'chlorophytum', 'sansevieria', 'spathiphyllum', 'epipremnum'
-        ];
-        
-        const displayName = (plant.display_pid || '').toLowerCase();
-        const alias = (plant.alias || '').toLowerCase();
-        const pid = (plant.pid || '').toLowerCase();
-        
-        const isAirPurifying = airPurifyingKeywords.some(keyword => 
-          displayName.includes(keyword) || 
-          alias.includes(keyword) || 
-          pid.includes(keyword)
-        ) || plant.tags?.includes('air-purifying');
-        
-        if (isAirPurifying) {
-          tags.push('Air purifying');
-        }
-        
-        return tags;
+        const t = [];
+        if (plant.min_watering_benchmark_days >= 7) t.push('Low Maint.');
+        if (!plant.toxicity) t.push('Pet Friendly');
+        if (plant.tags?.includes('air-purifying')) t.push('Air Pure');
+        return t;
       }
 
       function debounce(func, wait) {
         let timeout;
-        return function executedFunction(...args) {
-          const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-          };
+        return function(...args) {
           clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
+          timeout = setTimeout(() => func.apply(this, args), wait);
         };
       }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-      } else {
-        init();
-      }
-
-      // Plant Detail Panel Functions
-      async function openPlantDetail(pid) {
+      // --- OPEN PANEL LOGIC (POPULATES STATIC HTML) ---
+      function openPlantDetail(pid) {
         const plant = allPlants.find(p => p.pid === pid);
         if (!plant) return;
-
-        showPlantPanel(plant);
-      }
-
-      function showPlantPanel(plant) {
-        // Remove existing panel if any
-        const existingPanel = document.querySelector('.plant-detail-panel');
-        if (existingPanel) {
-          existingPanel.remove();
-        }
         
-        const emoji = plant.emoji || getPlantEmoji(plant.display_pid) || '🌱';
+        const panel = document.getElementById('detail-panel');
+        const overlay = document.getElementById('panel-overlay');
+        const closeBtn = document.getElementById('panel-close-btn');
+        const saveBtn = document.getElementById('btn-save');
+        const journalBtn = document.getElementById('btn-journal');
 
-        // Create panel
-        const panel = document.createElement('div');
-        panel.className = 'plant-detail-panel';
-        panel.innerHTML = `
-          <div class="panel-overlay"></div>
-          <div class="panel-content">
-            <div class="panel-header">
-              <h2>${plant.display_pid || 'Unknown Plant'}</h2>
-              <button class="panel-close">✕</button>
-            </div>
-            
-            <div class="panel-body">
-              <div class="panel-image">
-                ${plant.image_url 
-                  ? `<img src="${plant.image_url}" alt="${plant.display_pid} image" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.outerHTML = '<div class=\\'panel-image-fallback\\' style=\\'display: flex;\\'><span class=\\'panel-emoji\\'>${emoji}</span></div>'">` 
-                  : `<div class="panel-image-fallback" style="display: flex;">
-                      <span class="panel-emoji">${emoji}</span>
-                    </div>`
-                }
-              </div>
-              
-              <div class="panel-info">
-                ${plant.alias ? `<p class="panel-scientific">${plant.alias}</p>` : ''}
-                
-                <div class="panel-section">
-                  <h3>Care Information</h3>
-                  <div class="panel-details-grid">
-                    <div class="panel-detail-item">
-                      <span class="detail-icon">💧</span>
-                      <div>
-                        <strong>Watering</strong>
-                        <p>${getWateringFrequency(plant)}</p>
-                      </div>
-                    </div>
-                    <div class="panel-detail-item">
-                      <span class="detail-icon">${getSunlightInfo(plant).split(' ')[0]}</span>
-                      <div>
-                        <strong>Sunlight</strong>
-                        <p>${getSunlightInfo(plant).substring(2)}</p>
-                      </div>
-                    </div>
-                    ${plant.min_temp || plant.max_temp ? `
-                      <div class="panel-detail-item">
-                        <span class="detail-icon">🌡️</span>
-                        <div>
-                          <strong>Temperature</strong>
-                          <p>${plant.min_temp ? `${plant.min_temp}°C` : ''} ${plant.max_temp ? `- ${plant.max_temp}°C` : ''}</p>
-                        </div>
-                      </div>
-                    ` : ''}
-                    ${plant.min_env_humid || plant.max_env_humid ? `
-                      <div class="panel-detail-item">
-                        <span class="detail-icon">💨</span>
-                        <div>
-                          <strong>Humidity</strong>
-                          <p>${plant.min_env_humid ? `${plant.min_env_humid}%` : ''} ${plant.max_env_humid ? `- ${plant.max_env_humid}%` : ''}</p>
-                        </div>
-                      </div>
-                    ` : ''}
-                  </div>
-                </div>
+        // Populate Content
+        document.getElementById('panel-title').innerText = plant.display_pid;
+        document.getElementById('panel-alias').innerText = plant.alias || '';
+        document.getElementById('panel-water').innerText = getWateringFrequency(plant);
+        document.getElementById('panel-sun').innerText = getSunlightInfo(plant);
 
-                ${plant.toxicity !== undefined ? `
-                  <div class="panel-section">
-                    <h3>Safety</h3>
-                    <div class="panel-safety ${plant.toxicity ? 'toxic' : 'safe'}">
-                      <span class="safety-icon">${plant.toxicity ? '⚠️' : '✅'}</span>
-                      <span>${plant.toxicity ? 'Toxic to pets' : 'Pet friendly'}</span>
-                    </div>
-                  </div>
-                ` : ''}
+        // Image Handling
+        const emoji = getPlantEmoji(plant.display_pid);
+        const imgContainer = document.getElementById('panel-image-container');
+        if (plant.image_url) {
+            imgContainer.innerHTML = `<img src="${plant.image_url}" style="width:100%; height:100%; object-fit:cover;">`;
+        } else {
+            imgContainer.innerHTML = `<div style="font-size:5rem;">${emoji}</div>`;
+        }
 
-                <div class="panel-tags">
-                  ${getPlantTags(plant).map(tag => `<span class="plant-tag">${tag}</span>`).join('')}
-                </div>
-              </div>
-            </div>
-            
-            <div class="panel-footer">
-              <button class="btn btn-secondary save-plant-btn">
-                <span>💾</span> Save Plant
-              </button>
-              <button class="btn btn-primary add-to-journal-btn">
-                <span>+</span> Add to Journal
-              </button>
-            </div>
-          </div>
-        `;
+        // Safety Badge
+        const safetyContainer = document.getElementById('panel-safety');
+        if (plant.toxicity) {
+            safetyContainer.innerHTML = `<div style="padding:10px; background:#fff5f5; border:1px solid #feb2b2; color:#c53030;">⚠️ Toxic to pets</div>`;
+        } else {
+            safetyContainer.innerHTML = `<div style="padding:10px; background:#f0fff4; border:1px solid #9ae6b4; color:#276749;">✅ Pet Friendly</div>`;
+        }
 
-        document.body.appendChild(panel);
+        // Reset Buttons
+        saveBtn.innerText = "💾 Save";
+        saveBtn.disabled = false;
+        journalBtn.innerText = "+ Journal";
+        journalBtn.disabled = false;
 
-        // Add event listeners
-        const overlay = panel.querySelector('.panel-overlay');
-        const closeBtn = panel.querySelector('.panel-close');
-        const saveBtn = panel.querySelector('.save-plant-btn');
-        const addBtn = panel.querySelector('.add-to-journal-btn');
-
-        const closePanelFn = () => {
-          panel.classList.add('closing');
-          setTimeout(() => panel.remove(), 300);
+        // Button Listeners (Clear old ones first by cloning if needed, or simple reassignment)
+        saveBtn.onclick = function() {
+            this.innerText = 'Saved!';
+            this.disabled = true;
+            // Add your localStorage logic here
         };
 
-        overlay.addEventListener('click', closePanelFn);
-        closeBtn.addEventListener('click', closePanelFn);
+        journalBtn.onclick = function() {
+            this.innerText = 'Added!';
+            this.disabled = true;
+            // Add your localStorage logic here
+            setTimeout(() => { panel.classList.remove('open'); }, 1000);
+        };
+
+        // Open Panel
+        const closeFn = () => { panel.classList.remove('open'); };
+        overlay.onclick = closeFn;
+        closeBtn.onclick = closeFn;
         
-        saveBtn.addEventListener('click', () => {
-          savePlant(plant);
-          saveBtn.innerHTML = '<span>✓</span> Saved!';
-          saveBtn.disabled = true;
-          setTimeout(() => {
-            saveBtn.innerHTML = '<span>💾</span> Save Plant';
-            saveBtn.disabled = false;
-          }, 2000);
-        });
-
-        addBtn.addEventListener('click', () => {
-          addToJournal(plant);
-          addBtn.innerHTML = '<span>✓</span> Added!';
-          addBtn.disabled = true;
-          setTimeout(() => {
-            closePanelFn();
-          }, 1000);
-        });
-
-        // Animate in
-        setTimeout(() => panel.classList.add('open'), 10);
+        panel.classList.add('open');
       }
 
-      function savePlant(plant) {
-        // Save to localStorage
-        const saved = JSON.parse(localStorage.getItem('savedPlants') || '[]');
-        if (!saved.find(p => p.pid === plant.pid)) {
-          saved.push(plant);
-          localStorage.setItem('savedPlants', JSON.stringify(saved));
-          console.log('Plant saved:', plant.display_pid);
-        }
-      }
-
-      function addToJournal(plant) {
-        // Save to journal in localStorage
-        const journal = JSON.parse(localStorage.getItem('plantJournal') || '[]');
-        if (!journal.find(p => p.pid === plant.pid)) {
-          journal.push({
-            ...plant,
-            addedDate: new Date().toISOString(),
-            nickname: plant.display_pid,
-            careHistory: []
-          });
-          localStorage.setItem('plantJournal', JSON.stringify(journal));
-          console.log('Plant added to journal:', plant.display_pid);
-        }
-      }
+      init();
+      
     </script>
   </body>
 </html>

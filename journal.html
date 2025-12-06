@@ -4,199 +4,127 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Plant Journal - Plant Parent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css" />
   </head>
 
-  <body>
-    <!-- Navigation -->
-     <nav>
-    <a href="index.html" class="nav-brand">
-      <span>🌱</span>
-      <span>PLANT PARENT</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="browse.html">Browse</a></li>
-      <li><a href="#">Journal</a></li>
-    </ul>
-  </nav>
+  <body class="journal-page">
+    
+    <nav>
+      <a href="index.html" class="nav-brand">
+        <img src="assets/logo.png" alt="Plant Parent Logo">
+        <span>PLANT PARENT</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="browse.html">Browse</a></li>
+        <li><a href="#" style="color: var(--color-accent); font-weight:700; border-bottom: 2px solid var(--color-accent);">Journal</a></li>
+      </ul>
+    </nav>
 
-    <!-- Main Content -->
-    <div class="main-content">
-      <div class="page-header">
-        <h1>Plant Journal</h1>
-        <p>Track your plants and watch them thrive</p>
-      </div>
-
-      <!-- Stats -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon leaf">🍃</div>
-          <div class="stat-info">
-            <p>My Plants</p>
-            <p>2</p>
-          </div>
+    <main class="journal-container">
+      
+      <section class="journal-page-left">
+        <div class="handwritten-header">
+          <h1>My Plant Journal</h1>
+          <p class="date-stamp">Date: <span id="current-date"></span></p>
         </div>
 
-        <div class="stat-card">
-          <div class="stat-icon flame">🔥</div>
-          <div class="stat-info">
-            <p>Total Streak</p>
-            <p>10</p>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon target">🎯</div>
-          <div class="stat-info">
-            <p>Care Entries</p>
-            <p>8</p>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon trophy">🏆</div>
-          <div class="stat-info">
-            <p>Achievements</p>
-            <p>3</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Plants List -->
-      <div class="plant-list">
-        <!-- Plant 1: Monstera -->
-        <div class="plant-card">
-          <div class="plant-header">
-            <div class="plant-info">
-              <div class="plant-emoji">🪴</div>
-              <div class="plant-details">
-                <div class="plant-name">Marvin</div>
-                <div class="plant-meta">Monstera Deliciosa • Added Jan 15, 2024</div>
-              </div>
-            </div>
-            <div class="streak-badge">
-              <span class="flame">🔥</span>
-              <p>7</p>
-              <p>day streak</p>
+        <div class="stats-grid">
+          <div class="stat-sticker">
+            <span class="stat-icon">🌿</span>
+            <div class="stat-text">
+              <strong>2</strong>
+              <span>Plants</span>
             </div>
           </div>
-
-          <div class="plant-body">
-            <button class="btn btn-primary">
-              <span>+</span> Log Care Activity
-            </button>
-
-            <!-- Entry Form (hidden by default) -->
-            <div class="entry-form">
-              <div class="form-group">
-                <label>Activity Type</label>
-                <div class="type-buttons">
-                  <button class="type-btn active">
-                    <span class="icon">💧</span>
-                    <span>Water</span>
-                  </button>
-                  <button class="type-btn">
-                    <span class="icon">💊</span>
-                    <span>Fertilize</span>
-                  </button>
-                  <button class="type-btn">
-                    <span class="icon">🍃</span>
-                    <span>Repot</span>
-                  </button>
-                  <button class="type-btn">
-                    <span class="icon">✂️</span>
-                    <span>Prune</span>
-                  </button>
-                  <button class="type-btn">
-                    <span class="icon">📖</span>
-                    <span>Note</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>Notes</label>
-                <textarea rows="3" placeholder="Any observations? How did it look?"></textarea>
-              </div>
-
-              <div class="form-actions">
-                <button class="btn btn-success">Log Activity</button>
-                <button class="btn btn-muted">Cancel</button>
-              </div>
+          <div class="stat-sticker warning">
+            <span class="stat-icon">🔥</span>
+            <div class="stat-text">
+              <strong>12</strong>
+              <span>Day Streak</span>
             </div>
-
-            <!-- Care History -->
-            <div style="margin-top: 1.5rem;">
-              <h4 class="section-title">Recent Care</h4>
-              <div class="care-history">
-                <div class="care-entry">
-                  <div class="care-icon">💧</div>
-                  <div class="care-detail">
-                    <div class="care-title">
-                      <strong>Water</strong>
-                      <span class="care-date">Today</span>
-                    </div>
-                    <p class="care-notes">Watered thoroughly</p>
-                  </div>
-                </div>
-
-                <div class="care-entry">
-                  <div class="care-icon">💧</div>
-                  <div class="care-detail">
-                    <div class="care-title">
-                      <strong>Water</strong>
-                      <span class="care-date">2 days ago</span>
-                    </div>
-                    <p class="care-notes">Weekly watering</p>
-                  </div>
-                </div>
-              </div>
+          </div>
+          <div class="stat-sticker">
+            <span class="stat-icon">💧</span>
+            <div class="stat-text">
+              <strong>Today</strong>
+              <span>Next Water</span>
             </div>
           </div>
         </div>
 
-        <!-- Plant 2: Pothos -->
-        <div class="plant-card">
-          <div class="plant-header">
-            <div class="plant-info">
-              <div class="plant-emoji">🌿</div>
-              <div class="plant-details">
-                <div class="plant-name">Ivy</div>
-                <div class="plant-meta">Pothos • Added Feb 20, 2024</div>
-              </div>
-            </div>
-            <div class="streak-badge">
-              <span class="flame">🔥</span>
-              <p>3</p>
-              <p>day streak</p>
-            </div>
-          </div>
+        <div class="notebook-divider"></div>
 
-          <div class="plant-body">
-            <button class="btn btn-primary">
-              <span>+</span> Log Care Activity
-            </button>
-
-            <!-- Care History -->
-            <div style="margin-top: 1.5rem;">
-              <h4 class="section-title">Recent Care</h4>
-              <div class="care-history">
-                <div class="care-entry">
-                  <div class="care-icon">💧</div>
-                  <div class="care-detail">
-                    <div class="care-title">
-                      <strong>Water</strong>
-                      <span class="care-date">1 day ago</span>
-                    </div>
-                    <p class="care-notes">Bi-weekly watering</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="journal-actions">
+           <button class="sticky-note-btn">+ Add New Specimen</button>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <section class="journal-page-right">
+        <h2>Specimen Log</h2>
+        
+        <div class="plant-entries-list">
+          
+          <div class="journal-entry-card">
+            <div class="tape-strip"></div>
+            <div class="entry-header">
+              <div class="entry-title">
+                <h3>Monstera</h3>
+                <span class="scientific-name">Monstera deliciosa</span>
+              </div>
+              <div class="entry-icon">🪴</div>
+            </div>
+            
+            <div class="entry-body">
+              <div class="care-log">
+                <p><strong>Last Watered:</strong> 2 days ago</p>
+                <p><strong>Next Due:</strong> <span class="highlight-text">Tomorrow</span></p>
+              </div>
+              <div class="notes-section">
+                <p><em>Observed new leaf unfurling. Moved closer to window.</em></p>
+              </div>
+            </div>
+            
+            <div class="entry-footer">
+               <button class="btn-sm">Log Care</button>
+               <button class="btn-sm">Edit</button>
+            </div>
+          </div>
+
+          <div class="journal-entry-card">
+            <div class="tape-strip"></div>
+            <div class="entry-header">
+              <div class="entry-title">
+                <h3>Ivy</h3>
+                <span class="scientific-name">Epipremnum aureum</span>
+              </div>
+              <div class="entry-icon">🌿</div>
+            </div>
+            
+            <div class="entry-body">
+              <div class="care-log">
+                <p><strong>Last Watered:</strong> 5 days ago</p>
+                <p><strong>Next Due:</strong> In 3 days</p>
+              </div>
+            </div>
+             <div class="entry-footer">
+               <button class="btn-sm">Log Care</button>
+               <button class="btn-sm">Edit</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <script>
+      // Set Date
+      const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', dateOptions);
+    </script>
   </body>
 </html>
