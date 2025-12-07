@@ -872,3 +872,11 @@ nav {
     padding-right: 10px;
   }
 }
+
+footer {
+          text-align: center;
+          padding: 2rem;
+          border-top: 3px solid var(--color-ink);
+          background: var(--color-paper);
+          margin-top: auto;
+      }
