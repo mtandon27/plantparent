@@ -10,7 +10,7 @@
     />
 
     <link rel="stylesheet" href="global.css" />
-    </head>
+  </head>
 
   <body>
     <nav>
@@ -234,10 +234,12 @@
       </div>
     </div>
     <footer>
-    <p style="font-family: var(--font-heading); font-size: 1.2rem; margin: 0;">
+      <p
+        style="font-family: var(--font-heading); font-size: 1.2rem; margin: 0;"
+      >
         &copy; 2025 Manvi Tandon. All rights reserved.
-    </p>
-  </footer>
+      </p>
+    </footer>
 
     <script>
       let allPlants = [];
@@ -246,8 +248,8 @@
       // DOM Elements
       const searchInput = document.querySelector(".search-input");
       const plantGrid = document.querySelector(".plant-grid");
-      const resultsInfo = document.querySelector(".results-info"); // Kept specifically for count
-      const countDisplay = document.getElementById("count-display"); // New helper
+      const resultsInfo = document.querySelector(".results-info");
+      const countDisplay = document.getElementById("count-display");
 
       const petFriendlyCheckbox = document.getElementById("pet-friendly");
       const lowMaintenanceCheckbox = document.getElementById("low-maintenance");
@@ -311,7 +313,7 @@
 
           if (lowMaintenance) {
             const minDays = plant.min_watering_benchmark_days || 0;
-            if (minDays < 7) return false; // Define "Low Maintenance" as infrequent watering
+            if (minDays < 7) return false;
           }
 
           if (airPurifying) {
@@ -319,7 +321,7 @@
             if (!isAP) return false;
           }
 
-          // Sunlight Logic (Simplified for the game theme)
+          // Sunlight Logic
           if (selectedSunlight) {
             const minLux = plant.min_light_lux || 0;
             if (selectedSunlight === "full-shade" && minLux >= 3000)
@@ -343,7 +345,7 @@
         renderPlants();
       }
 
-      // Updated Render Function for "Inventory Card" Look
+      // Render Function
       function renderPlants() {
         countDisplay.innerText = filteredPlants.length;
 
@@ -367,9 +369,16 @@
                 .join("");
             }
 
-            // Visual "Health Bar" for watering frequency (More days = fuller bar/easier)
+            // Water Freq Logic
             const waterDays = plant.min_watering_benchmark_days || 7;
             const waterWidth = Math.min(100, (waterDays / 20) * 100);
+            
+            let waterLabel = "Med";
+            if (waterDays < 7) {
+                waterLabel = "High";
+            } else if (waterDays > 14) {
+                waterLabel = "Low";
+            }
 
             return `
             <div class="plant-card" onclick="openPlantDetail('${plant.pid}')">
@@ -389,7 +398,7 @@
                 }</h3>
                 
                 <div style="font-size: 0.9rem; font-family: var(--font-heading); margin-top: 5px;">
-                    WATER FREQ:
+                    WATER FREQ: <strong>${waterLabel}</strong>
                     <div class="stat-bar"><div class="stat-bar-fill" style="width: ${waterWidth}%"></div></div>
                 </div>
 
@@ -407,12 +416,35 @@
 
         document.getElementById("panel-title").innerText = plant.display_pid;
         document.getElementById("panel-alias").innerText = plant.alias || "";
+        
+        // Water Text
         document.getElementById(
           "panel-water"
-        ).innerText = `${plant.min_watering_benchmark_days} - ${plant.max_watering_benchmark_days} days`;
+        ).innerText = `Every ${plant.min_watering_benchmark_days} - ${plant.max_watering_benchmark_days} days`;
+        
+        // Light Logic & Text
+        const lux = plant.min_light_lux || 0;
+        let lightLabel = "High";
+        
+        // Logic matches the filters:
+        // < 3000: Shadow (Full Shade)
+        // 3000 - 4999: Low (Partial Shade)
+        // 5000 - 7999: Med (Partial Sun)
+        // >= 8000: High (Full Sun)
+        
+        if (lux < 3000) {
+            lightLabel = "Shadow";
+        } else if (lux < 5000) {
+            lightLabel = "Low";
+        } else if (lux < 8000) {
+            lightLabel = "Med";
+        } else {
+            lightLabel = "High";
+        }
+
         document.getElementById(
           "panel-sun"
-        ).innerText = `${plant.min_light_lux} Lux`;
+        ).innerText = `${lightLabel} (${lux} Lux)`;
 
         // Image
         const imgContainer = document.getElementById("panel-image-container");
@@ -440,24 +472,14 @@
       };
 
       /* --- ADOPT / SAVE PLANT LOGIC --- */
-
-      // Function to call when user clicks "Adopt" button on a plant
       function adoptPlant(plantName, plantEmoji) {
-        // 1. Get current list
         let myPlants = JSON.parse(localStorage.getItem("myPlants")) || [];
-
-        // 2. Check if already owned
         if (myPlants.some((p) => p.name === plantName)) {
           alert("You already have this plant in your garden!");
           return;
         }
-
-        // 3. Add to list
         myPlants.push({ name: plantName, emoji: plantEmoji });
-
-        // 4. Save back to storage
         localStorage.setItem("myPlants", JSON.stringify(myPlants));
-
         alert(
           `You adopted ${plantName}! It is now available in your Quest Log.`
         );
