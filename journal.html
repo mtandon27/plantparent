@@ -3,128 +3,282 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plant Journal - Plant Parent</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>My Quest Log - Plant Parent</title>
     <link rel="stylesheet" href="global.css" />
   </head>
 
-  <body class="journal-page">
-    
+  <body>
     <nav>
-      <a href="index.html" class="nav-brand">
-        <img src="assets/logo.png" alt="Plant Parent Logo">
-        <span>PLANT PARENT</span>
-      </a>
+      <a href="index.html" class="nav-brand"><span>🌱 PLANT PARENT</span></a>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
-        <li><a href="browse.html">Browse</a></li>
-        <li><a href="#" style="color: var(--color-accent); font-weight:700; border-bottom: 2px solid var(--color-accent);">Journal</a></li>
+        <li><a href="browse.html">Explore</a></li>
+        <li><a href="journal.html" class="active">Journal</a></li>
       </ul>
     </nav>
 
-    <main class="journal-container">
-      
-      <section class="journal-page-left">
-        <div class="handwritten-header">
-          <h1>My Plant Journal</h1>
-          <p class="date-stamp">Date: <span id="current-date"></span></p>
-        </div>
+    <div class="full-width-container">
+      <div class="page-header">
+        <h1>Plant Log</h1>
+        <p class="subtitle">Tracking growth, one leaf at a time.</p>
+      </div>
 
-        <div class="stats-grid">
-          <div class="stat-sticker">
-            <span class="stat-icon">🌿</span>
-            <div class="stat-text">
-              <strong>2</strong>
-              <span>Plants</span>
-            </div>
-          </div>
-          <div class="stat-sticker warning">
-            <span class="stat-icon">🔥</span>
-            <div class="stat-text">
-              <strong>12</strong>
-              <span>Day Streak</span>
-            </div>
-          </div>
-          <div class="stat-sticker">
-            <span class="stat-icon">💧</span>
-            <div class="stat-text">
-              <strong>Today</strong>
-              <span>Next Water</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="notebook-divider"></div>
-
-        <div class="journal-actions">
-           <button class="sticky-note-btn">+ Add New Specimen</button>
-        </div>
-      </section>
-
-      <section class="journal-page-right">
-        <h2>Specimen Log</h2>
+      <div class="journal-container">
         
-        <div class="plant-entries-list">
+        <aside class="quest-board">
+          <div class="tape"></div>
           
-          <div class="journal-entry-card">
-            <div class="tape-strip"></div>
-            <div class="entry-header">
-              <div class="entry-title">
-                <h3>Monstera</h3>
-                <span class="scientific-name">Monstera deliciosa</span>
-              </div>
-              <div class="entry-icon">🪴</div>
+          <h2 style="font-family: var(--font-heading); border-bottom: 2px dashed #ccc; padding-bottom: 10px; margin-bottom: 1rem;">Daily Quests</h2>
+          <div class="daily-quest" style="background: #e3f2fd; padding: 1rem; border: 2px solid var(--color-ink); margin-bottom: 2rem;">
+            <h3 style="font-size: 1.2rem;">✨ Mindful Moment</h3>
+            <p id="daily-mindfulness" style="font-style: italic; margin: 10px 0;">Loading quest...</p>
+            <button class="btn-sm" style="cursor:pointer; padding: 5px 10px; border: 2px solid var(--color-ink); background:white;" onclick="this.disabled=true; this.innerText='Done! +XP'; this.style.background='#fab1a0'">Complete ✅</button>
+          </div>
+
+          <h3 style="font-family: var(--font-heading);">Badges</h3>
+          
+          <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 1rem;">
+            <div class="sticker" style="transform: rotate(-5deg);" data-tooltip="Hydration Hero: Watered 5 days streak">💧</div>
+            <div class="sticker" style="transform: rotate(3deg);" data-tooltip="New Parent: Adopted first plant">🌱</div>
+            <div class="sticker" style="transform: rotate(-2deg);" data-tooltip="Plant Doctor: Saved a dying plant">❤️</div>
+            <div class="sticker" style="transform: rotate(5deg); opacity: 0.3; filter: grayscale(1);" data-tooltip="Locked: Collect 10 Plants to unlock">🏆</div>
+            <div class="sticker" style="transform: rotate(-3deg); opacity: 0.3; filter: grayscale(1);" data-tooltip="Locked: Keep a plant alive for 1 month">📅</div>
+          </div>
+        </aside>
+
+        <main class="journal-grid" id="journalGrid">
+          
+          <div class="entry-card" style="--rotation: -1deg;">
+            <div class="tape" style="background:#ffeaa7;"></div>
+            <div class="polaroid-img" onclick="openHistory('Monstera Deliciosa')">
+                <img src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=600&q=80" onerror="handleImgError(this)">
+                <span class="img-fallback">🌿</span>
             </div>
             
-            <div class="entry-body">
-              <div class="care-log">
-                <p><strong>Last Watered:</strong> 2 days ago</p>
-                <p><strong>Next Due:</strong> <span class="highlight-text">Tomorrow</span></p>
-              </div>
-              <div class="notes-section">
-                <p><em>Observed new leaf unfurling. Moved closer to window.</em></p>
-              </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-family: var(--font-heading); font-size: 1.4rem;">Monstera</h3>
+                <span style="font-size: 0.9rem; color:#888;">Today</span>
             </div>
+
+            <div class="care-tracker">
+                <button class="care-btn active" data-type="water" onclick="toggleCare(this)">💧</button>
+                <button class="care-btn" data-type="sun" onclick="toggleCare(this)">☀️</button>
+                <button class="care-btn" data-type="food" onclick="toggleCare(this)">🧪</button>
+            </div>
+
+            <textarea class="journal-input" placeholder="Today's notes...">New leaf unfurling today! It's slightly lighter green than the others.</textarea>
             
-            <div class="entry-footer">
-               <button class="btn-sm">Log Care</button>
-               <button class="btn-sm">Edit</button>
+            <div class="mood-tracker">
+                <span style="font-size:0.9rem; font-family:var(--font-heading);">Mood:</span>
+                <div class="mood-options">
+                    <button class="mood-btn" title="Struggling" onclick="setMood(this)">😫</button>
+                    <button class="mood-btn" title="Neutral" onclick="setMood(this)">😐</button>
+                    <button class="mood-btn selected" title="Calm" onclick="setMood(this)">😌</button>
+                    <button class="mood-btn" title="Energetic" onclick="setMood(this)">⚡</button>
+                    <button class="mood-btn" title="Thriving" onclick="setMood(this)">🌿</button>
+                </div>
             </div>
           </div>
 
-          <div class="journal-entry-card">
-            <div class="tape-strip"></div>
-            <div class="entry-header">
-              <div class="entry-title">
-                <h3>Ivy</h3>
-                <span class="scientific-name">Epipremnum aureum</span>
-              </div>
-              <div class="entry-icon">🌿</div>
+          <div class="entry-card" style="--rotation: 1deg;">
+            <div class="tape" style="background:#fab1a0;"></div>
+            <div class="polaroid-img" onclick="openHistory('Golden Pothos')">
+                <img src="https://images.unsplash.com/photo-1596723043886-f3e827e4e1a6?auto=format&fit=crop&w=600&q=80" onerror="handleImgError(this)">
+                <span class="img-fallback">🌿</span>
             </div>
             
-            <div class="entry-body">
-              <div class="care-log">
-                <p><strong>Last Watered:</strong> 5 days ago</p>
-                <p><strong>Next Due:</strong> In 3 days</p>
-              </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-family: var(--font-heading); font-size: 1.4rem;">Pothos</h3>
+                <span style="font-size: 0.9rem; color:#888;">Today</span>
             </div>
-             <div class="entry-footer">
-               <button class="btn-sm">Log Care</button>
-               <button class="btn-sm">Edit</button>
+
+            <div class="care-tracker">
+                <button class="care-btn" data-type="water" onclick="toggleCare(this)">💧</button>
+                <button class="care-btn active" data-type="sun" onclick="toggleCare(this)">☀️</button>
+                <button class="care-btn" data-type="food" onclick="toggleCare(this)">🧪</button>
+            </div>
+
+            <textarea class="journal-input" placeholder="Today's notes...">Moved to the window sill for better light.</textarea>
+            
+            <div class="mood-tracker">
+                <span style="font-size:0.9rem; font-family:var(--font-heading);">Mood:</span>
+                <div class="mood-options">
+                    <button class="mood-btn" title="Struggling" onclick="setMood(this)">😫</button>
+                    <button class="mood-btn" title="Neutral" onclick="setMood(this)">😐</button>
+                    <button class="mood-btn" title="Calm" onclick="setMood(this)">😌</button>
+                    <button class="mood-btn selected" title="Energetic" onclick="setMood(this)">⚡</button>
+                    <button class="mood-btn" title="Thriving" onclick="setMood(this)">🌿</button>
+                </div>
             </div>
           </div>
 
+          <div class="entry-card add-new-card" onclick="openAddModal()">
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; color: #aaa;">+</div>
+                <p style="font-family: var(--font-heading); color: #aaa;">Log New Memory</p>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="addEntryModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeAddModal()">×</button>
+            <h2 style="font-family: var(--font-heading); margin-bottom: 1rem; color: var(--color-accent);">New Journal Entry</h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <label style="font-family: var(--font-heading);">Which Plant?</label>
+                    <select id="plantSelect" style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);">
+                        <option value="" disabled selected>Select from your garden...</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-family: var(--font-heading);">Today's Note</label>
+                    <textarea id="newEntryText" rows="3" style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);" placeholder="How is it doing today?"></textarea>
+                </div>
+                <div>
+                    <label style="font-family: var(--font-heading);">Photo URL (Optional)</label>
+                    <input type="text" id="newEntryImg" style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);" placeholder="Leave empty for emoji">
+                </div>
+                <button class="primary-btn" onclick="submitNewEntry()">Add to Journal</button>
+            </div>
         </div>
-      </section>
+    </div>
 
-    </main>
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal-content notebook-paper">
+            <button class="close-modal" onclick="closeHistoryModal()">X</button>
+            <h2 id="historyTitle" style="font-family: var(--font-heading); margin-bottom: 1.5rem; color: var(--color-ink); text-decoration: underline;">Plant History</h2>
+            <div id="historyList"></div>
+        </div>
+    </div>
 
     <script>
-      // Set Date
-      const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', dateOptions);
+      /* --- MOCK HISTORY DATA --- */
+      const plantHistoryData = {
+        'Monstera Deliciosa': [
+            { date: "Oct 10, 2025", note: "Wiped dust off leaves. It looks shinier!", care: ["💧", "☀️"], mood: "😌" },
+            { date: "Oct 05, 2025", note: "Soil felt dry. Gave a deep watering.", care: ["💧"], mood: "😐" },
+            { date: "Sep 28, 2025", note: "Adopted today! Welcome home.", care: ["❤️"], mood: "⚡" }
+        ],
+        'Golden Pothos': [
+            { date: "Oct 08, 2025", note: "Trailing vines are getting long. Might propagate soon.", care: ["☀️"], mood: "🌿" },
+            { date: "Oct 01, 2025", note: "Watering day.", care: ["💧"], mood: "😌" }
+        ]
+      };
+
+      /* --- HISTORY MODAL LOGIC --- */
+      const historyModal = document.getElementById('historyModal');
+      const historyList = document.getElementById('historyList');
+      const historyTitle = document.getElementById('historyTitle');
+
+      function openHistory(plantName) {
+        historyModal.classList.add('open');
+        historyTitle.innerText = "History: " + plantName;
+        historyList.innerHTML = ""; 
+
+        const logs = plantHistoryData[plantName] || [
+            { date: "Today", note: "Start of your journey with this plant.", care: [], mood: "🌱" }
+        ];
+
+        logs.forEach(log => {
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'history-entry';
+            const icons = log.care.join(" "); 
+            entryDiv.innerHTML = `
+                <div class="history-date">${log.date}</div>
+                <div class="history-stats" style="float: right;">${icons} | Mood: ${log.mood}</div>
+                <p style="clear: both; margin-top: 5px; font-family: var(--font-body); font-size: 1.2rem;">${log.note}</p>
+                <div style="border-bottom: 1px dashed #ccc; margin-top: 10px;"></div>
+            `;
+            historyList.appendChild(entryDiv);
+        });
+      }
+
+      function closeHistoryModal() { historyModal.classList.remove('open'); }
+
+      /* --- ADD ENTRY LOGIC --- */
+      const addModal = document.getElementById('addEntryModal');
+      function openAddModal() { addModal.classList.add('open'); loadUserPlants(); }
+      function closeAddModal() { addModal.classList.remove('open'); }
+
+      function loadUserPlants() {
+        const select = document.getElementById('plantSelect');
+        select.innerHTML = '<option value="" disabled selected>Select from your garden...</option>';
+        let myPlants = JSON.parse(localStorage.getItem('myPlants')) || [
+            { name: "Monstera Deliciosa", emoji: "🌿" },
+            { name: "Golden Pothos", emoji: "🌱" }
+        ];
+        myPlants.forEach(plant => {
+            let option = document.createElement('option');
+            option.value = plant.name;
+            option.text = plant.name;
+            select.appendChild(option);
+        });
+      }
+
+      function submitNewEntry() {
+        const plantName = document.getElementById('plantSelect').value;
+        const text = document.getElementById('newEntryText').value;
+        const imgUrl = document.getElementById('newEntryImg').value;
+        
+        if (!plantName) return alert("Select a plant!");
+
+        const grid = document.getElementById('journalGrid');
+        const addBtn = document.querySelector('.add-new-card');
+        const newCard = document.createElement('div');
+        newCard.className = 'entry-card';
+        newCard.style.setProperty('--rotation', (Math.random() * 4 - 2) + 'deg'); 
+
+        newCard.innerHTML = `
+            <div class="tape"></div>
+            <div class="polaroid-img" onclick="openHistory('${plantName}')">
+                <img src="${imgUrl}" onerror="handleImgError(this)" style="${imgUrl ? '' : 'display:none'}">
+                <span class="img-fallback" style="${imgUrl ? '' : 'display:block'}">🌿</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-family: var(--font-heading); font-size: 1.4rem;">${plantName}</h3>
+                <span style="font-size: 0.9rem; color:#888;">Today</span>
+            </div>
+            <div class="care-tracker">
+                <button class="care-btn" data-type="water" onclick="toggleCare(this)">💧</button>
+                <button class="care-btn" data-type="sun" onclick="toggleCare(this)">☀️</button>
+                <button class="care-btn" data-type="food" onclick="toggleCare(this)">🧪</button>
+            </div>
+            <textarea class="journal-input">${text}</textarea>
+             <div class="mood-tracker">
+                <span style="font-size:0.9rem; font-family:var(--font-heading);">Mood:</span>
+                <div class="mood-options">
+                    <button class="mood-btn" onclick="setMood(this)">😌</button>
+                    <button class="mood-btn" onclick="setMood(this)">⚡</button>
+                    <button class="mood-btn" onclick="setMood(this)">🌿</button>
+                </div>
+            </div>
+        `;
+        grid.insertBefore(newCard, addBtn);
+        closeAddModal();
+      }
+
+      /* --- HELPERS --- */
+      function handleImgError(img) { img.style.display = 'none'; img.nextElementSibling.style.display = 'block'; }
+      function toggleCare(btn) { btn.classList.toggle('active'); }
+      function setMood(btn) {
+        const p = btn.parentElement;
+        p.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      }
+
+      // Sidebar Quest
+      const quests = ["Mist leaves.", "Rotate pot.", "Check soil moisture."];
+      document.getElementById('daily-mindfulness').innerText = quests[Math.floor(Math.random() * quests.length)];
+
+      window.onclick = function(event) {
+        if (event.target == addModal) closeAddModal();
+        if (event.target == historyModal) closeHistoryModal();
+      }
     </script>
   </body>
 </html>
