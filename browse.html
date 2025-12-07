@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -20,41 +20,107 @@
     <div class="full-width-container">
       <div class="page-header">
         <h1>Plant Database</h1>
-        <p class="subtitle" style="background:var(--color-highlight); display:inline-block; padding:2px 10px; transform:rotate(-1deg);">Select a companion for your journey</p>
+        <p
+          class="subtitle"
+          style="
+            background: var(--color-highlight);
+            display: inline-block;
+            padding: 2px 10px;
+            transform: rotate(-1deg);
+          "
+        >
+          Select a companion for your journey
+        </p>
       </div>
 
       <div class="browse-layout">
-        
         <aside class="sidebar">
           <div class="filter-section">
-            <input type="text" class="search-input" placeholder="🔍 Search Species..." />
+            <input
+              type="text"
+              class="search-input"
+              placeholder="🔍 Search Species..."
+            />
           </div>
 
-          <div style="margin-bottom: 2rem;">
-            <h3 style="font-family: var(--font-heading); margin-bottom: 10px; text-decoration: underline;">Traits</h3>
+          <div style="margin-bottom: 2rem">
+            <h3
+              style="
+                font-family: var(--font-heading);
+                margin-bottom: 10px;
+                text-decoration: underline;
+              "
+            >
+              Traits
+            </h3>
             <div class="checkbox-group">
-              <label><input type="checkbox" id="pet-friendly" /> 🐾 Pet Safe</label>
-              <label><input type="checkbox" id="low-maintenance" /> 🛡️ Beginner</label>
-              <label><input type="checkbox" id="air-purifying" /> 🌬️ Air Buff</label>
+              <label
+                ><input type="checkbox" id="pet-friendly" /> 🐾 Pet Safe</label
+              >
+              <label
+                ><input type="checkbox" id="low-maintenance" /> 🛡️
+                Beginner</label
+              >
+              <label
+                ><input type="checkbox" id="air-purifying" /> 🌬️ Air Buff</label
+              >
             </div>
           </div>
-          
-          <div style="margin-bottom: 2rem;">
-            <h3 style="font-family: var(--font-heading); margin-bottom: 10px; text-decoration: underline;">Light Lvl</h3>
+
+          <div style="margin-bottom: 2rem">
+            <h3
+              style="
+                font-family: var(--font-heading);
+                margin-bottom: 10px;
+                text-decoration: underline;
+              "
+            >
+              Light Lvl
+            </h3>
             <div class="radio-group">
-               <label><input type="radio" name="sunlight" value="full-sun"> ☀️ High</label>
-               <label><input type="radio" name="sunlight" value="partial-sun"> ⛅ Med</label>
-               <label><input type="radio" name="sunlight" value="partial-shade"> 🌤️ Low</label>
-               <label><input type="radio" name="sunlight" value="full-shade"> 🌑 Shadow</label>
+              <label
+                ><input type="radio" name="sunlight" value="full-sun" /> ☀️
+                High</label
+              >
+              <label
+                ><input type="radio" name="sunlight" value="partial-sun" /> ⛅
+                Med</label
+              >
+              <label
+                ><input type="radio" name="sunlight" value="partial-shade" /> 🌤️
+                Low</label
+              >
+              <label
+                ><input type="radio" name="sunlight" value="full-shade" /> 🌑
+                Shadow</label
+              >
             </div>
           </div>
-          
-          <button class="btn secondary-btn" onclick="clearAllFilters()" style="width:100%;">Reset Filters</button>
+
+          <button
+            class="btn secondary-btn"
+            onclick="clearAllFilters()"
+            style="width: 100%"
+          >
+            Reset Filters
+          </button>
         </aside>
 
-        <div class="results-section" style="flex: 1;">
-          <div class="results-header" style="margin-bottom: 1rem; display: flex; justify-content: space-between;">
-             <p class="results-info" style="font-family: var(--font-heading); font-size: 1.5rem;">Found: <span id="count-display">0</span> Specimens</p>
+        <div class="results-section" style="flex: 1">
+          <div
+            class="results-header"
+            style="
+              margin-bottom: 1rem;
+              display: flex;
+              justify-content: space-between;
+            "
+          >
+            <p
+              class="results-info"
+              style="font-family: var(--font-heading); font-size: 1.5rem"
+            >
+              Found: <span id="count-display">0</span> Specimens
+            </p>
           </div>
           <div class="plant-grid"></div>
         </div>
@@ -62,30 +128,105 @@
     </div>
 
     <div class="plant-detail-panel" id="detail-panel">
-        <div class="panel-content">
-            <button class="panel-close" id="panel-close-btn" style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: 2px solid black; cursor: pointer; font-family: var(--font-heading); padding: 5px 10px;">X</button>
-            
-            <h2 id="panel-title" style="font-family: var(--font-heading); font-size: 3rem; margin-bottom: 0;">Plant Name</h2>
-            <p id="panel-alias" style="font-family: var(--font-body); font-style: italic; color: #666; margin-bottom: 1rem;">Scientific Name</p>
+      <div class="panel-content">
+        <button
+          class="panel-close"
+          id="panel-close-btn"
+          style="
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: red;
+            color: white;
+            border: 2px solid black;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            padding: 5px 10px;
+          "
+        >
+          X
+        </button>
 
-            <div id="panel-image-container" style="background: #f0f0f0; border: 2px solid var(--color-ink); height: 250px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                </div>
-            
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem; font-family: var(--font-heading); font-size: 1.3rem;">
-                <div style="border: 2px solid var(--color-ink); padding: 10px; background: white;">
-                    <strong>💧 Water:</strong> <span id="panel-water">Weekly</span>
-                </div>
-                <div style="border: 2px solid var(--color-ink); padding: 10px; background: white;">
-                    <strong>☀️ Light:</strong> <span id="panel-sun">High</span>
-                </div>
-            </div>
+        <h2
+          id="panel-title"
+          style="
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            margin-bottom: 0;
+          "
+        >
+          Plant Name
+        </h2>
+        <p
+          id="panel-alias"
+          style="
+            font-family: var(--font-body);
+            font-style: italic;
+            color: #666;
+            margin-bottom: 1rem;
+          "
+        >
+          Scientific Name
+        </p>
 
-            <div id="panel-safety" style="margin-bottom: 2rem; font-family: var(--font-heading); font-size: 1.3rem;"></div>
-            
-            <div style="display: flex; gap: 1rem;">
-                <button class="primary-btn" style="flex: 1;" id="btn-save">💾 Save to Log</button>
-            </div>
+        <div
+          id="panel-image-container"
+          style="
+            background: #f0f0f0;
+            border: 2px solid var(--color-ink);
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+          "
+        ></div>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+          "
+        >
+          <div
+            style="
+              border: 2px solid var(--color-ink);
+              padding: 10px;
+              background: white;
+            "
+          >
+            <strong>💧 Water:</strong> <span id="panel-water">Weekly</span>
+          </div>
+          <div
+            style="
+              border: 2px solid var(--color-ink);
+              padding: 10px;
+              background: white;
+            "
+          >
+            <strong>☀️ Light:</strong> <span id="panel-sun">High</span>
+          </div>
         </div>
+
+        <div
+          id="panel-safety"
+          style="
+            margin-bottom: 2rem;
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+          "
+        ></div>
+
+        <div style="display: flex; gap: 1rem">
+          <button class="primary-btn" style="flex: 1" id="btn-save">
+            💾 Save to Log
+          </button>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -93,44 +234,46 @@
       let filteredPlants = [];
 
       // DOM Elements
-      const searchInput = document.querySelector('.search-input');
-      const plantGrid = document.querySelector('.plant-grid');
-      const resultsInfo = document.querySelector('.results-info'); // Kept specifically for count
-      const countDisplay = document.getElementById('count-display'); // New helper
-      
-      const petFriendlyCheckbox = document.getElementById('pet-friendly');
-      const lowMaintenanceCheckbox = document.getElementById('low-maintenance');
-      const airPurifyingCheckbox = document.getElementById('air-purifying');
-      const sunlightRadios = document.getElementsByName('sunlight');
+      const searchInput = document.querySelector(".search-input");
+      const plantGrid = document.querySelector(".plant-grid");
+      const resultsInfo = document.querySelector(".results-info"); // Kept specifically for count
+      const countDisplay = document.getElementById("count-display"); // New helper
+
+      const petFriendlyCheckbox = document.getElementById("pet-friendly");
+      const lowMaintenanceCheckbox = document.getElementById("low-maintenance");
+      const airPurifyingCheckbox = document.getElementById("air-purifying");
+      const sunlightRadios = document.getElementsByName("sunlight");
 
       // Detail Panel Elements
-      const panel = document.getElementById('detail-panel');
-      const closeBtn = document.getElementById('panel-close-btn');
+      const panel = document.getElementById("detail-panel");
+      const closeBtn = document.getElementById("panel-close-btn");
 
       // Fetch Data
-      fetch('plants.json')
-        .then(response => response.json())
-        .then(data => {
-          allPlants = data.plants || data; 
+      fetch("plants.json")
+        .then((response) => response.json())
+        .then((data) => {
+          allPlants = data.plants || data;
           filteredPlants = allPlants;
           renderPlants();
         })
-        .catch(err => console.error('Error loading plants:', err));
+        .catch((err) => console.error("Error loading plants:", err));
 
       // Filter Listeners
-      searchInput.addEventListener('input', applyFilters);
-      petFriendlyCheckbox.addEventListener('change', applyFilters);
-      lowMaintenanceCheckbox.addEventListener('change', applyFilters);
-      airPurifyingCheckbox.addEventListener('change', applyFilters);
-      sunlightRadios.forEach(radio => radio.addEventListener('change', applyFilters));
+      searchInput.addEventListener("input", applyFilters);
+      petFriendlyCheckbox.addEventListener("change", applyFilters);
+      lowMaintenanceCheckbox.addEventListener("change", applyFilters);
+      airPurifyingCheckbox.addEventListener("change", applyFilters);
+      sunlightRadios.forEach((radio) =>
+        radio.addEventListener("change", applyFilters)
+      );
 
       function clearAllFilters() {
-          searchInput.value = '';
-          petFriendlyCheckbox.checked = false;
-          lowMaintenanceCheckbox.checked = false;
-          airPurifyingCheckbox.checked = false;
-          sunlightRadios.forEach(r => r.checked = false);
-          applyFilters();
+        searchInput.value = "";
+        petFriendlyCheckbox.checked = false;
+        lowMaintenanceCheckbox.checked = false;
+        airPurifyingCheckbox.checked = false;
+        sunlightRadios.forEach((r) => (r.checked = false));
+        applyFilters();
       }
 
       function applyFilters() {
@@ -138,34 +281,50 @@
         const petFriendly = petFriendlyCheckbox.checked;
         const lowMaintenance = lowMaintenanceCheckbox.checked;
         const airPurifying = airPurifyingCheckbox.checked;
-        const selectedSunlight = Array.from(sunlightRadios).find(r => r.checked)?.value;
+        const selectedSunlight = Array.from(sunlightRadios).find(
+          (r) => r.checked
+        )?.value;
 
-        filteredPlants = allPlants.filter(plant => {
+        filteredPlants = allPlants.filter((plant) => {
           // Search
-          const displayName = (plant.display_pid || '').toLowerCase();
-          const alias = (plant.alias || '').toLowerCase();
-          if (!displayName.includes(searchTerm) && !alias.includes(searchTerm)) return false;
+          const displayName = (plant.display_pid || "").toLowerCase();
+          const alias = (plant.alias || "").toLowerCase();
+          if (!displayName.includes(searchTerm) && !alias.includes(searchTerm))
+            return false;
 
           // Checkboxes
-          if (petFriendly && (plant.toxicity === true || plant.toxicity === "true")) return false;
-          
+          if (
+            petFriendly &&
+            (plant.toxicity === true || plant.toxicity === "true")
+          )
+            return false;
+
           if (lowMaintenance) {
             const minDays = plant.min_watering_benchmark_days || 0;
             if (minDays < 7) return false; // Define "Low Maintenance" as infrequent watering
           }
 
           if (airPurifying) {
-             const isAP = plant.tags?.includes('air-purifying');
-             if (!isAP) return false;
+            const isAP = plant.tags?.includes("air-purifying");
+            if (!isAP) return false;
           }
 
           // Sunlight Logic (Simplified for the game theme)
           if (selectedSunlight) {
             const minLux = plant.min_light_lux || 0;
-            if (selectedSunlight === 'full-shade' && minLux >= 3000) return false;
-            if (selectedSunlight === 'partial-shade' && (minLux < 3000 || minLux >= 5000)) return false;
-            if (selectedSunlight === 'partial-sun' && (minLux < 5000 || minLux >= 8000)) return false;
-            if (selectedSunlight === 'full-sun' && minLux < 8000) return false;
+            if (selectedSunlight === "full-shade" && minLux >= 3000)
+              return false;
+            if (
+              selectedSunlight === "partial-shade" &&
+              (minLux < 3000 || minLux >= 5000)
+            )
+              return false;
+            if (
+              selectedSunlight === "partial-sun" &&
+              (minLux < 5000 || minLux >= 8000)
+            )
+              return false;
+            if (selectedSunlight === "full-sun" && minLux < 8000) return false;
           }
 
           return true;
@@ -179,31 +338,45 @@
         countDisplay.innerText = filteredPlants.length;
 
         if (filteredPlants.length === 0) {
-            plantGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; font-family: var(--font-heading); font-size: 1.5rem;">No specimens match your query.</div>`;
-            return;
+          plantGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; font-family: var(--font-heading); font-size: 1.5rem;">No specimens match your query.</div>`;
+          return;
         }
 
-        plantGrid.innerHTML = filteredPlants.map(plant => {
-            const emoji = plant.emoji || '🌱';
-            
+        plantGrid.innerHTML = filteredPlants
+          .map((plant) => {
+            const emoji = plant.emoji || "🌱";
+
             // Generate Tags HTML
-            let tagsHtml = '';
+            let tagsHtml = "";
             if (plant.tags) {
-                tagsHtml = plant.tags.slice(0, 2).map(tag => `<span class="tag">${tag.replace('-', ' ')}</span>`).join('');
+              tagsHtml = plant.tags
+                .slice(0, 2)
+                .map(
+                  (tag) => `<span class="tag">${tag.replace("-", " ")}</span>`
+                )
+                .join("");
             }
 
             // Visual "Health Bar" for watering frequency (More days = fuller bar/easier)
             const waterDays = plant.min_watering_benchmark_days || 7;
-            const waterWidth = Math.min(100, (waterDays / 20) * 100); 
+            const waterWidth = Math.min(100, (waterDays / 20) * 100);
 
             return `
             <div class="plant-card" onclick="openPlantDetail('${plant.pid}')">
                 <div class="card-image">
-                    ${plant.image_url ? `<img src="${plant.image_url}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">` : ''}
-                    <div style="display:${plant.image_url ? 'none' : 'block'}">${emoji}</div>
+                    ${
+                      plant.image_url
+                        ? `<img src="${plant.image_url}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">`
+                        : ""
+                    }
+                    <div style="display:${
+                      plant.image_url ? "none" : "block"
+                    }">${emoji}</div>
                 </div>
                 
-                <h3 style="font-family: var(--font-heading); margin:0; font-size: 1.6rem;">${plant.display_pid}</h3>
+                <h3 style="font-family: var(--font-heading); margin:0; font-size: 1.6rem;">${
+                  plant.display_pid
+                }</h3>
                 
                 <div style="font-size: 0.9rem; font-family: var(--font-heading); margin-top: 5px;">
                     WATER FREQ:
@@ -213,65 +386,72 @@
                 <div class="tags">${tagsHtml}</div>
             </div>
             `;
-        }).join('');
+          })
+          .join("");
       }
 
       // Modal Logic
       function openPlantDetail(pid) {
-        const plant = allPlants.find(p => p.pid === pid);
+        const plant = allPlants.find((p) => p.pid === pid);
         if (!plant) return;
 
-        document.getElementById('panel-title').innerText = plant.display_pid;
-        document.getElementById('panel-alias').innerText = plant.alias || '';
-        document.getElementById('panel-water').innerText = `${plant.min_watering_benchmark_days} - ${plant.max_watering_benchmark_days} days`;
-        document.getElementById('panel-sun').innerText = `${plant.min_light_lux} Lux`;
+        document.getElementById("panel-title").innerText = plant.display_pid;
+        document.getElementById("panel-alias").innerText = plant.alias || "";
+        document.getElementById(
+          "panel-water"
+        ).innerText = `${plant.min_watering_benchmark_days} - ${plant.max_watering_benchmark_days} days`;
+        document.getElementById(
+          "panel-sun"
+        ).innerText = `${plant.min_light_lux} Lux`;
 
         // Image
-        const imgContainer = document.getElementById('panel-image-container');
-        const emoji = plant.emoji || '🌱';
+        const imgContainer = document.getElementById("panel-image-container");
+        const emoji = plant.emoji || "🌱";
         if (plant.image_url) {
-            imgContainer.innerHTML = `<img src="${plant.image_url}" style="max-height:100%; max-width:100%;" onerror="this.parentNode.innerHTML='<div style=\\'font-size:5rem;\\'>${emoji}</div>'">`;
+          imgContainer.innerHTML = `<img src="${plant.image_url}" style="max-height:100%; max-width:100%;" onerror="this.parentNode.innerHTML='<div style=\\'font-size:5rem;\\'>${emoji}</div>'">`;
         } else {
-            imgContainer.innerHTML = `<div style="font-size:5rem;">${emoji}</div>`;
+          imgContainer.innerHTML = `<div style="font-size:5rem;">${emoji}</div>`;
         }
 
         // Safety Badge
-        const safetyContainer = document.getElementById('panel-safety');
+        const safetyContainer = document.getElementById("panel-safety");
         if (plant.toxicity) {
-            safetyContainer.innerHTML = `<div style="padding:10px; background:#ffeaa7; border:2px solid var(--color-ink); color:black;">⚠️ <strong>Warning:</strong> Toxic to pets</div>`;
+          safetyContainer.innerHTML = `<div style="padding:10px; background:#ffeaa7; border:2px solid var(--color-ink); color:black;">⚠️ <strong>Warning:</strong> Toxic to pets</div>`;
         } else {
-            safetyContainer.innerHTML = `<div style="padding:10px; background:#55efc4; border:2px solid var(--color-ink); color:black;">✅ <strong>Safe:</strong> Pet Friendly</div>`;
+          safetyContainer.innerHTML = `<div style="padding:10px; background:#55efc4; border:2px solid var(--color-ink); color:black;">✅ <strong>Safe:</strong> Pet Friendly</div>`;
         }
 
-        panel.classList.add('open');
+        panel.classList.add("open");
       }
 
-      closeBtn.onclick = () => panel.classList.remove('open');
+      closeBtn.onclick = () => panel.classList.remove("open");
       window.onclick = (e) => {
-        if (e.target === panel) panel.classList.remove('open');
-      }
+        if (e.target === panel) panel.classList.remove("open");
+      };
 
       /* --- ADOPT / SAVE PLANT LOGIC --- */
 
-// Function to call when user clicks "Adopt" button on a plant
-function adoptPlant(plantName, plantEmoji) {
-    // 1. Get current list
-    let myPlants = JSON.parse(localStorage.getItem('myPlants')) || [];
-    
-    // 2. Check if already owned
-    if (myPlants.some(p => p.name === plantName)) {
-        alert("You already have this plant in your garden!");
-        return;
-    }
+      // Function to call when user clicks "Adopt" button on a plant
+      function adoptPlant(plantName, plantEmoji) {
+        // 1. Get current list
+        let myPlants = JSON.parse(localStorage.getItem("myPlants")) || [];
 
-    // 3. Add to list
-    myPlants.push({ name: plantName, emoji: plantEmoji });
-    
-    // 4. Save back to storage
-    localStorage.setItem('myPlants', JSON.stringify(myPlants));
-    
-    alert(`You adopted ${plantName}! It is now available in your Quest Log.`);
-}
+        // 2. Check if already owned
+        if (myPlants.some((p) => p.name === plantName)) {
+          alert("You already have this plant in your garden!");
+          return;
+        }
+
+        // 3. Add to list
+        myPlants.push({ name: plantName, emoji: plantEmoji });
+
+        // 4. Save back to storage
+        localStorage.setItem("myPlants", JSON.stringify(myPlants));
+
+        alert(
+          `You adopted ${plantName}! It is now available in your Quest Log.`
+        );
+      }
     </script>
   </body>
 </html>

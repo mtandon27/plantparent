@@ -1,86 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plant Parent - Your Plant Care Journal</title>
-  <link rel="stylesheet" href="global.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plant Parent - Your Plant Care Journal</title>
+    <link rel="stylesheet" href="global.css" />
+  </head>
 
-</head>
-<body>
-  
-  <nav>
-    <a href="index.html" class="nav-brand"><span>🌱 PLANT PARENT</span></a>
-    <ul class="nav-links">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="browse.html">Explore</a></li>
-      <li><a href="journal.html">Journal</a></li>
-    </ul>
-  </nav>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-brand"><span>🌱 PLANT PARENT</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="browse.html">Explore</a></li>
+        <li><a href="journal.html">Journal</a></li>
+      </ul>
+    </nav>
 
-  <section class="hero" style="text-align: center; padding: 6rem 2rem;">
-    <div class="hero-content">
-        <h1 style="font-family: var(--font-heading); font-size: 3.5rem; margin-bottom: 1rem; line-height: 1;">
-            STOP KILLING YOUR PLANTS.
-        </h1>
-        <p style="font-size: 1.3rem; margin-bottom: 2rem; color: #444;">
-            Plant Parent is a <strong>mindful care tracker</strong> for your indoor garden. 
-            Document growth, track watering schedules, and cultivate a moment of peace 
-            with your plants every day.
+    <section class="hero" style="text-align: center; padding: 6rem 2rem">
+      <div class="hero-content">
+        <h1
+          id="typewriter-headline"
+          class="typing-cursor"
+          style="
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1;
+            min-height: 3.5rem;
+          "
+        ></h1>
+
+        <p style="font-size: 1.3rem; margin-bottom: 2rem; color: #444">
+          Plant Parent is a <strong>mindful care tracker</strong> for your
+          indoor garden. Document growth, track watering schedules, and
+          cultivate a moment of peace with your plants every day.
         </p>
-        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-            <a href="browse.html" class="primary-btn";>Find Plants</a>
-            <a href="journal.html" class="primary-btn">Open Journal</a>
-            
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+          "
+        >
+          <a href="browse.html" class="primary-btn">Find Plants</a>
+          <a
+            href="journal.html"
+            class="primary-btn"
+            style="
+              background: var(--color-paper);
+              color: var(--color-ink);
+              border: 3px solid var(--color-ink);
+              font-weight: bold;
+              box-shadow: none;
+              text-shadow: none;
+            "
+            >Open Journal</a
+          >
         </div>
-    </div>
-  </section>
+      </div>
+    </section>
 
-  <section class="features" style="max-width: 1000px; margin: 0 auto; padding: 2rem 2rem 6rem 2rem;">
-     
-     <div style="text-align: center; margin-bottom: 3rem;">
-        <h2 style="font-family: var(--font-heading); font-size: 2.5rem; border-bottom: 2px solid var(--color-ink); display: inline-block;">
-            How It Works
+    <section
+      class="features"
+      style="max-width: 1000px; margin: 0 auto; padding: 2rem 2rem 6rem 2rem"
+    >
+      <div style="text-align: center; margin-bottom: 3rem">
+        <h2
+          style="
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            border-bottom: 2px solid var(--color-ink);
+            display: inline-block;
+          "
+        >
+          How It Works
         </h2>
-     </div>
+      </div>
 
-     <div class="steps-grid">
-        
+      <div class="steps-grid">
         <div class="step-card">
-            <div class="step-num">1</div>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <div class="sticker static" style="--rotate-deg: -3deg;">📖</div>
-            </div>
-            <h3 style="font-family: var(--font-heading); font-size: 1.5rem;">Find</h3>
-            <p>Browse the database to find your plants or add your own. Create a digital inventory of your garden.</p>
+          <div class="step-num">1</div>
+          <div style="text-align: center; margin-bottom: 15px">
+            <div class="sticker static" style="--rotate-deg: -3deg">📖</div>
+          </div>
+          <h3 style="font-family: var(--font-heading); font-size: 1.5rem">
+            Find
+          </h3>
+          <p>
+            Browse the database to find your plants or add your own. Create a
+            digital inventory of your garden.
+          </p>
         </div>
 
         <div class="step-card">
-            <div class="step-num">2</div>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <div class="sticker static" style="--rotate-deg: 2deg;">💧</div>
-            </div>
-            <h3 style="font-family: var(--font-heading); font-size: 1.5rem;">Track</h3>
-            <p>Log watering, sunlight, and more. Keep a visual history of your plant's health over time.</p>
+          <div class="step-num">2</div>
+          <div style="text-align: center; margin-bottom: 15px">
+            <div class="sticker static" style="--rotate-deg: 2deg">💧</div>
+          </div>
+          <h3 style="font-family: var(--font-heading); font-size: 1.5rem">
+            Track
+          </h3>
+          <p>
+            Log watering, sunlight, and more. Keep a visual history of your
+            plant's health over time.
+          </p>
         </div>
 
         <div class="step-card">
-            <div class="step-num">3</div>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <div class="sticker static" style="--rotate-deg: -1deg;">🧘</div>
-            </div>
-            <h3 style="font-family: var(--font-heading); font-size: 1.5rem;">Grow</h3>
-            <p>Complete daily mindfulness prompts. As your plants grow, you build healthy, grounding habits.</p>
+          <div class="step-num">3</div>
+          <div style="text-align: center; margin-bottom: 15px">
+            <div class="sticker static" style="--rotate-deg: -1deg">🧘</div>
+          </div>
+          <h3 style="font-family: var(--font-heading); font-size: 1.5rem">
+            Grow
+          </h3>
+          <p>
+            Complete daily mindfulness prompts. As your plants grow, you build
+            healthy, grounding habits.
+          </p>
         </div>
+      </div>
 
-     </div>
+      <div style="text-align: center; margin-top: 4rem">
+        <p
+          style="
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            color: #666;
+          "
+        >
+          "To plant a garden is to believe in tomorrow."
+        </p>
+      </div>
+    </section>
 
-     <div style="text-align: center; margin-top: 4rem;">
-         <p style="font-family: var(--font-heading); font-size: 1.5rem; color: #666;">
-            "To plant a garden is to believe in tomorrow."
-         </p>
-     </div>
-  </section>
+    <script>
+      // --- TYPEWRITER EFFECT LOGIC ---
+      document.addEventListener("DOMContentLoaded", function () {
+        const textToType = "STOP KILLING YOUR PLANTS.";
+        const element = document.getElementById("typewriter-headline");
+        const typingSpeed = 100; // milliseconds per character
+        let charIndex = 0;
 
-</body>
+        function type() {
+          if (charIndex < textToType.length) {
+            element.textContent += textToType.charAt(charIndex);
+            charIndex++;
+            setTimeout(type, typingSpeed);
+          } else {
+            // Optional: Stop blinking after typing is done?
+            // Currently keeping it blinking to look like a waiting prompt
+          }
+        }
+
+        // Start typing after a short delay
+        setTimeout(type, 500);
+      });
+    </script>
+  </body>
 </html>
