@@ -682,26 +682,39 @@ nav {
 }
 
 /* Typewriter Cursor Effect */
-.typing-cursor::after {
-  content: "";
-  display: inline-block;
-  width: 12px;
-  height: 0.8em;
-  background-color: var(--color-accent);
-  margin-left: 8px;
-  vertical-align: bottom;
-  animation: blink 1s step-end infinite;
-}
+/* --- TYPEWRITER CURSOR LOGIC --- */
+      
+      /* 1. The Cursor Style */
+      .typing-cursor::after {
+          content: '';  
+          display: inline-block;
+          width: 12px;  
+          height: 0.8em; 
+          background-color: var(--color-accent);
+          margin-left: 8px;
+          vertical-align: bottom; 
+          
+          /* Default: Blinking forever */
+          animation: blink 1s step-end infinite;
+      }
 
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
+      /* 2. The Blinking Animation */
+      @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+      }
+
+      /* 3. The Fade Out Animation (New) */
+      @keyframes fadeOut {
+          from { opacity: 1; }
+          to { opacity: 0; }
+      }
+
+      /* 4. The "Finished" State (Applied by JS) */
+      .typing-cursor.typing-finished::after {
+          /* Stop blinking, start fading */
+          animation: fadeOut 1s ease-out forwards;
+      }
 
 /* --- STATIC STICKER OVERRIDES (For the steps section) --- */
 .sticker.static {

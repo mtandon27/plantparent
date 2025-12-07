@@ -37,7 +37,7 @@
         ></h1>
 
         <p style="font-size: 1.3rem; margin-bottom: 2rem; color: #444">
-          Plant Parent is a <strong>mindful care tracker</strong> for your
+        Plant Parent is a <strong>mindful care tracker</strong> for your
           indoor garden. Document growth, track watering schedules, and
           cultivate a moment of peace with your plants every day.
         </p>
@@ -58,7 +58,6 @@
               color: var(--color-ink);
               border: 3px solid var(--color-ink);
               font-weight: bold;
-              box-shadow: none;
               text-shadow: none;
             "
             >Open Journal</a
@@ -148,27 +147,26 @@
     </footer>
 
     <script>
-      // --- TYPEWRITER EFFECT LOGIC ---
-      document.addEventListener("DOMContentLoaded", function () {
-        const textToType = "STOP KILLING YOUR PLANTS.";
-        const element = document.getElementById("typewriter-headline");
-        const typingSpeed = 100; // milliseconds per character
+    document.addEventListener('DOMContentLoaded', function() {
+        const textToType = "STOP KILLING YOUR PLANTS!";
+        const element = document.getElementById('typewriter-headline');
+        const typingSpeed = 100;
         let charIndex = 0;
 
         function type() {
-          if (charIndex < textToType.length) {
-            element.textContent += textToType.charAt(charIndex);
-            charIndex++;
-            setTimeout(type, typingSpeed);
-          } else {
-            // Optional: Stop blinking after typing is done?
-            // Currently keeping it blinking to look like a waiting prompt
-          }
+            if (charIndex < textToType.length) {
+                element.textContent += textToType.charAt(charIndex);
+                charIndex++;
+                setTimeout(type, typingSpeed);
+            } else {
+                // Wait 1 second after typing, then trigger the fade out
+                setTimeout(() => {
+                    element.classList.add('typing-finished');
+                }, 1000);
+            }
         }
-
-        // Start typing after a short delay
         setTimeout(type, 500);
-      });
-    </script>
+    });
+  </script>
   </body>
 </html>
