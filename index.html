@@ -13,6 +13,8 @@
   </head>
 
   <body>
+    <div id="vine-left" class="vine-grower"></div>
+  <div id="vine-right" class="vine-grower"></div>
     <nav>
       <a href="index.html" class="nav-brand"><span>🌱 PLANT PARENT</span></a>
       <ul class="nav-links">
@@ -148,6 +150,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // 1. TYPEWRITER LOGIC
         const textToType = "STOP KILLING YOUR PLANTS!";
         const element = document.getElementById('typewriter-headline');
         const typingSpeed = 100;
@@ -165,8 +168,30 @@
                 }, 1000);
             }
         }
+        // Start typing after half a second
         setTimeout(type, 500);
+
+        // 2. VINE GROWING LOGIC
+        const vineLeft = document.getElementById('vine-left');
+        const vineRight = document.getElementById('vine-right');
+
+        window.addEventListener('scroll', () => {
+            // Calculate how far down the page we are (0 to 1)
+            const scrollTop = window.scrollY;
+            const docHeight = document.body.scrollHeight - window.innerHeight;
+            
+            // Prevent division by zero if page is short
+            if (docHeight <= 0) return;
+
+            const scrollPercent = scrollTop / docHeight;
+
+            // Map scroll percentage to height (Max 100%)
+            const growthHeight = Math.min(scrollPercent * 100, 100) + '%';
+
+            vineLeft.style.height = growthHeight;
+            vineRight.style.height = growthHeight;
+        });
     });
-  </script>
+</script>
   </body>
 </html>

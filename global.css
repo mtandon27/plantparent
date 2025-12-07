@@ -738,6 +738,7 @@ nav {
   border: 2px dashed var(--color-ink);
   padding: 1.5rem;
   position: relative;
+  box-shadow: 5px 5px 0 rgba(125, 125, 125, 0.5);
 }
 .step-num {
   background: var(--color-accent);
@@ -893,3 +894,101 @@ footer {
           background: var(--color-paper);
           margin-top: auto;
       }
+
+:root {
+  /* This creates a pixel-art vine pattern using an embedded SVG. 
+     Color matches --color-accent (#2d6a4f) */
+  --vine-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 10 10'%3E%3Cpath fill='%232d6a4f' d='M4 0h2v10H4z'/%3E%3Cpath fill='%232d6a4f' d='M2 2h2v2H2zM6 6h2v2H6z'/%3E%3Cpath fill='%2395d5b2' d='M2 3h1v1H2zM7 7h1v1H7z' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+.vine-grower {
+  position: fixed;
+  top: 0;
+  width: 50px;
+  height: 0%; /* Starts at 0, grows via JS */
+  background-image: var(--vine-pattern);
+  background-size: 50px 50px; /* Size of the pixel blocks */
+  background-repeat: repeat-y;
+  z-index: -1; /* Sits behind text, in front of background */
+  
+  /* Adds a smooth feeling to the growth so it doesn't jitter */
+  transition: height 0.1s linear; 
+  
+  /* A slight drop shadow to make them pop off the paper background */
+  filter: drop-shadow(2px 2px 0px rgba(45, 106, 79, 0.2));
+}
+
+#vine-left {
+  left: 10px;
+}
+
+#vine-right {
+  right: 10px;
+  /* Flip the right vine horizontally for visual variety */
+  transform: scaleX(-1); 
+}
+
+/* Hide vines on mobile if they cover too much text */
+@media (max-width: 768px) {
+  .vine-grower {
+    width: 30px; /* Thinner on mobile */
+    opacity: 0.6; /* More subtle */
+  }
+}
+
+.quest-btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: #fff;
+            color: var(--color-ink);
+            border: 2px solid var(--color-ink);
+            cursor: pointer;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .quest-btn:hover:not(:disabled) {
+            background: var(--color-highlight); /* Mint Green */
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+        }
+
+        .quest-btn:disabled {
+            background: var(--color-highlight); 
+            color: #7d7d7d;
+            border-color: #7d7d7d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            transform: scale(0.98);
+        }
+
+        /* Edit Button Style */
+.edit-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: white;
+    border: 1px solid var(--color-ink);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+}
+.edit-btn:hover {
+    background: var(--color-highlight);
+    transform: scale(1.1);
+}
