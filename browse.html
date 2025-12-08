@@ -142,12 +142,13 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background: red;
-            color: white;
-            border: 2px solid black;
+            background: #fab1a0;
+            color: var(--color-ink);
+            border: 2px solid var(--color-ink);
             cursor: pointer;
             font-family: var(--font-heading);
             padding: 5px 10px;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
           "
         >
           X
@@ -229,7 +230,7 @@
 
         <div style="display: flex; gap: 1rem">
           <button class="primary-btn" style="flex: 1" id="btn-save">
-            💾 Save to Log
+            💾 Save to Garden
           </button>
         </div>
       </div>
@@ -245,8 +246,8 @@
     <script>
       let allPlants = [];
       let filteredPlants = [];
+      let currentPlant = null; 
 
-      // DOM Elements
       const searchInput = document.querySelector(".search-input");
       const plantGrid = document.querySelector(".plant-grid");
       const resultsInfo = document.querySelector(".results-info");
@@ -257,14 +258,12 @@
       const airPurifyingCheckbox = document.getElementById("air-purifying");
       const sunlightRadios = document.getElementsByName("sunlight");
       
-      // ADDED: Container for filter chips
       const activeFiltersContainer = document.getElementById("active-filters");
 
-      // Detail Panel Elements
       const panel = document.getElementById("detail-panel");
       const closeBtn = document.getElementById("panel-close-btn");
+      const saveBtn = document.getElementById("btn-save"); 
 
-      // Fetch Data
       fetch("plants.json")
         .then((response) => response.json())
         .then((data) => {
@@ -274,7 +273,6 @@
         })
         .catch((err) => console.error("Error loading plants:", err));
 
-      // Filter Listeners
       searchInput.addEventListener("input", applyFilters);
       petFriendlyCheckbox.addEventListener("change", applyFilters);
       lowMaintenanceCheckbox.addEventListener("change", applyFilters);
@@ -282,6 +280,12 @@
       sunlightRadios.forEach((radio) =>
         radio.addEventListener("change", applyFilters)
       );
+
+      saveBtn.addEventListener("click", () => {
+        if (currentPlant) {
+            adoptPlant(currentPlant);
+        }
+      });
 
       function clearAllFilters() {
         searchInput.value = "";
@@ -292,7 +296,6 @@
         applyFilters();
       }
       
-      // ADDED: Function to update filter chips
       function updateActiveFilters() {
         const chips = [];
 
@@ -324,7 +327,6 @@
           </div>
         `).join('');
 
-        // Attach event listeners to chip close buttons
         activeFiltersContainer.querySelectorAll('button').forEach(btn => {
           btn.addEventListener('click', () => {
             const index = parseInt(btn.dataset.index);
@@ -347,13 +349,11 @@
         )?.value;
 
         filteredPlants = allPlants.filter((plant) => {
-          // Search
           const displayName = (plant.display_pid || "").toLowerCase();
           const alias = (plant.alias || "").toLowerCase();
           if (!displayName.includes(searchTerm) && !alias.includes(searchTerm))
             return false;
 
-          // Checkboxes
           if (
             petFriendly &&
             (plant.toxicity === true || plant.toxicity === "true")
@@ -370,7 +370,6 @@
             if (!isAP) return false;
           }
 
-          // Sunlight Logic
           if (selectedSunlight) {
             const minLux = plant.min_light_lux || 0;
             if (selectedSunlight === "full-shade" && minLux >= 3000)
@@ -391,11 +390,10 @@
           return true;
         });
 
-        updateActiveFilters(); // Added call here
+        updateActiveFilters();
         renderPlants();
       }
 
-      // Render Function
       function renderPlants() {
         countDisplay.innerText = filteredPlants.length;
 
@@ -407,8 +405,6 @@
         plantGrid.innerHTML = filteredPlants
           .map((plant) => {
             const emoji = plant.emoji || "🌱";
-
-            // Generate Tags HTML
             let tagsHtml = "";
             if (plant.tags) {
               tagsHtml = plant.tags
@@ -419,7 +415,6 @@
                 .join("");
             }
 
-            // Water Freq Logic
             const waterDays = plant.min_watering_benchmark_days || 7;
             const waterWidth = Math.min(100, (waterDays / 20) * 100);
             
@@ -459,28 +454,32 @@
           .join("");
       }
 
-      // Modal Logic
       function openPlantDetail(pid) {
-        const plant = allPlants.find((p) => p.pid === pid);
-        if (!plant) return;
+        currentPlant = allPlants.find((p) => p.pid === pid);
+        if (!currentPlant) return;
 
-        document.getElementById("panel-title").innerText = plant.display_pid;
-        document.getElementById("panel-alias").innerText = plant.alias || "";
+        // --- RESET BUTTON STATE ---
+        saveBtn.innerText = "💾 Save to Garden";
+        saveBtn.classList.remove("btn-saved"); // Remove the 'saved' style
+        saveBtn.disabled = false;
+
+        // Check if already owned
+        let myPlants = JSON.parse(localStorage.getItem("myPlants")) || [];
+        if (myPlants.some((p) => p.name === currentPlant.display_pid)) {
+             saveBtn.innerText = "In Garden ✅";
+             saveBtn.classList.add("btn-saved"); // Add the 'saved' style
+             saveBtn.disabled = true;
+        }
+
+        document.getElementById("panel-title").innerText = currentPlant.display_pid;
+        document.getElementById("panel-alias").innerText = currentPlant.alias || "";
         
-        // Water Text
         document.getElementById(
           "panel-water"
-        ).innerText = `Every ${plant.min_watering_benchmark_days} - ${plant.max_watering_benchmark_days} days`;
+        ).innerText = `Every ${currentPlant.min_watering_benchmark_days} - ${currentPlant.max_watering_benchmark_days} days`;
         
-        // Light Logic & Text
-        const lux = plant.min_light_lux || 0;
+        const lux = currentPlant.min_light_lux || 0;
         let lightLabel = "High";
-        
-        // Logic matches the filters:
-        // < 3000: Shadow (Full Shade)
-        // 3000 - 4999: Low (Partial Shade)
-        // 5000 - 7999: Med (Partial Sun)
-        // >= 8000: High (Full Sun)
         
         if (lux < 3000) {
             lightLabel = "Shadow";
@@ -496,18 +495,16 @@
           "panel-sun"
         ).innerText = `${lightLabel} (${lux} Lux)`;
 
-        // Image
         const imgContainer = document.getElementById("panel-image-container");
-        const emoji = plant.emoji || "🌱";
-        if (plant.image_url) {
-          imgContainer.innerHTML = `<img src="${plant.image_url}" style="max-height:100%; max-width:100%;" onerror="this.parentNode.innerHTML='<div style=\\'font-size:5rem;\\'>${emoji}</div>'">`;
+        const emoji = currentPlant.emoji || "🌱";
+        if (currentPlant.image_url) {
+          imgContainer.innerHTML = `<img src="${currentPlant.image_url}" style="max-height:100%; max-width:100%;" onerror="this.parentNode.innerHTML='<div style=\\'font-size:5rem;\\'>${emoji}</div>'">`;
         } else {
           imgContainer.innerHTML = `<div style="font-size:5rem;">${emoji}</div>`;
         }
 
-        // Safety Badge
         const safetyContainer = document.getElementById("panel-safety");
-        if (plant.toxicity) {
+        if (currentPlant.toxicity) {
           safetyContainer.innerHTML = `<div style="padding:10px; background:#ffeaa7; border:2px solid var(--color-ink); color:black;">⚠️ <strong>Warning:</strong> Toxic to pets</div>`;
         } else {
           safetyContainer.innerHTML = `<div style="padding:10px; background:#55efc4; border:2px solid var(--color-ink); color:black;">✅ <strong>Safe:</strong> Pet Friendly</div>`;
@@ -521,18 +518,28 @@
         if (e.target === panel) panel.classList.remove("open");
       };
 
-      /* --- ADOPT / SAVE PLANT LOGIC --- */
-      function adoptPlant(plantName, plantEmoji) {
+      /* --- UPDATED: ADOPT / SAVE LOGIC --- */
+      function adoptPlant(plant) {
         let myPlants = JSON.parse(localStorage.getItem("myPlants")) || [];
-        if (myPlants.some((p) => p.name === plantName)) {
-          alert("You already have this plant in your garden!");
+        
+        const plantData = {
+            name: plant.display_pid,
+            emoji: plant.emoji || "🌱",
+            image: plant.image_url || "" 
+        };
+
+        if (myPlants.some((p) => p.name === plantData.name)) {
+          // It's technically handled by button state, but safe check here:
           return;
         }
-        myPlants.push({ name: plantName, emoji: plantEmoji });
+        
+        myPlants.push(plantData);
         localStorage.setItem("myPlants", JSON.stringify(myPlants));
-        alert(
-          `You adopted ${plantName}! It is now available in your Quest Log.`
-        );
+        
+        // --- BUTTON STYLE UPDATE ---
+        saveBtn.innerText = "Saved to Garden ✅";
+        saveBtn.classList.add("btn-saved"); // Apply the 'pressed' look
+        saveBtn.disabled = true;
       }
     </script>
   </body>

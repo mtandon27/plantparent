@@ -1073,3 +1073,17 @@ footer {
         background: #e3f2fd;
         border-color: var(--color-ink);
       }
+
+          .btn-saved {
+            background-color: #fab1a0 !important; /* Cozy Peach */
+            color: var(--color-ink) !important;
+            border: 2px solid var(--color-ink) !important;
+            
+            /* The "Pressed" Effect */
+            box-shadow: none !important; 
+            text-shadow: none !important;
+            transform: translate(4px, 4px) !important; 
+            
+            cursor: default !important;
+            pointer-events: none; /* Prevent extra clicks */
+        }

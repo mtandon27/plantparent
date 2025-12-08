@@ -11,6 +11,61 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="global.css" />
 
+    <style>
+      /* --- EDIT BUTTON STYLE --- */
+      .edit-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        color: #aaa;
+        padding: 5px;
+        transition: color 0.2s, transform 0.2s;
+        display: inline-flex;
+        align-items: center;
+        margin-left: 5px;
+      }
+      
+      .edit-btn:hover {
+        color: var(--color-ink);
+        transform: scale(1.2) rotate(10deg);
+      }
+
+      /* --- CARE BUTTONS & TOOLTIPS --- */
+      .care-btn { position: relative; }
+      .care-btn.active[data-type="water"] { background: #e3f2fd; border-color: #2196f3; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1); }
+      .care-btn.active[data-type="sun"]   { background: #fff9c4; border-color: #fbc02d; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1); }
+      .care-btn.active[data-type="food"]  { background: #e8f5e9; border-color: #4caf50; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1); }
+
+      .care-btn[data-tooltip]:hover::after {
+          content: attr(data-tooltip);
+          position: absolute;
+          bottom: 110%; left: 50%; transform: translateX(-50%);
+          background: var(--color-ink); color: white;
+          padding: 4px 8px; border-radius: 4px;
+          font-size: 0.9rem; font-family: var(--font-heading);
+          white-space: nowrap; pointer-events: none; opacity: 0;
+          animation: fadeIn 0.2s forwards; z-index: 100;
+          box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+      }
+      @keyframes fadeIn { to { opacity: 1; } }
+
+      .file-upload-label {
+        display: block;
+        padding: 10px;
+        background: #f0f0f0;
+        border: 2px dashed #ccc;
+        text-align: center;
+        cursor: pointer;
+        font-family: var(--font-heading);
+        margin-top: 5px;
+        transition: background 0.2s;
+      }
+      .file-upload-label:hover {
+        background: #e3f2fd;
+        border-color: var(--color-ink);
+      }
+    </style>
   </head>
 
   <body>
@@ -137,13 +192,21 @@
         <div style="display: flex; flex-direction: column; gap: 1rem">
           <div>
             <label style="font-family: var(--font-heading)">Which Plant?</label>
-            <select id="plantSelect" style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);">
+            <select
+              id="plantSelect"
+              style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);"
+            >
               <option value="" disabled selected>Select from your garden...</option>
             </select>
           </div>
           <div>
             <label style="font-family: var(--font-heading)">Today's Note</label>
-            <textarea id="newEntryText" rows="3" style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);" placeholder="How is it doing today?"></textarea>
+            <textarea
+              id="newEntryText"
+              rows="3"
+              style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);"
+              placeholder="How is it doing today?"
+            ></textarea>
           </div>
           <button class="primary-btn" onclick="submitNewEntry()">Add to Journal</button>
         </div>
@@ -162,7 +225,11 @@
 
           <div>
             <label style="font-family: var(--font-heading)">Plant Name</label>
-            <input type="text" id="editName" style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);" />
+            <input
+              type="text"
+              id="editName"
+              style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);"
+            />
           </div>
 
           <div>
@@ -178,7 +245,11 @@
 
           <div>
             <label style="font-family: var(--font-heading)">Note</label>
-            <textarea id="editNote" rows="3" style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);"></textarea>
+            <textarea
+              id="editNote"
+              rows="3"
+              style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);"
+            ></textarea>
           </div>
 
           <button class="primary-btn" onclick="saveEditChanges()">Save Changes</button>
@@ -327,7 +398,6 @@
                 currentCardBeingEdited.querySelector(".img-fallback").style.display = "none";
             }
 
-            // Save to LocalStorage
             let myPlants = JSON.parse(localStorage.getItem("myPlants")) || [];
             const plantIndex = myPlants.findIndex(p => p.name === oldName);
             
@@ -407,32 +477,91 @@
         btn.classList.add("selected");
       }
 
-      /* --- HISTORY MODAL LOGIC (RESTORED) --- */
+      /* --- UPDATED HISTORY WITH IMAGES --- */
       const plantHistoryData = {
-        'Monstera Deliciosa': [
-            { date: "Oct 10, 2025", note: "Wiped dust off leaves. It looks shinier!", care: ["💧", "☀️"], mood: "😌" }
+        "Monstera Deliciosa": [
+          {
+            date: "Oct 20, 2025",
+            note: "A new fenestrated leaf finally opened up! It's beautiful.",
+            care: ["☀️", "💧"],
+            mood: "🌿",
+            image: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=400&q=80"
+          },
+          {
+            date: "Oct 15, 2025",
+            note: "Rotated the pot 90 degrees to keep growth even.",
+            care: ["☀️"],
+            mood: "😌",
+          },
+          {
+            date: "Oct 10, 2025",
+            note: "Wiped dust off leaves. It looks shinier!",
+            care: ["💧", "☀️"],
+            mood: "😌",
+          },
+          {
+            date: "Oct 05, 2025",
+            note: "Soil felt dry. Gave a deep watering.",
+            care: ["💧"],
+            mood: "😐",
+          },
+          {
+            date: "Sep 28, 2025",
+            note: "Adopted today! Welcome home.",
+            care: ["❤️"],
+            mood: "⚡",
+          },
         ],
-        'Golden Pothos': [
-            { date: "Oct 01, 2025", note: "Watering day.", care: ["💧"], mood: "😌" }
-        ]
+        "Golden Pothos": [
+          {
+            date: "Oct 18, 2025",
+            note: "Leaves looked a bit droopy. Perked right up after water.",
+            care: ["💧"],
+            mood: "😌",
+          },
+          {
+            date: "Oct 08, 2025",
+            note: "Trailing vines are getting long. Might propagate soon.",
+            care: ["☀️"],
+            mood: "🌿",
+          },
+          {
+            date: "Oct 01, 2025",
+            note: "Watering day. Added a drop of fertilizer.",
+            care: ["💧", "🧪"],
+            mood: "⚡",
+          },
+          {
+            date: "Sep 15, 2025",
+            note: "Moved to the bookshelf for better indirect light.",
+            care: ["☀️"],
+            mood: "😐",
+          }
+        ],
       };
 
       function openHistory(name) {
         document.getElementById("historyModal").classList.add("open");
         document.getElementById("historyTitle").innerText = "History: " + name;
         const list = document.getElementById("historyList");
-        list.innerHTML = ""; // Clear old
+        list.innerHTML = ""; 
 
-        // Get logs or default
         const logs = plantHistoryData[name] || [{ date: "Today", note: "Started tracking this plant.", care: [], mood: "🌱" }];
         
         logs.forEach(log => {
             const entry = document.createElement('div');
             entry.className = 'history-entry';
+            
+            let imgHtml = '';
+            if (log.image) {
+                imgHtml = `<div style="margin-top:10px;"><img src="${log.image}" style="max-width:100%; max-height:200px; border:2px solid #eee; border-radius:4px; object-fit:cover;"></div>`;
+            }
+
             entry.innerHTML = `
                 <div style="background:var(--color-ink); color:white; display:inline-block; padding:0 5px; transform:rotate(-2deg); font-family:var(--font-heading);">${log.date}</div>
                 <div style="float:right;">${log.care.join(" ")} | Mood: ${log.mood}</div>
                 <p style="margin-top:5px;">${log.note}</p>
+                ${imgHtml}
                 <hr style="border:0; border-bottom:1px dashed #ccc; margin:10px 0;">
             `;
             list.appendChild(entry);
