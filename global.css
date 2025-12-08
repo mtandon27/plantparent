@@ -1009,25 +1009,67 @@ footer {
   transform: scale(0.98);
 }
 
-/* Edit Button Style */
-.edit-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: white;
-  border: 1px solid var(--color-ink);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
-}
-.edit-btn:hover {
-  background: var(--color-highlight);
-  transform: scale(1.1);
-}
+/* --- EDIT BUTTON STYLE --- */
+      .edit-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: #aaa; 
+        padding: 0 0 0 8px;
+        transition: color 0.2s, transform 0.2s;
+        vertical-align: middle;
+      }
+      .edit-btn:hover {
+        color: var(--color-ink);
+        transform: scale(1.2) rotate(10deg);
+      }
+
+      /* --- CARE BUTTONS & TOOLTIPS --- */
+      .care-btn {
+          position: relative; /* Necessary for tooltip positioning */
+      }
+
+      .care-btn.active[data-type="water"] { background: #e3f2fd; border-color: #2196f3; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1); }
+      .care-btn.active[data-type="sun"]   { background: #fff9c4; border-color: #fbc02d; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1); }
+      .care-btn.active[data-type="food"]  { background: #e8f5e9; border-color: #4caf50; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1); }
+
+      /* Tooltip Logic */
+      .care-btn[data-tooltip]:hover::after {
+          content: attr(data-tooltip);
+          position: absolute;
+          bottom: 110%; /* Sit above the button */
+          left: 50%;
+          transform: translateX(-50%);
+          background: var(--color-ink);
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 0.9rem;
+          font-family: var(--font-heading);
+          white-space: nowrap;
+          pointer-events: none;
+          opacity: 0;
+          animation: fadeIn 0.2s forwards;
+          z-index: 100;
+          box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+      }
+      
+      @keyframes fadeIn { to { opacity: 1; } }
+
+      /* Upload Input Style */
+      .file-upload-label {
+        display: block;
+        padding: 10px;
+        background: #f0f0f0;
+        border: 2px dashed #ccc;
+        text-align: center;
+        cursor: pointer;
+        font-family: var(--font-heading);
+        margin-top: 5px;
+        transition: background 0.2s;
+      }
+      .file-upload-label:hover {
+        background: #e3f2fd;
+        border-color: var(--color-ink);
+      }
