@@ -1088,4 +1088,21 @@ footer {
             pointer-events: none; /* Prevent extra clicks */
         }
 
-        
+        .delete-btn {
+        background: #ff7675; /* Soft Red */
+        color: white;
+        width: 100%;
+        padding: 10px;
+        border: 2px solid var(--color-ink);
+        font-family: var(--font-heading);
+        font-size: 1.2rem;
+        cursor: pointer;
+        margin-top: 10px;
+        text-transform: uppercase;
+        transition: all 0.2s;
+      }
+      .delete-btn:hover {
+        background: #d63031; /* Darker Red */
+        transform: translateY(2px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      }
