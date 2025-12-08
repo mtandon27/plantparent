@@ -131,6 +131,36 @@ nav {
   z-index: 10;
 }
 
+/* Active Filter Pills */
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  background: var(--color-highlight); /* Light highlight green */
+  color: var(--color-ink); /* Dark ink color for text */
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  border: 1px solid var(--color-ink); /* Thinner, softer border */
+  border-radius: 4px;
+}
+.filter-chip button {
+  background: none;
+  border: none;
+  color: var(--color-ink); /* Use ink color */
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  margin-left: 2px;
+  opacity: 0.7; /* Make the close button slightly subtle */
+  transition: opacity 0.1s;
+}
+.filter-chip button:hover {
+  opacity: 1;
+}
+
 /* Sticker Effect */
 .sticker {
   background: white;
@@ -683,38 +713,47 @@ nav {
 
 /* Typewriter Cursor Effect */
 /* --- TYPEWRITER CURSOR LOGIC --- */
-      
-      /* 1. The Cursor Style */
-      .typing-cursor::after {
-          content: '';  
-          display: inline-block;
-          width: 12px;  
-          height: 0.8em; 
-          background-color: var(--color-accent);
-          margin-left: 8px;
-          vertical-align: bottom; 
-          
-          /* Default: Blinking forever */
-          animation: blink 1s step-end infinite;
-      }
 
-      /* 2. The Blinking Animation */
-      @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-      }
+/* 1. The Cursor Style */
+.typing-cursor::after {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 0.8em;
+  background-color: var(--color-accent);
+  margin-left: 8px;
+  vertical-align: bottom;
 
-      /* 3. The Fade Out Animation (New) */
-      @keyframes fadeOut {
-          from { opacity: 1; }
-          to { opacity: 0; }
-      }
+  /* Default: Blinking forever */
+  animation: blink 1s step-end infinite;
+}
 
-      /* 4. The "Finished" State (Applied by JS) */
-      .typing-cursor.typing-finished::after {
-          /* Stop blinking, start fading */
-          animation: fadeOut 1s ease-out forwards;
-      }
+/* 2. The Blinking Animation */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* 3. The Fade Out Animation (New) */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* 4. The "Finished" State (Applied by JS) */
+.typing-cursor.typing-finished::after {
+  /* Stop blinking, start fading */
+  animation: fadeOut 1s ease-out forwards;
+}
 
 /* --- STATIC STICKER OVERRIDES (For the steps section) --- */
 .sticker.static {
@@ -799,11 +838,10 @@ nav {
 
 /* --- MOBILE RESPONSIVENESS & CARD FIXES --- */
 @media (max-width: 768px) {
-  
   /* 1. Maximize Screen Width */
   /* Reduce the container padding so cards can get closer to the edges */
   .full-width-container {
-    padding: 1rem; 
+    padding: 1rem;
   }
 
   /* 2. Stack Layouts Vertically */
@@ -812,7 +850,7 @@ nav {
   .journal-container {
     flex-direction: column;
   }
-  
+
   .sidebar,
   .quest-board {
     width: 100%;
@@ -823,10 +861,10 @@ nav {
   /* 3. BROWSE CARDS: Create a tight 2-column grid */
   .plant-grid {
     /* distinct change: Force 2 columns to fill space */
-    grid-template-columns: 1fr 1fr; 
+    grid-template-columns: 1fr 1fr;
     gap: 10px; /* Reduce gap from 2rem to 10px */
   }
-  
+
   /* Adjust text/image size for the smaller 2-column cards */
   .plant-card h3 {
     font-size: 1.2rem !important;
@@ -839,17 +877,17 @@ nav {
   /* 4. JOURNAL CARDS: Full width & remove rotation */
   .journal-grid {
     /* Force single column that fills 100% width */
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .entry-card {
     /* CRITICAL: Removes the rotation so cards sit flat and fill the width */
-    transform: none !important; 
+    transform: none !important;
     width: 100%;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Simplify shadow */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Simplify shadow */
   }
-  
+
   /* 5. Navigation: Stack elements */
   nav {
     flex-direction: column;
@@ -862,38 +900,37 @@ nav {
 }
 
 @media (max-width: 768px) {
-
   .journal-grid {
-    display: flex;           
-    flex-direction: column; 
-    width: 100%;             /* Force grid to take full container width */
-    padding: 0;              /* Remove any internal padding */
-    gap: 1.5rem;             /* Space between cards */
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Force grid to take full container width */
+    padding: 0; /* Remove any internal padding */
+    gap: 1.5rem; /* Space between cards */
   }
 
   .entry-card {
-    width: 100% !important;     /* Force card to fill the grid width */
+    width: 100% !important; /* Force card to fill the grid width */
     max-width: none !important; /* Remove any desktop width limits */
     transform: none !important; /* Remove the "polaroid" rotation */
-    margin-left: 0 !important;  /* Reset margins */
+    margin-left: 0 !important; /* Reset margins */
     margin-right: 0 !important;
-    box-sizing: border-box;     /* Ensure padding doesn't cause overflow */
+    box-sizing: border-box; /* Ensure padding doesn't cause overflow */
   }
-  
-  .journal-container, 
+
+  .journal-container,
   .full-width-container {
-    padding-left: 10px;  /* Minimal padding on mobile */
+    padding-left: 10px; /* Minimal padding on mobile */
     padding-right: 10px;
   }
 }
 
 footer {
-          text-align: center;
-          padding: 2rem;
-          border-top: 3px solid var(--color-ink);
-          background: var(--color-paper);
-          margin-top: auto;
-      }
+  text-align: center;
+  padding: 2rem;
+  border-top: 3px solid var(--color-ink);
+  background: var(--color-paper);
+  margin-top: auto;
+}
 
 :root {
   /* This creates a pixel-art vine pattern using an embedded SVG. 
@@ -910,10 +947,10 @@ footer {
   background-size: 50px 50px; /* Size of the pixel blocks */
   background-repeat: repeat-y;
   z-index: -1; /* Sits behind text, in front of background */
-  
+
   /* Adds a smooth feeling to the growth so it doesn't jitter */
-  transition: height 0.1s linear; 
-  
+  transition: height 0.1s linear;
+
   /* A slight drop shadow to make them pop off the paper background */
   filter: drop-shadow(2px 2px 0px rgba(45, 106, 79, 0.2));
 }
@@ -925,7 +962,7 @@ footer {
 #vine-right {
   right: 10px;
   /* Flip the right vine horizontally for visual variety */
-  transform: scaleX(-1); 
+  transform: scaleX(-1);
 }
 
 /* Hide vines on mobile if they cover too much text */
@@ -937,58 +974,60 @@ footer {
 }
 
 .quest-btn {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            font-family: var(--font-heading);
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background: #fff;
-            color: var(--color-ink);
-            border: 2px solid var(--color-ink);
-            cursor: pointer;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: #fff;
+  color: var(--color-ink);
+  border: 2px solid var(--color-ink);
+  cursor: pointer;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
 
-        .quest-btn:hover:not(:disabled) {
-            background: var(--color-highlight); /* Mint Green */
-            transform: translateY(-2px);
-            box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
-        }
+.quest-btn:hover:not(:disabled) {
+  background: var(--color-highlight); /* Mint Green */
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+}
 
-        .quest-btn:disabled {
-            background: var(--color-highlight); 
-            color: #7d7d7d;
-            border-color: #7d7d7d;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-            transform: scale(0.98);
-        }
+.quest-btn:disabled {
+  background: var(--color-highlight);
+  color: #7d7d7d;
+  border-color: #7d7d7d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  transform: scale(0.98);
+}
 
-        /* Edit Button Style */
+/* Edit Button Style */
 .edit-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: white;
-    border: 1px solid var(--color-ink);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    z-index: 10;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.9rem;
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: white;
+  border: 1px solid var(--color-ink);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
 }
 .edit-btn:hover {
-    background: var(--color-highlight);
-    transform: scale(1.1);
+  background: var(--color-highlight);
+  transform: scale(1.1);
 }

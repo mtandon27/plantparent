@@ -126,6 +126,7 @@
             >
               Found: <span id="count-display">0</span> Plants
             </p>
+            <div id="active-filters" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;"></div>
           </div>
           <div class="plant-grid"></div>
         </div>
@@ -255,6 +256,9 @@
       const lowMaintenanceCheckbox = document.getElementById("low-maintenance");
       const airPurifyingCheckbox = document.getElementById("air-purifying");
       const sunlightRadios = document.getElementsByName("sunlight");
+      
+      // ADDED: Container for filter chips
+      const activeFiltersContainer = document.getElementById("active-filters");
 
       // Detail Panel Elements
       const panel = document.getElementById("detail-panel");
@@ -287,7 +291,52 @@
         sunlightRadios.forEach((r) => (r.checked = false));
         applyFilters();
       }
+      
+      // ADDED: Function to update filter chips
+      function updateActiveFilters() {
+        const chips = [];
 
+        if (petFriendlyCheckbox.checked) {
+          chips.push({ text: '🐾 Pet Safe', index: 0 });
+        }
+        if (lowMaintenanceCheckbox.checked) {
+          chips.push({ text: '🛡️ Beginner', index: 1 });
+        }
+        if (airPurifyingCheckbox.checked) {
+          chips.push({ text: '🌬️ Air Buff', index: 2 });
+        }
+
+        const selectedSunlight = Array.from(sunlightRadios).find(r => r.checked);
+        if (selectedSunlight) {
+          const sunlightLabels = {
+            'full-sun': '☀️ High Light',
+            'partial-sun': '⛅ Med Light',
+            'partial-shade': '🌤️ Low Light',
+            'full-shade': '🌑 Shadow Light'
+          };
+          chips.push({ text: sunlightLabels[selectedSunlight.value], index: 3 });
+        }
+
+        activeFiltersContainer.innerHTML = chips.map(chip => `
+          <div class="filter-chip">
+            ${chip.text}
+            <button data-index="${chip.index}">X</button>
+          </div>
+        `).join('');
+
+        // Attach event listeners to chip close buttons
+        activeFiltersContainer.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const index = parseInt(btn.dataset.index);
+            if (index === 0) petFriendlyCheckbox.checked = false;
+            if (index === 1) lowMaintenanceCheckbox.checked = false;
+            if (index === 2) airPurifyingCheckbox.checked = false;
+            if (index === 3) sunlightRadios.forEach(r => r.checked = false);
+            applyFilters();
+          });
+        });
+      }
+      
       function applyFilters() {
         const searchTerm = searchInput.value.toLowerCase();
         const petFriendly = petFriendlyCheckbox.checked;
@@ -342,6 +391,7 @@
           return true;
         });
 
+        updateActiveFilters(); // Added call here
         renderPlants();
       }
 
