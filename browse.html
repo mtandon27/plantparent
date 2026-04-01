@@ -1,546 +1,585 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plant Parent - Explore</title>
-    <link
-      rel="icon"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>"
-    />
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plant Parent</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23173809'/><path d='M50 92 L50 44' stroke='%23c5efad' stroke-width='6' stroke-linecap='round'/><path d='M50 62 C33 62 23 48 30 35 C37 35 46 45 50 62Z' fill='%23c5efad'/><path d='M50 49 C67 45 77 55 70 68 C63 68 53 58 50 49Z' fill='%2395d5b2'/><circle cx='50' cy='26' r='14' fill='%23c5efad'/><circle cx='50' cy='26' r='7' fill='%23173809'/></svg>"/>
+  <link rel="stylesheet" href="plant-parent.css"/>
+  <style>
+    /* ── SIDE PANEL ── */
+    .side-panel-overlay {
+      position: fixed; inset: 0; z-index: 800;
+      background: rgba(10,20,8,.45);
+      backdrop-filter: blur(4px);
+      display: none; opacity: 0;
+      transition: opacity .22s ease;
+    }
+    .side-panel-overlay.open { display: block; opacity: 1; }
 
-    <link rel="stylesheet" href="global.css" />
-  </head>
+    .side-panel {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: min(440px, 100vw);
+      background: #fff;
+      z-index: 850;
+      transform: translateX(100%);
+      transition: transform .28s cubic-bezier(.4,0,.2,1);
+      display: flex; flex-direction: column;
+      box-shadow: -8px 0 40px rgba(0,0,0,.18);
+      overflow: hidden;
+    }
+    .side-panel.open { transform: translateX(0); }
 
-  <body>
-    <nav>
-      <a href="index.html" class="nav-brand"><span>🌱 PLANT PARENT</span></a>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="browse.html" class="active">Explore</a></li>
-        <li><a href="journal.html">Journal</a></li>
-      </ul>
-    </nav>
+    .sp-img {
+      width: 100%; aspect-ratio: 16/9;
+      object-fit: cover; flex-shrink: 0;
+    }
+    .sp-close {
+      position: absolute; top: .75rem; right: .75rem;
+      width: 2.2rem; height: 2.2rem;
+      background: rgba(255,255,255,.9);
+      border: none; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--clr-primary); z-index: 1;
+    }
+    .sp-body {
+      flex: 1; overflow-y: auto; padding: 1.5rem;
+      scrollbar-width: thin; scrollbar-color: var(--clr-outline-variant) transparent;
+    }
+    .sp-name { font-size: 1.5rem; font-weight: 700; color: var(--clr-primary); margin-bottom: .1rem; }
+    .sp-alias { font-size: .85rem; color: var(--clr-outline); font-style: italic; margin-bottom: 1rem; }
+    .sp-detail-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: .65rem; margin-bottom: 1.25rem;
+    }
+    .sp-detail {
+      background: var(--clr-surface-low);
+      border-radius: var(--radius-md);
+      padding: .7rem .9rem;
+    }
+    .sp-detail-label {
+      font-size: .62rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--clr-outline); margin-bottom: .2rem;
+      display: flex; align-items: center; gap: .3rem;
+    }
+    .sp-detail-value { font-size: .9rem; font-weight: 600; color: var(--clr-on-surface); }
+    .sp-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+    .sp-footer { padding: 1rem 1.5rem 1.5rem; flex-shrink: 0; border-top: 1px solid var(--clr-outline-variant); }
 
-    <div class="full-width-container">
-      <div class="page-header">
-        <h1>Plant Database</h1>
-        <p
-          class="subtitle"
-          style="
-            background: var(--color-highlight);
-            display: inline-block;
-            padding: 2px 10px;
-            transform: rotate(-1deg);
-          "
-        >
-          Select a companion for your journey
-        </p>
+    /* card grid uses direct DOM, inline styles for guaranteed display */
+    #plant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1.5rem; }
+    @media(max-width:600px){ #plant-grid{ grid-template-columns: 1fr; } }
+
+    .pc {
+      background: #fff;
+      border: 1px solid var(--clr-outline-variant);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      cursor: pointer;
+      transition: box-shadow .2s, transform .15s;
+    }
+    .pc:hover { box-shadow: 0 8px 28px rgba(23,56,9,.1); transform: translateY(-2px); }
+    .pc-img-wrap { aspect-ratio: 3/2; position: relative; overflow: hidden; background: var(--clr-surface-low); }
+    .pc-img-wrap img { width:100%; height:100%; object-fit:cover; transition: transform .5s; display:block; }
+    .pc:hover .pc-img-wrap img { transform: scale(1.04); }
+    .pc-body { padding: 1rem 1.1rem 1.1rem; flex:1; display:flex; flex-direction:column; }
+    .pc-name { font-size:1rem; font-weight:700; color:var(--clr-primary); margin-bottom:.1rem; }
+    .pc-alias { font-size:.76rem; color:var(--clr-outline); font-style:italic; margin-bottom:.6rem; }
+    .pc-meta { display:flex; gap:1rem; margin-bottom:.85rem; }
+    .pc-meta-item { display:flex; align-items:center; gap:.3rem; font-size:.74rem; color:var(--clr-on-surface-variant); }
+    .pc-save {
+      width:100%; padding:.6rem; border-radius:10px;
+      background:var(--clr-primary); color:#fff;
+      border:none; font-family:var(--font-sans); font-size:.82rem; font-weight:600;
+      cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.4rem;
+      margin-top:auto; transition: opacity .2s;
+    }
+    .pc-save:hover { opacity: .88; }
+    .pc-save.saved { background: var(--clr-secondary); }
+    .pc-tags { position:absolute; top:.65rem; left:.65rem; display:flex; gap:.25rem; flex-wrap:wrap; }
+    .pc-fav {
+      position:absolute; top:.65rem; right:.65rem;
+      width:1.9rem; height:1.9rem; border-radius:50%;
+      background:rgba(255,255,255,.88); border:none;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; color:var(--clr-outline); transition:color .15s;
+    }
+    .pc-fav:hover, .pc-fav.on { color:#c62828; }
+    .pc-fav svg { pointer-events:none; }
+
+    /* ── Mobile nav: logo left, bell+avatar+burger right ── */
+    @media(max-width:768px){
+      .pp-nav__inner{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:0!important;padding:0 1rem!important;}
+      .pp-nav__links{display:none!important;}
+      .pp-nav__search{display:none!important;}
+      .pp-nav__actions{display:flex!important;align-items:center!important;gap:.15rem!important;margin-left:auto!important;}
+      .pp-nav__burger{display:flex!important;}
+    }
+    .pp-nav__drawer-panel a{display:block;font-size:1rem;font-weight:500;color:var(--clr-on-surface-variant);padding:.85rem 1rem;border-radius:var(--radius-md);border-bottom:1px solid var(--clr-outline-variant);transition:background .15s,color .15s;}
+    .pp-nav__drawer-panel a:last-child{border-bottom:none;}
+    .pp-nav__drawer-panel a:hover,.pp-nav__drawer-panel a.active{background:var(--clr-primary-fixed);color:var(--clr-primary);}
+  </style>
+</head>
+<body>
+
+<nav class="pp-nav">
+  <div class="pp-nav__inner">
+    <a href="index.html" class="pp-nav__logo">
+      <div class="pp-nav__logo-icon">
+        <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+          <path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/>
+          <path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/>
+          <path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/>
+          <circle cx="15" cy="8" r="4.5" fill="#173809"/>
+          <circle cx="15" cy="8" r="2.5" fill="#c5efad"/>
+          <path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="#173809" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
       </div>
-
-      <div class="browse-layout">
-        <aside class="sidebar">
-          <div class="filter-section">
-            <input
-              type="text"
-              class="search-input"
-              placeholder="🔍 Search Species..."
-            />
-          </div>
-
-          <div style="margin-bottom: 2rem">
-            <h3
-              style="
-                font-family: var(--font-heading);
-                margin-bottom: 10px;
-                text-decoration: underline;
-              "
-            >
-              Traits
-            </h3>
-            <div class="checkbox-group">
-              <label
-                ><input type="checkbox" id="pet-friendly" /> 🐾 Pet Safe</label
-              >
-              <label
-                ><input type="checkbox" id="low-maintenance" /> 🛡️
-                Beginner</label
-              >
-              <label
-                ><input type="checkbox" id="air-purifying" /> 🌬️ Air Buff</label
-              >
-            </div>
-          </div>
-
-          <div style="margin-bottom: 2rem">
-            <h3
-              style="
-                font-family: var(--font-heading);
-                margin-bottom: 10px;
-                text-decoration: underline;
-              "
-            >
-              Light Lvl
-            </h3>
-            <div class="radio-group">
-              <label
-                ><input type="radio" name="sunlight" value="full-sun" /> ☀️
-                High</label
-              >
-              <label
-                ><input type="radio" name="sunlight" value="partial-sun" /> ⛅
-                Med</label
-              >
-              <label
-                ><input type="radio" name="sunlight" value="partial-shade" /> 🌤️
-                Low</label
-              >
-              <label
-                ><input type="radio" name="sunlight" value="full-shade" /> 🌑
-                Shadow</label
-              >
-            </div>
-          </div>
-
-          <button
-            class="btn secondary-btn"
-            onclick="clearAllFilters()"
-            style="width: 100%"
-          >
-            Reset Filters
-          </button>
-        </aside>
-
-        <div class="results-section" style="flex: 1">
-          <div
-            class="results-header"
-            style="
-              margin-bottom: 1rem;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
-            <p
-              class="results-info"
-              style="font-family: var(--font-heading); font-size: 1.5rem"
-            >
-              Found: <span id="count-display">0</span> Plants
-            </p>
-            <div id="active-filters" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;"></div>
-          </div>
-          <div class="plant-grid"></div>
-        </div>
+      <span class="pp-nav__logo-text">Plant Parent</span>
+    </a>
+    <ul class="pp-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="browse.html" class="active">Explore</a></li>
+      <li><a href="journal.html">Journal</a></li>
+    </ul>
+    <div class="pp-nav__actions">
+      <div class="pp-nav__search">
+        <span class="material-symbols-outlined" style="font-size:.9rem;color:var(--clr-outline);flex-shrink:0">search</span>
+        <input type="text" placeholder="Search plants…" id="nav-search" autocomplete="off"/>
       </div>
+      <button class="pp-nav__icon-btn" data-notify aria-label="Notifications"><span class="material-symbols-outlined">notifications</span></button>
+      <button class="pp-nav__avatar" aria-label="Profile">MT</button>
     </div>
+    <button class="pp-nav__burger" id="burger-btn" aria-label="Menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+</nav>
 
-    <div class="plant-detail-panel" id="detail-panel">
-      <div class="panel-content">
-        <button
-          class="panel-close"
-          id="panel-close-btn"
-          style="
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #fab1a0;
-            color: var(--color-ink);
-            border: 2px solid var(--color-ink);
-            cursor: pointer;
-            font-family: var(--font-heading);
-            padding: 5px 10px;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-          "
-        >
-          X
-        </button>
+<div class="pp-nav__drawer" id="nav-drawer">
+  <div class="pp-nav__drawer-backdrop" id="drawer-backdrop"></div>
+  <div class="pp-nav__drawer-panel">
+    <button class="pp-nav__drawer-close" id="drawer-close"><span class="material-symbols-outlined">close</span></button>
+    <a href="index.html">Home</a>
+    <a href="browse.html" class="active">Explore</a>
+    <a href="journal.html">Journal</a>
+  </div>
+</div>
 
-        <h2
-          id="panel-title"
-          style="
-            font-family: var(--font-heading);
-            font-size: 3rem;
-            margin-bottom: 0;
-          "
-        >
-          Plant Name
-        </h2>
-        <p
-          id="panel-alias"
-          style="
-            font-family: var(--font-body);
-            font-style: italic;
-            color: #666;
-            margin-bottom: 1rem;
-          "
-        >
-          Scientific Name
-        </p>
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-bar__inner" id="filter-chips">
+    <button class="chip active" data-filter="all">All Plants</button>
+    <button class="chip" data-filter="pet-friendly"><span class="material-symbols-outlined" style="font-size:.85rem">pets</span> Pet Safe</button>
+    <button class="chip" data-filter="air-purifying"><span class="material-symbols-outlined" style="font-size:.85rem">air</span> Air Purifying</button>
+    <button class="chip" data-filter="low-maintenance"><span class="material-symbols-outlined" style="font-size:.85rem">water_drop</span> Low Water</button>
+    <button class="chip" data-filter="low-light"><span class="material-symbols-outlined" style="font-size:.85rem">dark_mode</span> Low Light</button>
+    <button class="chip" data-filter="toxic"><span class="material-symbols-outlined" style="font-size:.85rem">warning</span> Toxic</button>
+  </div>
+</div>
 
-        <div
-          id="panel-image-container"
-          style="
-            background: #f0f0f0;
-            border: 2px solid var(--color-ink);
-            height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-          "
-        ></div>
-
-        <div
-          style="
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            font-family: var(--font-heading);
-            font-size: 1.3rem;
-          "
-        >
-          <div
-            style="
-              border: 2px solid var(--color-ink);
-              padding: 10px;
-              background: white;
-            "
-          >
-            <strong>💧 Water:</strong> <span id="panel-water">Weekly</span>
-          </div>
-          <div
-            style="
-              border: 2px solid var(--color-ink);
-              padding: 10px;
-              background: white;
-            "
-          >
-            <strong>☀️ Light:</strong> <span id="panel-sun">High</span>
-          </div>
-        </div>
-
-        <div
-          id="panel-safety"
-          style="
-            margin-bottom: 2rem;
-            font-family: var(--font-heading);
-            font-size: 1.3rem;
-          "
-        ></div>
-
-        <div style="display: flex; gap: 1rem">
-          <button class="primary-btn" style="flex: 1" id="btn-save">
-            💾 Save to Garden
-          </button>
-        </div>
+<main class="pp-main" style="padding-top:1.5rem">
+  <header style="margin-bottom:2rem">
+    <h1 style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;color:var(--clr-primary);margin-bottom:.4rem">Species Directory</h1>
+    <p style="color:var(--clr-on-surface-variant);max-width:560px;font-size:.92rem">Browse all plants in our database. Filter by care needs, toxicity, and light. Click any card to learn more.</p>
+    <div style="display:flex;align-items:center;gap:.75rem;margin-top:1rem">
+      <div style="position:relative;flex:1;max-width:360px">
+        <span class="material-symbols-outlined" style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--clr-outline);font-size:1.1rem">search</span>
+        <input id="search-input" type="text" placeholder="Search by name or family…"
+          style="width:100%;padding:.55rem .9rem .55rem 2.5rem;border-radius:9999px;border:1.5px solid var(--clr-outline-variant);background:#fff;font-size:.875rem;outline:none;font-family:var(--font-sans);color:var(--clr-on-surface)" autocomplete="off"/>
       </div>
+      <span id="count-label" style="font-size:.8rem;color:var(--clr-outline);white-space:nowrap"></span>
     </div>
-    <footer>
-      <p
-        style="font-family: var(--font-heading); font-size: 1.2rem; margin: 0;"
-      >
-        &copy; 2025 Manvi Tandon. All rights reserved.
-      </p>
-    </footer>
+  </header>
+  <div id="plant-grid"></div>
+</main>
 
-    <script>
-      let allPlants = [];
-      let filteredPlants = [];
-      let currentPlant = null; 
+<!-- SIDE PANEL OVERLAY -->
+<div class="side-panel-overlay" id="sp-overlay"></div>
 
-      const searchInput = document.querySelector(".search-input");
-      const plantGrid = document.querySelector(".plant-grid");
-      const resultsInfo = document.querySelector(".results-info");
-      const countDisplay = document.getElementById("count-display");
+<!-- SIDE PANEL -->
+<div class="side-panel" id="side-panel">
+  <button class="sp-close" id="sp-close"><span class="material-symbols-outlined" style="font-size:1.1rem">close</span></button>
+  <img class="sp-img" id="sp-img" src="" alt=""/>
+  <div class="sp-body">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.1rem">
+      <div class="sp-name" id="sp-name"></div>
+      <span id="sp-tox" class="badge" style="flex-shrink:0;margin-top:.4rem"></span>
+    </div>
+    <div class="sp-alias" id="sp-alias"></div>
+    <div class="sp-detail-grid" id="sp-details"></div>
+    <div class="sp-tags" id="sp-tags"></div>
+  </div>
+  <div class="sp-footer">
+    <div style="display:flex;gap:.65rem;align-items:center">
+      <!-- Favourite icon button -->
+      <button id="sp-fav" aria-label="Favourite"
+        style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);border:1.5px solid var(--clr-outline-variant);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--clr-outline);transition:color .15s,border-color .15s;">
+        <svg id="sp-fav-icon" width="18" height="17" viewBox="0 0 15 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><path d="M7.5 12C7.5 12 1 8 1 4.5C1 2.5 2.5 1 4.5 1C5.8 1 7 1.8 7.5 3C8 1.8 9.2 1 10.5 1C12.5 1 14 2.5 14 4.5C14 8 7.5 12 7.5 12Z"/></svg>
+      </button>
+      <!-- Save to Garden primary button -->
+      <button class="btn btn-primary" style="flex:1" id="sp-save">
+        <svg width="13" height="15" viewBox="0 0 13 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><path d="M2 1h9a1 1 0 011 1v11.5l-5.5-3L1 13.5V2a1 1 0 011-1z"/></svg>
+        Save to Garden
+      </button>
+    </div>
+  </div>
+</div>
 
-      const petFriendlyCheckbox = document.getElementById("pet-friendly");
-      const lowMaintenanceCheckbox = document.getElementById("low-maintenance");
-      const airPurifyingCheckbox = document.getElementById("air-purifying");
-      const sunlightRadios = document.getElementsByName("sunlight");
-      
-      const activeFiltersContainer = document.getElementById("active-filters");
+<footer class="pp-footer">
+  <div class="pp-footer__inner">
+    <div class="pp-footer__brand" style="display:flex;align-items:center;gap:.4rem"><svg width="22" height="22" viewBox="0 0 30 30" fill="none" style="flex-shrink:0"><path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/><path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/><path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/><circle cx="15" cy="8" r="4.5" fill="#173809"/><circle cx="15" cy="8" r="2.5" fill="#c5efad"/><path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="#173809" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><span>Plant Parent</span></div>
+    <nav class="pp-footer__links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></nav>
+    <p class="pp-footer__copy">© 2026 Manvi Tandon. All rights reserved.</p>
+  </div>
+</footer>
 
-      const panel = document.getElementById("detail-panel");
-      const closeBtn = document.getElementById("panel-close-btn");
-      const saveBtn = document.getElementById("btn-save"); 
+<nav class="pp-tab-bar">
+  <a href="index.html" class="pp-tab-bar__item"><span class="material-symbols-outlined">home</span>Home</a>
+  <a href="browse.html" class="pp-tab-bar__item active"><span class="material-symbols-outlined">search</span>Explore</a>
+  <a href="journal.html" class="pp-tab-bar__item"><span class="material-symbols-outlined">auto_stories</span>Journal</a>
+</nav>
 
-      fetch("plants.json")
-        .then((response) => response.json())
-        .then((data) => {
-          allPlants = data.plants || data;
-          filteredPlants = allPlants;
-          renderPlants();
-        })
-        .catch((err) => console.error("Error loading plants:", err));
+<div class="pp-loader" id="pp-loader">
+  <div class="pp-loader__ring">
+    <svg class="ring" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="24" stroke="#e8e6e1" stroke-width="3"/><path d="M28 4 A24 24 0 0 1 52 28" stroke="#173809" stroke-width="3" stroke-linecap="round"/></svg>
+    <svg class="mark" viewBox="0 0 30 30" fill="none"><path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/><path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/><path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/><circle cx="15" cy="8" r="4.5" fill="#173809"/><circle cx="15" cy="8" r="2.5" fill="#c5efad"/></svg>
+  </div>
+</div>
+<div class="toast-container" id="toast-container"></div>
 
-      searchInput.addEventListener("input", applyFilters);
-      petFriendlyCheckbox.addEventListener("change", applyFilters);
-      lowMaintenanceCheckbox.addEventListener("change", applyFilters);
-      airPurifyingCheckbox.addEventListener("change", applyFilters);
-      sunlightRadios.forEach((radio) =>
-        radio.addEventListener("change", applyFilters)
-      );
+<script>
+// Nav drawer
+document.getElementById('burger-btn').addEventListener('click',()=>{document.getElementById('nav-drawer').classList.add('open');document.body.style.overflow='hidden';});
+document.getElementById('drawer-close').addEventListener('click',()=>{document.getElementById('nav-drawer').classList.remove('open');document.body.style.overflow='';});
+document.getElementById('drawer-backdrop').addEventListener('click',()=>{document.getElementById('nav-drawer').classList.remove('open');document.body.style.overflow='';});
 
-      saveBtn.addEventListener("click", () => {
-        if (currentPlant) {
-            adoptPlant(currentPlant);
-        }
-      });
+function showToast(msg){const tc=document.getElementById('toast-container');const t=document.createElement('div');t.className='toast';t.innerHTML=`<span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">check_circle</span>${msg}`;tc.appendChild(t);setTimeout(()=>t.remove(),2800);}
 
-      function clearAllFilters() {
-        searchInput.value = "";
-        petFriendlyCheckbox.checked = false;
-        lowMaintenanceCheckbox.checked = false;
-        airPurifyingCheckbox.checked = false;
-        sunlightRadios.forEach((r) => (r.checked = false));
-        applyFilters();
+function lightLabel(lux){if(lux<=1000)return'Low light';if(lux<=4000)return'Medium indirect';if(lux<=8000)return'Bright indirect';return'Full sun';}
+function waterLabel(mn,mx){const a=Math.round((mn+mx)/2);if(a<=7)return'Weekly';if(a<=14)return'Every ~2 wks';if(a<=21)return'Every ~3 wks';return'Monthly+';}
+
+function getFavs(){try{return JSON.parse(localStorage.getItem('pp_favs')||'[]');}catch{return[];}}
+function saveFavs(f){localStorage.setItem('pp_favs',JSON.stringify(f));}
+function isFav(pid){return getFavs().includes(pid);}
+function toggleFav(pid){let f=getFavs();if(f.includes(pid))f=f.filter(x=>x!==pid);else f.push(pid);saveFavs(f);return f.includes(pid);}
+
+const savedPlants=new Set();
+
+// ── PLANTS DATA ──────────────────────────────────────────────────────────────
+const PLANTS=[
+  {pid:"monstera-deliciosa",display_pid:"Monstera Deliciosa",alias:"Monstera deliciosa",min_watering_benchmark_days:9,max_watering_benchmark_days:20,min_light_lux:2000,toxicity:true,tags:[],image_url:"https://opb-img.plantbook.io/monstera%20deliciosa.jpg",min_temp:16,max_temp:26,min_env_humid:30,max_env_humid:60},
+  {pid:"pothos",display_pid:"Pothos",alias:"Epipremnum aureum",min_watering_benchmark_days:9,max_watering_benchmark_days:29,min_light_lux:800,toxicity:false,tags:["air-purifying","low-maintenance","pet-friendly"],image_url:"https://opb-img.plantbook.io/epipremnum%20aureum.jpg",min_temp:18,max_temp:23,min_env_humid:30,max_env_humid:40},
+  {pid:"snake-plant",display_pid:"Snake Plant",alias:"Sansevieria trifasciata",min_watering_benchmark_days:10,max_watering_benchmark_days:13,min_light_lux:6500,toxicity:true,tags:["air-purifying"],image_url:"https://opb-img.plantbook.io/sansevieria%20trifasciata.jpg",min_temp:20,max_temp:30,min_env_humid:50,max_env_humid:80},
+  {pid:"spider-plant",display_pid:"Spider Plant",alias:"Chlorophytum comosum",min_watering_benchmark_days:14,max_watering_benchmark_days:30,min_light_lux:2000,toxicity:false,tags:["air-purifying","low-maintenance","pet-friendly"],image_url:"https://opb-img.plantbook.io/chlorophytum%20comosum.jpg",min_temp:19,max_temp:26,min_env_humid:30,max_env_humid:40},
+  {pid:"peace-lily",display_pid:"Peace Lily",alias:"Spathiphyllum wallisii",min_watering_benchmark_days:8,max_watering_benchmark_days:15,min_light_lux:2000,toxicity:false,tags:["air-purifying","pet-friendly"],image_url:"https://opb-img.plantbook.io/spathiphyllum%20wallisii.jpg",min_temp:15,max_temp:20,min_env_humid:40,max_env_humid:50},
+  {pid:"zz-plant",display_pid:"ZZ Plant",alias:"Zamioculcas zamiifolia",min_watering_benchmark_days:6,max_watering_benchmark_days:20,min_light_lux:12000,toxicity:false,tags:["pet-friendly"],image_url:"https://opb-img.plantbook.io/zamioculcas%20zamiifolia.jpg",min_temp:19,max_temp:26,min_env_humid:30,max_env_humid:60},
+  {pid:"aloe-vera",display_pid:"Aloe Vera",alias:"Aloe barbadensis",min_watering_benchmark_days:16,max_watering_benchmark_days:31,min_light_lux:800,toxicity:false,tags:["low-maintenance","pet-friendly"],image_url:"https://opb-img.plantbook.io/aloe%20vera.jpg",min_temp:17,max_temp:27,min_env_humid:50,max_env_humid:70},
+  {pid:"rubber-plant",display_pid:"Rubber Plant",alias:"Ficus elastica",min_watering_benchmark_days:17,max_watering_benchmark_days:23,min_light_lux:5000,toxicity:false,tags:["air-purifying","pet-friendly"],image_url:"https://opb-img.plantbook.io/ficus%20elastica.jpg",min_temp:18,max_temp:28,min_env_humid:40,max_env_humid:50},
+  {pid:"philodendron",display_pid:"Philodendron",alias:"Philodendron hederaceum",min_watering_benchmark_days:9,max_watering_benchmark_days:23,min_light_lux:3500,toxicity:true,tags:["air-purifying"],image_url:"https://opb-img.plantbook.io/philodendron%20hederaceum.jpg",min_temp:20,max_temp:27,min_env_humid:50,max_env_humid:80},
+  {pid:"fiddle-leaf-fig",display_pid:"Fiddle Leaf Fig",alias:"Ficus lyrata",min_watering_benchmark_days:6,max_watering_benchmark_days:14,min_light_lux:6500,toxicity:false,tags:["pet-friendly"],image_url:"https://opb-img.plantbook.io/ficus%20lyrata.jpg",min_temp:16,max_temp:21,min_env_humid:40,max_env_humid:60},
+  {pid:"bamboo-palm",display_pid:"Bamboo Palm",alias:"Chamaedorea seifrizii",min_watering_benchmark_days:5,max_watering_benchmark_days:16,min_light_lux:8500,toxicity:false,tags:["air-purifying","low-maintenance","pet-friendly"],image_url:"https://opb-img.plantbook.io/bamboo.jpg",min_temp:19,max_temp:24,min_env_humid:50,max_env_humid:70},
+  {pid:"dracaena",display_pid:"Dracaena",alias:"Dracaena marginata",min_watering_benchmark_days:13,max_watering_benchmark_days:23,min_light_lux:12000,toxicity:true,tags:["air-purifying"],image_url:"https://opb-img.plantbook.io/dracaena%20marginata.jpg",min_temp:21,max_temp:28,min_env_humid:40,max_env_humid:60},
+  {pid:"ficus",display_pid:"Ficus",alias:"Ficus benjamina",min_watering_benchmark_days:4,max_watering_benchmark_days:9,min_light_lux:2000,toxicity:false,tags:["air-purifying","pet-friendly"],image_url:"https://opb-img.plantbook.io/ficus%20benjamina.jpg",min_temp:20,max_temp:27,min_env_humid:30,max_env_humid:60},
+  {pid:"parlor-palm",display_pid:"Parlor Palm",alias:"Chamaedorea elegans",min_watering_benchmark_days:1,max_watering_benchmark_days:18,min_light_lux:2000,toxicity:false,tags:["pet-friendly"],image_url:"https://opb-img.plantbook.io/chamaedorea%20elegans.jpg",min_temp:16,max_temp:21,min_env_humid:50,max_env_humid:80},
+  {pid:"bird-of-paradise",display_pid:"Bird of Paradise",alias:"Strelitzia reginae",min_watering_benchmark_days:10,max_watering_benchmark_days:30,min_light_lux:3500,toxicity:false,tags:["pet-friendly"],image_url:"https://opb-img.plantbook.io/strelitzia%20reginae.jpg",min_temp:19,max_temp:26,min_env_humid:50,max_env_humid:70},
+  {pid:"calathea",display_pid:"Calathea",alias:"Calathea orbifolia",min_watering_benchmark_days:13,max_watering_benchmark_days:30,min_light_lux:800,toxicity:false,tags:["pet-friendly"],image_url:"https://opb-img.plantbook.io/calathea%20orbifolia.jpg",min_temp:20,max_temp:27,min_env_humid:50,max_env_humid:60},
+  {pid:"pilea",display_pid:"Pilea",alias:"Pilea peperomioides",min_watering_benchmark_days:12,max_watering_benchmark_days:31,min_light_lux:800,toxicity:false,tags:["pet-friendly"],image_url:"https://opb-img.plantbook.io/pilea%20peperomioides.jpg",min_temp:17,max_temp:27,min_env_humid:50,max_env_humid:80},
+  {pid:"orchid",display_pid:"Orchid",alias:"Phalaenopsis orchid",min_watering_benchmark_days:12,max_watering_benchmark_days:21,min_light_lux:6500,toxicity:false,tags:["pet-friendly"],image_url:"https://opb-img.plantbook.io/miltoniopsis%20orchid.jpg",min_temp:20,max_temp:25,min_env_humid:50,max_env_humid:70},
+  {pid:"haworthia",display_pid:"Haworthia",alias:"Haworthia attenuata",min_watering_benchmark_days:12,max_watering_benchmark_days:25,min_light_lux:800,toxicity:false,tags:["pet-friendly","low-maintenance"],image_url:"https://opb-img.plantbook.io/haworthia%20truncata.jpg",min_temp:19,max_temp:24,min_env_humid:50,max_env_humid:60},
+  {pid:"boston-fern",display_pid:"Boston Fern",alias:"Nephrolepis exaltata",min_watering_benchmark_days:16,max_watering_benchmark_days:21,min_light_lux:6500,toxicity:true,tags:[],image_url:"https://opb-img.plantbook.io/fern.jpg",min_temp:17,max_temp:27,min_env_humid:40,max_env_humid:50},
+  {pid:"ivy",display_pid:"Ivy",alias:"Hedera helix",min_watering_benchmark_days:11,max_watering_benchmark_days:20,min_light_lux:800,toxicity:true,tags:[],image_url:"https://opb-img.plantbook.io/hedera%20helix.jpg",min_temp:20,max_temp:27,min_env_humid:40,max_env_humid:60},
+  {pid:"alocasia",display_pid:"Alocasia",alias:"Alocasia amazonica",min_watering_benchmark_days:12,max_watering_benchmark_days:29,min_light_lux:2000,toxicity:false,tags:["pet-friendly"],image_url:"https://opb-img.plantbook.io/alocasia%20amazonica.jpg",min_temp:16,max_temp:23,min_env_humid:40,max_env_humid:50},
+  {pid:"string-pearls",display_pid:"String of Pearls",alias:"Senecio rowleyanus",min_watering_benchmark_days:8,max_watering_benchmark_days:18,min_light_lux:2000,toxicity:false,tags:["pet-friendly"],image_url:"https://opb-img.plantbook.io/senecio%20rowleyanus.jpg",min_temp:18,max_temp:25,min_env_humid:30,max_env_humid:50},
+  {pid:"echeveria",display_pid:"Echeveria",alias:"Echeveria elegans",min_watering_benchmark_days:10,max_watering_benchmark_days:30,min_light_lux:800,toxicity:false,tags:["pet-friendly","low-maintenance"],image_url:"https://opb-img.plantbook.io/echeveria%20runyonii%20cv.jpg",min_temp:17,max_temp:22,min_env_humid:30,max_env_humid:60},
+  {pid:"jade",display_pid:"Jade Plant",alias:"Crassula ovata",min_watering_benchmark_days:22,max_watering_benchmark_days:31,min_light_lux:8500,toxicity:true,tags:["low-maintenance"],image_url:"https://opb-img.plantbook.io/crassula%20ovata.jpg",min_temp:15,max_temp:25,min_env_humid:30,max_env_humid:50},
+  {pid:"rosemary",display_pid:"Rosemary",alias:"Salvia rosmarinus",min_watering_benchmark_days:1,max_watering_benchmark_days:10,min_light_lux:8500,toxicity:false,tags:["pet-friendly"],image_url:"https://opb-img.plantbook.io/rosmarinus%20officinalis.jpg",min_temp:17,max_temp:22,min_env_humid:40,max_env_humid:60},
+  {pid:"lavender",display_pid:"Lavender",alias:"Lavandula angustifolia",min_watering_benchmark_days:10,max_watering_benchmark_days:15,min_light_lux:8500,toxicity:true,tags:[],image_url:"https://opb-img.plantbook.io/delphinium%20aurora%20f1%20lavender.jpg",min_temp:18,max_temp:23,min_env_humid:50,max_env_humid:60}
+];
+
+// State
+let activeFilters=new Set(), searchQuery='', currentPlant=null;
+
+const ICON_SUN=`<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="2.5"/><line x1="7" y1="1" x2="7" y2="2.5"/><line x1="7" y1="11.5" x2="7" y2="13"/><line x1="1" y1="7" x2="2.5" y2="7"/><line x1="11.5" y1="7" x2="13" y2="7"/><line x1="2.9" y1="2.9" x2="3.9" y2="3.9"/><line x1="10.1" y1="10.1" x2="11.1" y2="11.1"/><line x1="11.1" y1="2.9" x2="10.1" y2="3.9"/><line x1="3.9" y1="10.1" x2="2.9" y2="11.1"/></svg>`;
+const ICON_DROP=`<svg width="11" height="13" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1C6 1 1 6 1 9C1 11.8 3.2 13 6 13C8.8 13 11 11.8 11 9C11 6 6 1 6 1Z"/></svg>`;
+const ICON_HEART_E=`<svg width="15" height="14" viewBox="0 0 15 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 12C7.5 12 1 8 1 4.5C1 2.5 2.5 1 4.5 1C5.8 1 7 1.8 7.5 3C8 1.8 9.2 1 10.5 1C12.5 1 14 2.5 14 4.5C14 8 7.5 12 7.5 12Z"/></svg>`;
+const ICON_HEART_F=`<svg width="15" height="14" viewBox="0 0 15 14" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 12C7.5 12 1 8 1 4.5C1 2.5 2.5 1 4.5 1C5.8 1 7 1.8 7.5 3C8 1.8 9.2 1 10.5 1C12.5 1 14 2.5 14 4.5C14 8 7.5 12 7.5 12Z"/></svg>`;
+const ICON_PLUS=`<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>`;
+
+const TL={'pet-friendly':'Pet Safe','air-purifying':'Air Purifying','low-maintenance':'Low Water'};
+function tl(t){return TL[t]||t;}
+
+// ── BUILD CARDS via DOM (never innerHTML for cards) ──────────────────────────
+function renderCards(){
+  const grid=document.getElementById('plant-grid');
+  const q=searchQuery.toLowerCase().trim();
+  grid.innerHTML='';
+
+  const visible=PLANTS.filter(p=>{
+    const ms=!q||p.display_pid.toLowerCase().includes(q)||p.alias.toLowerCase().includes(q);
+    if(!ms) return false;
+    if(activeFilters.size===0) return true;
+    return [...activeFilters].every(f=>{
+      if(f==='pet-friendly') return p.tags.includes('pet-friendly');
+      if(f==='air-purifying') return p.tags.includes('air-purifying');
+      if(f==='low-maintenance') return p.tags.includes('low-maintenance');
+      if(f==='low-light') return p.min_light_lux<=1500;
+      if(f==='toxic') return p.toxicity;
+      return true;
+    });
+  });
+
+  const isFiltered = activeFilters.size > 0 || searchQuery.trim() !== '';
+  document.getElementById('count-label').textContent = isFiltered
+    ? `${visible.length} plant${visible.length!==1?'s':''}`
+    : 'Showing all plants';
+
+  if(!visible.length){
+    const nr=document.createElement('div');
+    nr.style.cssText='grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--clr-outline)';
+    nr.textContent='No plants match your search.';
+    grid.appendChild(nr); return;
+  }
+
+  visible.forEach(p=>{
+    const saved=savedPlants.has(p.pid);
+    const fav=isFav(p.pid);
+
+    // card wrapper
+    const card=document.createElement('div');
+    card.className='pc';
+
+    // image wrap
+    const imgWrap=document.createElement('div');
+    imgWrap.className='pc-img-wrap';
+
+    const img=document.createElement('img');
+    img.src=p.image_url; img.alt=p.display_pid; img.loading='lazy';
+    img.onerror=()=>{img.src='https://opb-img.plantbook.io/monstera%20deliciosa.jpg';};
+    imgWrap.appendChild(img);
+
+    // tags overlay
+    const tagsEl=document.createElement('div');
+    tagsEl.className='pc-tags';
+    p.tags.slice(0,2).forEach(t=>{
+      const s=document.createElement('span');
+      s.className='badge badge-green';
+      s.style.cssText='font-size:.58rem;font-weight:500;text-transform:none;letter-spacing:0';
+      s.textContent=tl(t); tagsEl.appendChild(s);
+    });
+    if(p.toxicity){
+      const s=document.createElement('span');
+      s.className='badge badge-amber';
+      s.style.cssText='font-size:.58rem;font-weight:500;text-transform:none;letter-spacing:0';
+      s.textContent='Toxic'; tagsEl.appendChild(s);
+    }
+    if(saved){
+      const s=document.createElement('span');
+      s.className='badge';
+      s.style.cssText='font-size:.58rem;font-weight:600;text-transform:none;letter-spacing:0;background:#173809;color:#fff';
+      s.textContent='In Garden'; tagsEl.appendChild(s);
+    }
+    imgWrap.appendChild(tagsEl);
+
+    // fav button
+    const favBtn=document.createElement('button');
+    favBtn.className='pc-fav'+(fav?' on':'');
+    favBtn.innerHTML=fav?ICON_HEART_F:ICON_HEART_E;
+    favBtn.addEventListener('click',e=>{
+      e.stopPropagation();
+      const added=toggleFav(p.pid);
+      favBtn.className='pc-fav'+(added?' on':'');
+      favBtn.innerHTML=added?ICON_HEART_F:ICON_HEART_E;
+      showToast(added?`${p.display_pid} favourited`:`Removed from favourites`);
+    });
+    imgWrap.appendChild(favBtn);
+    card.appendChild(imgWrap);
+
+    // body
+    const body=document.createElement('div');
+    body.className='pc-body';
+
+    const name=document.createElement('div'); name.className='pc-name'; name.textContent=p.display_pid;
+    const alias=document.createElement('div'); alias.className='pc-alias'; alias.textContent=p.alias;
+
+    const meta=document.createElement('div'); meta.className='pc-meta';
+    const m1=document.createElement('span'); m1.className='pc-meta-item'; m1.innerHTML=ICON_SUN+' '+lightLabel(p.min_light_lux);
+    const m2=document.createElement('span'); m2.className='pc-meta-item'; m2.innerHTML=ICON_DROP+' '+waterLabel(p.min_watering_benchmark_days,p.max_watering_benchmark_days);
+    meta.appendChild(m1); meta.appendChild(m2);
+
+    const saveBtn=document.createElement('button');
+    saveBtn.className='pc-save'+(saved?' saved':'');
+    saveBtn.innerHTML=ICON_PLUS+(saved?' Saved':' Save to Garden');
+    saveBtn.addEventListener('click',e=>{
+      e.stopPropagation();
+      if(!savedPlants.has(p.pid)){
+        savedPlants.add(p.pid);
+        saveBtn.className='pc-save saved';
+        saveBtn.innerHTML=ICON_PLUS+' Saved';
+        showToast(`${p.display_pid} added to garden`);
+        // update In Garden tag
+        tagsEl.querySelectorAll('.badge').forEach(b=>{if(b.textContent==='In Garden')b.remove();});
+        const s=document.createElement('span');
+        s.className='badge';
+        s.style.cssText='font-size:.58rem;font-weight:600;text-transform:none;letter-spacing:0;background:#173809;color:#fff';
+        s.textContent='In Garden'; tagsEl.appendChild(s);
       }
-      
-      function updateActiveFilters() {
-        const chips = [];
+    });
 
-        if (petFriendlyCheckbox.checked) {
-          chips.push({ text: '🐾 Pet Safe', index: 0 });
-        }
-        if (lowMaintenanceCheckbox.checked) {
-          chips.push({ text: '🛡️ Beginner', index: 1 });
-        }
-        if (airPurifyingCheckbox.checked) {
-          chips.push({ text: '🌬️ Air Buff', index: 2 });
-        }
+    body.appendChild(name); body.appendChild(alias); body.appendChild(meta); body.appendChild(saveBtn);
+    card.appendChild(body);
 
-        const selectedSunlight = Array.from(sunlightRadios).find(r => r.checked);
-        if (selectedSunlight) {
-          const sunlightLabels = {
-            'full-sun': '☀️ High Light',
-            'partial-sun': '⛅ Med Light',
-            'partial-shade': '🌤️ Low Light',
-            'full-shade': '🌑 Shadow Light'
-          };
-          chips.push({ text: sunlightLabels[selectedSunlight.value], index: 3 });
-        }
+    // click card body → open side panel
+    card.addEventListener('click', ()=>openPanel(p));
 
-        activeFiltersContainer.innerHTML = chips.map(chip => `
-          <div class="filter-chip">
-            ${chip.text}
-            <button data-index="${chip.index}">X</button>
-          </div>
-        `).join('');
+    grid.appendChild(card);
+  });
+}
 
-        activeFiltersContainer.querySelectorAll('button').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const index = parseInt(btn.dataset.index);
-            if (index === 0) petFriendlyCheckbox.checked = false;
-            if (index === 1) lowMaintenanceCheckbox.checked = false;
-            if (index === 2) airPurifyingCheckbox.checked = false;
-            if (index === 3) sunlightRadios.forEach(r => r.checked = false);
-            applyFilters();
-          });
-        });
-      }
-      
-      function applyFilters() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const petFriendly = petFriendlyCheckbox.checked;
-        const lowMaintenance = lowMaintenanceCheckbox.checked;
-        const airPurifying = airPurifyingCheckbox.checked;
-        const selectedSunlight = Array.from(sunlightRadios).find(
-          (r) => r.checked
-        )?.value;
+// ── SIDE PANEL ───────────────────────────────────────────────────────────────
+const spOverlay=document.getElementById('sp-overlay');
+const sidePanel=document.getElementById('side-panel');
 
-        filteredPlants = allPlants.filter((plant) => {
-          const displayName = (plant.display_pid || "").toLowerCase();
-          const alias = (plant.alias || "").toLowerCase();
-          if (!displayName.includes(searchTerm) && !alias.includes(searchTerm))
-            return false;
+function openPanel(p){
+  currentPlant=p;
+  document.getElementById('sp-img').src=p.image_url;
+  document.getElementById('sp-img').alt=p.display_pid;
+  document.getElementById('sp-name').textContent=p.display_pid;
+  document.getElementById('sp-alias').textContent=p.alias;
 
-          if (
-            petFriendly &&
-            (plant.toxicity === true || plant.toxicity === "true")
-          )
-            return false;
+  const tox=document.getElementById('sp-tox');
+  tox.className='badge '+(p.toxicity?'badge-amber':'badge-green');
+  tox.textContent=p.toxicity?'Toxic':'Non-toxic';
 
-          if (lowMaintenance) {
-            const minDays = plant.min_watering_benchmark_days || 0;
-            if (minDays < 7) return false;
-          }
+  const DICO_DROP=`<svg width="10" height="12" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1C6 1 1 6 1 9C1 11.8 3.2 13 6 13C8.8 13 11 11.8 11 9C11 6 6 1 6 1Z"/></svg>`;
+  const DICO_SUN=`<svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="2.5"/><line x1="7" y1="1" x2="7" y2="2.5"/><line x1="7" y1="11.5" x2="7" y2="13"/><line x1="1" y1="7" x2="2.5" y2="7"/><line x1="11.5" y1="7" x2="13" y2="7"/><line x1="2.9" y1="2.9" x2="3.9" y2="3.9"/><line x1="10.1" y1="10.1" x2="11.1" y2="11.1"/><line x1="11.1" y1="2.9" x2="10.1" y2="3.9"/><line x1="3.9" y1="10.1" x2="2.9" y2="11.1"/></svg>`;
+  const DICO_TEMP=`<svg width="9" height="12" viewBox="0 0 10 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="8"/><circle cx="5" cy="11" r="2.5" fill="currentColor" stroke="none"/><line x1="7" y1="3" x2="9" y2="3"/><line x1="7" y1="5.5" x2="9" y2="5.5"/></svg>`;
+  const DICO_HUMI=`<svg width="10" height="12" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1C6 1 1 6 1 9C1 11.8 3.2 13 6 13C8.8 13 11 11.8 11 9C11 6 6 1 6 1Z" stroke-dasharray="3 2"/><line x1="4" y1="10" x2="8" y2="7" stroke-width="1.2"/></svg>`;
 
-          if (airPurifying) {
-            const isAP = plant.tags?.includes("air-purifying");
-            if (!isAP) return false;
-          }
+  const dg=document.getElementById('sp-details');
+  dg.innerHTML=`
+    <div class="sp-detail"><div class="sp-detail-label">${DICO_DROP} Watering</div><div class="sp-detail-value">${waterLabel(p.min_watering_benchmark_days,p.max_watering_benchmark_days)}</div></div>
+    <div class="sp-detail"><div class="sp-detail-label">${DICO_SUN} Light</div><div class="sp-detail-value">${lightLabel(p.min_light_lux)}</div></div>
+    <div class="sp-detail"><div class="sp-detail-label">${DICO_TEMP} Temp</div><div class="sp-detail-value">${p.min_temp}–${p.max_temp} °C</div></div>
+    <div class="sp-detail"><div class="sp-detail-label">${DICO_HUMI} Humidity</div><div class="sp-detail-value">${p.min_env_humid}–${p.max_env_humid}%</div></div>`;
 
-          if (selectedSunlight) {
-            const minLux = plant.min_light_lux || 0;
-            if (selectedSunlight === "full-shade" && minLux >= 3000)
-              return false;
-            if (
-              selectedSunlight === "partial-shade" &&
-              (minLux < 3000 || minLux >= 5000)
-            )
-              return false;
-            if (
-              selectedSunlight === "partial-sun" &&
-              (minLux < 5000 || minLux >= 8000)
-            )
-              return false;
-            if (selectedSunlight === "full-sun" && minLux < 8000) return false;
-          }
+  const tg=document.getElementById('sp-tags');
+  tg.innerHTML=p.tags.map(t=>`<span class="badge badge-green">${tl(t)}</span>`).join('');
 
-          return true;
-        });
+  // save button state
+  const spSave=document.getElementById('sp-save');
+  const isSaved=savedPlants.has(p.pid);
+  const SAVE_ICO=`<svg width="13" height="15" viewBox="0 0 13 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><path d="M2 1h9a1 1 0 011 1v11.5l-5.5-3L1 13.5V2a1 1 0 011-1z"/></svg>`;
+  spSave.innerHTML=isSaved?'✓ Saved':SAVE_ICO+' Save to Garden';
+  spSave.style.background=isSaved?'var(--clr-secondary)':'var(--clr-primary)';
+  spSave.style.opacity='1';
 
-        updateActiveFilters();
-        renderPlants();
-      }
+  // Fav button state
+  const spFav = document.getElementById('sp-fav');
+  const spFavIcon = document.getElementById('sp-fav-icon');
+  const favActive = isFav(p.pid);
+  _updateFavBtn(spFav, spFavIcon, favActive);
+  // re-wire click each time panel opens
+  spFav.onclick = () => {
+    const nowFav = toggleFav(p.pid);
+    _updateFavBtn(spFav, spFavIcon, nowFav);
+    showToast(nowFav ? p.display_pid+' favourited' : 'Removed from favourites');
+    renderCards();
+  };
 
-      function renderPlants() {
-        countDisplay.innerText = filteredPlants.length;
+  spOverlay.classList.add('open');
+  sidePanel.classList.add('open');
+  document.body.style.overflow='hidden';
+}
 
-        if (filteredPlants.length === 0) {
-          plantGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; font-family: var(--font-heading); font-size: 1.5rem;">No specimens match your query.</div>`;
-          return;
-        }
+function _updateFavBtn(btn, icon, active) {
+  if (active) {
+    btn.style.color = '#c62828';
+    btn.style.borderColor = '#c62828';
+    icon.setAttribute('fill','currentColor');
+  } else {
+    btn.style.color = 'var(--clr-outline)';
+    btn.style.borderColor = 'var(--clr-outline-variant)';
+    icon.setAttribute('fill','none');
+  }
+}
 
-        plantGrid.innerHTML = filteredPlants
-          .map((plant) => {
-            const emoji = plant.emoji || "🌱";
-            let tagsHtml = "";
-            if (plant.tags) {
-              tagsHtml = plant.tags
-                .slice(0, 2)
-                .map(
-                  (tag) => `<span class="tag">${tag.replace("-", " ")}</span>`
-                )
-                .join("");
-            }
+function closePanel(){
+  spOverlay.classList.remove('open');
+  sidePanel.classList.remove('open');
+  document.body.style.overflow='';
+}
 
-            const waterDays = plant.min_watering_benchmark_days || 7;
-            const waterWidth = Math.min(100, (waterDays / 20) * 100);
-            
-            let waterLabel = "Med";
-            if (waterDays < 7) {
-                waterLabel = "High";
-            } else if (waterDays > 14) {
-                waterLabel = "Low";
-            }
+document.getElementById('sp-close').addEventListener('click',closePanel);
+spOverlay.addEventListener('click',closePanel);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
 
-            return `
-            <div class="plant-card" onclick="openPlantDetail('${plant.pid}')">
-                <div class="card-image">
-                    ${
-                      plant.image_url
-                        ? `<img src="${plant.image_url}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">`
-                        : ""
-                    }
-                    <div style="display:${
-                      plant.image_url ? "none" : "block"
-                    }">${emoji}</div>
-                </div>
-                
-                <h3 style="font-family: var(--font-heading); margin:0; font-size: 1.6rem;">${
-                  plant.display_pid
-                }</h3>
-                
-                <div style="font-size: 0.9rem; font-family: var(--font-heading); margin-top: 5px;">
-                    WATER FREQ: <strong>${waterLabel}</strong>
-                    <div class="stat-bar"><div class="stat-bar-fill" style="width: ${waterWidth}%"></div></div>
-                </div>
+document.getElementById('sp-save').addEventListener('click',()=>{
+  if(!currentPlant) return;
+  if(!savedPlants.has(currentPlant.pid)){
+    savedPlants.add(currentPlant.pid);
+    const btn=document.getElementById('sp-save');
+    btn.innerHTML='✓ Saved';
+    btn.style.background='var(--clr-secondary)';
+    showToast(`${currentPlant.display_pid} added to garden`);
+    renderCards();
+    // don't auto-close — let user see the saved state
+  }
+});
 
-                <div class="tags">${tagsHtml}</div>
-            </div>
-            `;
-          })
-          .join("");
-      }
+// ── FILTER CHIPS ─────────────────────────────────────────────────────────────
+function syncChips(){
+  document.querySelectorAll('[data-filter]').forEach(btn=>{
+    const f=btn.dataset.filter;
+    const active=f==='all'?activeFilters.size===0:activeFilters.has(f);
+    btn.classList.toggle('active',active);
+  });
+}
 
-      function openPlantDetail(pid) {
-        currentPlant = allPlants.find((p) => p.pid === pid);
-        if (!currentPlant) return;
+document.getElementById('filter-chips').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-filter]');
+  if(!btn) return;
+  const f=btn.dataset.filter;
+  if(f==='all'){activeFilters.clear();}
+  else{activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f);}
+  syncChips(); renderCards();
+});
 
-        // --- RESET BUTTON STATE ---
-        saveBtn.innerText = "💾 Save to Garden";
-        saveBtn.classList.remove("btn-saved"); // Remove the 'saved' style
-        saveBtn.disabled = false;
+// ── SEARCH ───────────────────────────────────────────────────────────────────
+document.getElementById('search-input').addEventListener('input',e=>{searchQuery=e.target.value;renderCards();});
+document.getElementById('nav-search').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.value.trim()){
+    document.getElementById('search-input').value=e.target.value.trim();
+    searchQuery=e.target.value.trim(); renderCards();
+  }
+});
+const urlQ=new URLSearchParams(location.search).get('q');
+if(urlQ){document.getElementById('search-input').value=urlQ;searchQuery=urlQ;}
+const urlF=new URLSearchParams(location.search).get('filter');
+if(urlF&&urlF!=='all'){activeFilters.add(urlF);}
 
-        // Check if already owned
-        let myPlants = JSON.parse(localStorage.getItem("myPlants")) || [];
-        if (myPlants.some((p) => p.name === currentPlant.display_pid)) {
-             saveBtn.innerText = "In Garden ✅";
-             saveBtn.classList.add("btn-saved"); // Add the 'saved' style
-             saveBtn.disabled = true;
-        }
+// ── INIT ─────────────────────────────────────────────────────────────────────
+syncChips();
+renderCards();
 
-        document.getElementById("panel-title").innerText = currentPlant.display_pid;
-        document.getElementById("panel-alias").innerText = currentPlant.alias || "";
-        
-        document.getElementById(
-          "panel-water"
-        ).innerText = `Every ${currentPlant.min_watering_benchmark_days} - ${currentPlant.max_watering_benchmark_days} days`;
-        
-        const lux = currentPlant.min_light_lux || 0;
-        let lightLabel = "High";
-        
-        if (lux < 3000) {
-            lightLabel = "Shadow";
-        } else if (lux < 5000) {
-            lightLabel = "Low";
-        } else if (lux < 8000) {
-            lightLabel = "Med";
-        } else {
-            lightLabel = "High";
-        }
-
-        document.getElementById(
-          "panel-sun"
-        ).innerText = `${lightLabel} (${lux} Lux)`;
-
-        const imgContainer = document.getElementById("panel-image-container");
-        const emoji = currentPlant.emoji || "🌱";
-        if (currentPlant.image_url) {
-          imgContainer.innerHTML = `<img src="${currentPlant.image_url}" style="max-height:100%; max-width:100%;" onerror="this.parentNode.innerHTML='<div style=\\'font-size:5rem;\\'>${emoji}</div>'">`;
-        } else {
-          imgContainer.innerHTML = `<div style="font-size:5rem;">${emoji}</div>`;
-        }
-
-        const safetyContainer = document.getElementById("panel-safety");
-        if (currentPlant.toxicity) {
-          safetyContainer.innerHTML = `<div style="padding:10px; background:#ffeaa7; border:2px solid var(--color-ink); color:black;">⚠️ <strong>Warning:</strong> Toxic to pets</div>`;
-        } else {
-          safetyContainer.innerHTML = `<div style="padding:10px; background:#55efc4; border:2px solid var(--color-ink); color:black;">✅ <strong>Safe:</strong> Pet Friendly</div>`;
-        }
-
-        panel.classList.add("open");
-      }
-
-      closeBtn.onclick = () => panel.classList.remove("open");
-      window.onclick = (e) => {
-        if (e.target === panel) panel.classList.remove("open");
-      };
-
-      /* --- UPDATED: ADOPT / SAVE LOGIC --- */
-      function adoptPlant(plant) {
-        let myPlants = JSON.parse(localStorage.getItem("myPlants")) || [];
-        
-        const plantData = {
-            name: plant.display_pid,
-            emoji: plant.emoji || "🌱",
-            image: plant.image_url || "" 
-        };
-
-        if (myPlants.some((p) => p.name === plantData.name)) {
-          // It's technically handled by button state, but safe check here:
-          return;
-        }
-        
-        myPlants.push(plantData);
-        localStorage.setItem("myPlants", JSON.stringify(myPlants));
-        
-        // --- BUTTON STYLE UPDATE ---
-        saveBtn.innerText = "Saved to Garden ✅";
-        saveBtn.classList.add("btn-saved"); // Apply the 'pressed' look
-        saveBtn.disabled = true;
-      }
-    </script>
-  </body>
+// Page transitions (only for <a> nav links)
+(function(){
+  const loader=document.getElementById('pp-loader');
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href]');
+    if(!a)return;
+    const href=a.getAttribute('href');
+    if(!href||href.startsWith('#')||href.startsWith('mailto')||href.startsWith('http'))return;
+    e.preventDefault();
+    loader.classList.add('active');
+    document.body.classList.add('pp-leaving');
+    setTimeout(()=>{window.location.href=href;},220);
+  });
+  window.addEventListener('pageshow',()=>{loader.classList.remove('active');document.body.classList.remove('pp-leaving');});
+})();
+</script>
+</body>
 </html>

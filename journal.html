@@ -1,528 +1,557 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plant Parent - Journal</title>
-    <link
-      rel="icon"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link rel="stylesheet" href="global.css" />
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plant Parent</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23173809'/><path d='M50 92 L50 44' stroke='%23c5efad' stroke-width='6' stroke-linecap='round'/><path d='M50 62 C33 62 23 48 30 35 C37 35 46 45 50 62Z' fill='%23c5efad'/><path d='M50 49 C67 45 77 55 70 68 C63 68 53 58 50 49Z' fill='%2395d5b2'/><circle cx='50' cy='26' r='14' fill='%23c5efad'/><circle cx='50' cy='26' r='7' fill='%23173809'/></svg>"/>
+  <link rel="stylesheet" href="plant-parent.css"/>
+</head>
+<body>
 
-  </head>
-
-  <body>
-    <nav>
-      <a href="index.html" class="nav-brand"><span>🌱 PLANT PARENT</span></a>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="browse.html">Explore</a></li>
-        <li><a href="journal.html" class="active">Journal</a></li>
-      </ul>
-    </nav>
-
-    <div class="full-width-container">
-      <div class="page-header">
-        <h1>Plant Log</h1>
-        <p
-          class="subtitle"
-          style="
-            background: var(--color-highlight);
-            display: inline-block;
-            padding: 2px 10px;
-            transform: rotate(-1deg);
-          "
-        >
-          Tracking growth, one leaf at a time.
-        </p>
+<!-- NAV -->
+<nav class="pp-nav">
+  <div class="pp-nav__inner">
+    <a href="index.html" class="pp-nav__logo">
+      <div class="pp-nav__logo-icon">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/>
+          <path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/>
+          <path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/>
+          <circle cx="15" cy="8" r="4.5" fill="#173809"/>
+          <circle cx="15" cy="8" r="2.5" fill="#c5efad"/>
+          <path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="#173809" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
       </div>
+      <span class="pp-nav__logo-text">Plant Parent</span>
+    </a>
+    <ul class="pp-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="browse.html">Explore</a></li>
+      <li><a href="journal.html" class="active">Journal</a></li>
+    </ul>
+    <div class="pp-nav__actions">
+      <div class="pp-nav__search">
+        <span class="material-symbols-outlined" style="font-size:.9rem;color:var(--clr-outline);flex-shrink:0">search</span>
+        <input type="text" placeholder="Search plants…" id="nav-search" autocomplete="off"/>
+      </div>
+      <button class="pp-nav__icon-btn" aria-label="Notifications">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <button class="pp-nav__avatar" aria-label="Profile">MT</button>
+    </div>
+    <button class="pp-nav__burger" id="burger-btn" aria-label="Menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+</nav>
 
-      <div class="journal-container">
-        <aside class="quest-board">
-          <h2
-            style="
-              font-family: var(--font-heading);
-              border-bottom: 2px dashed #ccc;
-              padding-bottom: 10px;
-              margin-bottom: 1rem;
-            "
-          >
-            Daily Quests
-          </h2>
-          <div
-            class="daily-quest"
-            style="
-              background: #e3f2fd;
-              padding: 1rem;
-              border: 2px solid var(--color-ink);
-              margin-bottom: 2rem;
-            "
-          >
-            <h3 style="font-size: 1.2rem">✨ Mindful Moment</h3>
-            <p
-              id="daily-mindfulness"
-              style="font-style: italic; margin: 10px 0"
-            >
-              Loading quest...
-            </p>
-            <button class="quest-btn" onclick="completeQuest(this)">
-              Complete ✅
+<!-- Mobile drawer -->
+<div class="pp-nav__drawer" id="nav-drawer">
+  <div class="pp-nav__drawer-backdrop" id="drawer-backdrop"></div>
+  <div class="pp-nav__drawer-panel">
+    <button class="pp-nav__drawer-close" id="drawer-close"><span class="material-symbols-outlined">close</span></button>
+    <a href="index.html">Home</a>
+    <a href="browse.html">Explore</a>
+    <a href="journal.html" class="active">Journal</a>
+  </div>
+</div>
+
+<main class="pp-main">
+
+  <!-- PAGE HEADER -->
+  <header style="margin-bottom:2rem">
+    <h1 style="font-family:var(--font-serif);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:700;color:var(--clr-primary);line-height:1.1;margin-bottom:.3rem">
+      Plant Journal
+    </h1>
+    <p style="color:var(--clr-outline);font-size:.88rem" id="today-date"></p>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start" class="journal-main-grid">
+
+    <!-- LEFT -->
+    <div style="display:flex;flex-direction:column;gap:2rem">
+
+      <!-- TODAY'S NOTE -->
+      <div class="journal-note-wrap">
+        <div class="journal-note">
+          <!-- top bar: date -->
+          <div class="journal-note__topbar">
+            <span class="journal-note__date" id="note-date"></span>
+          </div>
+          <!-- textarea -->
+          <textarea
+            class="journal-note__textarea"
+            id="note-textarea"
+            placeholder="What's going on with your plants today? New leaf? Moved a pot? Write anything…"
+            rows="4"
+          ></textarea>
+          <!-- image preview strip (populated by JS) -->
+          <div class="journal-note__imgs" id="note-imgs"></div>
+          <!-- hidden file input -->
+          <input type="file" id="note-img-input" accept="image/*" multiple style="display:none"/>
+          <!-- footer: camera + plant tag + save -->
+          <div class="journal-note__footer">
+            <button class="journal-note__img-btn" id="note-img-btn" title="Attach photo" type="button">
+              <span class="material-symbols-outlined">photo_camera</span>
             </button>
-          </div>
-
-          <h3 style="font-family: var(--font-heading)">Badges</h3>
-
-          <div
-            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 1rem"
-          >
-            <div
-              class="sticker"
-              style="transform: rotate(-5deg)"
-              data-tooltip="Hydration Hero: Watered 5 days streak"
-            >
-              💧
-            </div>
-            <div
-              class="sticker"
-              style="transform: rotate(3deg)"
-              data-tooltip="New Parent: Adopted first plant"
-            >
-              🌱
-            </div>
-            <div
-              class="sticker"
-              style="transform: rotate(-2deg)"
-              data-tooltip="Plant Doctor: Saved a dying plant"
-            >
-              ❤️
-            </div>
-            <div
-              class="sticker"
-              style="
-                transform: rotate(5deg);
-                opacity: 0.3;
-                filter: grayscale(1);
-              "
-              data-tooltip="Locked: Collect 10 Plants to unlock"
-            >
-              🏆
-            </div>
-            <div
-              class="sticker"
-              style="
-                transform: rotate(-3deg);
-                opacity: 0.3;
-                filter: grayscale(1);
-              "
-              data-tooltip="Locked: Keep a plant alive for 1 month"
-            >
-              📅
-            </div>
-          </div>
-        </aside>
-
-        <main class="journal-grid" id="journalGrid">
-          </main>
-      </div>
-    </div>
-
-    <div class="modal-overlay" id="addEntryModal">
-      <div class="modal-content">
-        <button class="close-modal" onclick="closeAddModal()">×</button>
-        <h2 style="font-family: var(--font-heading); margin-bottom: 1rem; color: var(--color-accent);">
-          New Journal Entry
-        </h2>
-        <div style="display: flex; flex-direction: column; gap: 1rem">
-          <div>
-            <label style="font-family: var(--font-heading)">Which Plant?</label>
-            <select
-              id="plantSelect"
-              style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);"
-            >
-              <option value="" disabled selected>Select from your garden...</option>
+            <select class="journal-note__plant-select" id="note-plant">
+              <option value="">Tag a plant…</option>
             </select>
+            <button class="journal-note__save" id="note-save" type="button">Save</button>
           </div>
-          <div>
-            <label style="font-family: var(--font-heading)">Today's Note</label>
-            <textarea
-              id="newEntryText"
-              rows="3"
-              style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);"
-              placeholder="How is it doing today?"
-            ></textarea>
-          </div>
-          <button class="primary-btn" onclick="submitNewEntry()">Add to Journal</button>
         </div>
       </div>
-    </div>
 
-    <div class="modal-overlay" id="editCardModal">
-      <div class="modal-content">
-        <button class="close-modal" onclick="closeEditModal()">×</button>
-        <h2 style="font-family: var(--font-heading); margin-bottom: 1rem; color: var(--color-accent);">
-          Edit Entry
-        </h2>
-
-        <div style="display: flex; flex-direction: column; gap: 1rem">
-          <input type="hidden" id="originalName">
-
-          <div>
-            <label style="font-family: var(--font-heading)">Plant Name</label>
-            <input
-              type="text"
-              id="editName"
-              style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);"
-            />
-          </div>
-
-          <div>
-            <label style="font-family: var(--font-heading)">Update Photo</label>
-            <label class="file-upload-label">
-                📂 Upload from Device
-                <input type="file" id="editImgFile" accept="image/*" style="display: none;" onchange="document.getElementById('file-name-display').innerText = this.files[0].name">
-            </label>
-            <p id="file-name-display" style="font-size: 0.8rem; color: #666; margin-top: 5px; text-align:center;">No file chosen</p>
-            <p style="text-align: center; font-family: var(--font-heading); margin: 5px 0;">- OR -</p>
-            <input type="text" id="editImgUrl" placeholder="Paste Image Link..." style="width: 100%; padding: 8px; font-size: 1rem; border: 1px solid #ccc;" />
-          </div>
-
-          <div>
-            <label style="font-family: var(--font-heading)">Note</label>
-            <textarea
-              id="editNote"
-              rows="3"
-              style="width: 100%; padding: 8px; font-size: 1.1rem; border: 2px solid var(--color-ink);"
-            ></textarea>
-          </div>
-
-          <button class="primary-btn" onclick="saveEditChanges()">Save Changes</button>
-          
-          <button class="delete-btn" onclick="deleteEntry()">🗑️ Delete Plant</button>
+      <!-- INTENTION / MOOD — just the pill picks, no quote -->
+      <div class="intention-card">
+        <div class="intention-card__label">How are you feeling today?</div>
+        <div class="intention-card__moods" id="mood-picker">
+          <button class="intention-mood-btn" data-mood="Refreshed">Refreshed</button>
+          <button class="intention-mood-btn" data-mood="Mindful">Mindful</button>
+          <button class="intention-mood-btn" data-mood="Grounded">Grounded</button>
+          <button class="intention-mood-btn active" data-mood="Serene">Serene</button>
+          <button class="intention-mood-btn" data-mood="Tired">Tired</button>
+          <button class="intention-mood-btn" data-mood="Curious">Curious</button>
         </div>
       </div>
-    </div>
 
-    <div class="modal-overlay" id="historyModal">
-      <div class="modal-content notebook-paper">
-        <button class="close-modal" onclick="closeHistoryModal()">X</button>
-        <h2 id="historyTitle" style="font-family: var(--font-heading); margin-bottom: 1.5rem; color: var(--color-ink); text-decoration: underline;">
-          Plant History
-        </h2>
-        <div id="historyList"></div>
+      <!-- MY PLANTS — plain text status, no AI-looking badges -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <h2 style="font-family:var(--font-serif);font-size:1.25rem;font-weight:700;color:var(--clr-primary)">My Plants</h2>
+          <span style="font-size:.75rem;color:var(--clr-outline)" id="collection-count"></span>
+        </div>
+        <div class="journal-collection" id="journal-collection"></div>
       </div>
+
     </div>
 
-    <footer>
-      <p style="font-family: var(--font-heading); font-size: 1.2rem; margin: 0">
-        &copy; 2025 Manvi Tandon. All rights reserved.
-      </p>
-    </footer>
+    <!-- RIGHT -->
+    <div style="position:sticky;top:calc(var(--nav-h) + 1rem);display:flex;flex-direction:column;gap:1.5rem">
 
-    <script>
-      /* --- INIT & CARD GENERATION --- */
-      document.addEventListener('DOMContentLoaded', loadJournal);
+      <!-- PAST NOTES -->
+      <div>
+        <h2 style="font-size:1.1rem;font-weight:700;color:var(--clr-primary);margin-bottom:.85rem">Past Notes</h2>
+        <div class="log-history" id="log-history"></div>
+        <button class="see-all-btn" id="see-all-btn">See all history →</button>
+      </div>
 
-      async function loadJournal() {
-        const grid = document.getElementById('journalGrid');
-        
-        // --- DEFAULT DATA WITH CUSTOM IMAGES ---
-        const defaultPlants = [
-            { 
-                name: "Monstera Deliciosa", 
-                image: "assets/MonsteraJournal.webp", // Custom Image
-                note: "New leaf unfurling today! It's slightly lighter green than the others." 
-            },
-            { 
-                name: "Golden Pothos", 
-                image: "assets/pothos.jpg", // Custom Image
-                note: "Moved to the window sill for better light." 
-            }
-        ];
+    </div>
+  </div>
 
-        let myGarden = JSON.parse(localStorage.getItem('myPlants'));
-        
-        // If empty or null, use default
-        if (!myGarden || myGarden.length === 0) {
-            myGarden = defaultPlants; 
-            localStorage.setItem('myPlants', JSON.stringify(myGarden));
-        }
+</main>
 
-        grid.innerHTML = '';
+<!-- HISTORY MODAL -->
+<div class="history-modal-overlay" id="history-modal-overlay">
+  <div class="history-modal">
+    <div class="history-modal__header">
+      <span class="history-modal__title">All Notes</span>
+      <button class="history-modal__close" id="history-modal-close">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="history-modal__body" id="history-modal-body"></div>
+  </div>
+</div>
 
-        myGarden.forEach(plant => {
-            const card = document.createElement('div');
-            card.className = 'entry-card';
-            card.style.setProperty('--rotation', (Math.random() * 4 - 2) + 'deg');
+<!-- Loading overlay -->
+<div class="pp-loader" id="pp-loader">
+  <div class="pp-loader__ring">
+    <svg class="ring" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="28" cy="28" r="24" stroke="#e8e6e1" stroke-width="3"/>
+      <path d="M28 4 A24 24 0 0 1 52 28" stroke="#173809" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <svg class="mark" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/>
+      <path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/>
+      <path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/>
+      <circle cx="15" cy="8" r="4.5" fill="#173809"/>
+      <circle cx="15" cy="8" r="2.5" fill="#c5efad"/>
+    </svg>
+  </div>
+</div>
 
-            const imgSrc = plant.image || '';
-            const noteText = plant.note || "No notes yet.";
+<!-- Toast -->
+<div class="toast-container" id="toast-container"></div>
 
-            card.innerHTML = `
-                <div class="tape"></div>
-                <div class="polaroid-img" onclick="openHistory('${plant.name}')" title="Click to view history">
-                    <img class="card-img-tag" src="${imgSrc}" onerror="handleImgError(this)" style="${imgSrc ? '' : 'display:none'}">
-                    <span class="img-fallback" style="${imgSrc ? '' : 'display:block'}">🌿</span>
-                </div>
-                
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 5px;">
-                    <div style="display:flex; align-items:center;">
-                        <h3 class="card-name" style="font-family: var(--font-heading); font-size: 1.4rem; margin:0;">${plant.name}</h3>
-                        <button class="edit-btn" onclick="openEditModal(this)" title="Edit Plant">✎</button>
-                    </div>
-                    <span style="font-size: 0.9rem; color:#888;">Today</span>
-                </div>
+<!-- Footer -->
+<footer class="pp-footer">
+  <div class="pp-footer__inner">
+    <div class="pp-footer__brand" style="display:flex;align-items:center;gap:.4rem"><svg width="22" height="22" viewBox="0 0 30 30" fill="none" style="flex-shrink:0"><path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/><path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/><path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/><circle cx="15" cy="8" r="4.5" fill="#173809"/><circle cx="15" cy="8" r="2.5" fill="#c5efad"/><path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="#173809" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><span>Plant Parent</span></div>
+    <nav class="pp-footer__links">
+      <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a>
+    </nav>
+    <p class="pp-footer__copy">© 2026 Manvi Tandon. All rights reserved.</p>
+  </div>
+</footer>
 
-                <div class="care-tracker">
-                    <button class="care-btn" data-type="water" data-tooltip="Watered" onclick="toggleCare(this)">💧</button>
-                    <button class="care-btn" data-type="sun" data-tooltip="Sunlight" onclick="toggleCare(this)">☀️</button>
-                    <button class="care-btn" data-type="food" data-tooltip="Fertilized" onclick="toggleCare(this)">🧪</button>
-                </div>
+<!-- Mobile bottom tab bar -->
+<nav class="pp-tab-bar">
+  <a href="index.html" class="pp-tab-bar__item">
+    <span class="material-symbols-outlined">home</span>
+    Home
+  </a>
+  <a href="browse.html" class="pp-tab-bar__item">
+    <span class="material-symbols-outlined">search</span>
+    Explore
+  </a>
+  <a href="journal.html" class="pp-tab-bar__item active">
+    <span class="material-symbols-outlined">auto_stories</span>
+    Journal
+  </a>
+</nav>
 
-                <textarea class="journal-input card-note">${noteText}</textarea>
-                
-                <div class="mood-tracker">
-                    <span style="font-size:0.9rem; font-family:var(--font-heading);">Mood:</span>
-                    <div class="mood-options">
-                        <button class="mood-btn" title="Struggling" onclick="setMood(this)">😫</button>
-                        <button class="mood-btn" title="Neutral" onclick="setMood(this)">😐</button>
-                        <button class="mood-btn" title="Calm" onclick="setMood(this)">😌</button>
-                        <button class="mood-btn" title="Energetic" onclick="setMood(this)">⚡</button>
-                        <button class="mood-btn" title="Thriving" onclick="setMood(this)">🌿</button>
-                    </div>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
+<style>
+  @media (max-width: 900px) {
+    .journal-main-grid { grid-template-columns: 1fr !important; }
+    .journal-main-grid > div:last-child { position: static !important; }
+  }
+</style>
 
-        const addCard = document.createElement('div');
-        addCard.className = 'entry-card add-new-card';
-        addCard.onclick = openAddModal;
-        addCard.innerHTML = `
-            <div style="text-align: center;">
-                <div style="font-size: 3rem; color: #aaa;">+</div>
-                <p style="font-family: var(--font-heading); color: #aaa;">Log New Plant</p>
-            </div>
-        `;
-        grid.appendChild(addCard);
-      }
+<script>
+// ── Nav drawer ────────────────────────────────────────────
+const burgerBtn      = document.getElementById('burger-btn');
+const navDrawer      = document.getElementById('nav-drawer');
+const drawerClose    = document.getElementById('drawer-close');
+const drawerBackdrop = document.getElementById('drawer-backdrop');
+burgerBtn.addEventListener('click',     () => { navDrawer.classList.add('open');    document.body.style.overflow='hidden'; });
+drawerClose.addEventListener('click',   () => { navDrawer.classList.remove('open'); document.body.style.overflow=''; });
+drawerBackdrop.addEventListener('click',() => { navDrawer.classList.remove('open'); document.body.style.overflow=''; });
 
-      /* --- EDIT ENTRY LOGIC --- */
-      let currentCardBeingEdited = null;
-      const editModal = document.getElementById("editCardModal");
-      const editNameInput = document.getElementById("editName");
-      const editImgUrlInput = document.getElementById("editImgUrl");
-      const editImgFileInput = document.getElementById("editImgFile");
-      const editNoteInput = document.getElementById("editNote");
-      const originalNameInput = document.getElementById("originalName");
+// ── Toast ─────────────────────────────────────────────────
+function showToast(msg, icon='check_circle') {
+  const tc = document.getElementById('toast-container');
+  const t  = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">${icon}</span>${msg}`;
+  tc.appendChild(t);
+  setTimeout(() => t.remove(), 2800);
+}
 
-      function openEditModal(btn) {
-        currentCardBeingEdited = btn.closest(".entry-card");
-        const currentName = currentCardBeingEdited.querySelector(".card-name").innerText;
-        const currentNote = currentCardBeingEdited.querySelector(".card-note").value;
+// ── Nav search ────────────────────────────────────────────
+document.getElementById('nav-search').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.value.trim())
+    window.location = `browse.html?q=${encodeURIComponent(e.target.value.trim())}`;
+});
 
-        editNameInput.value = currentName;
-        originalNameInput.value = currentName; 
-        editNoteInput.value = currentNote;
-        editImgUrlInput.value = "";
-        editImgFileInput.value = "";
-        document.getElementById('file-name-display').innerText = "No file chosen";
+// ── Dates ─────────────────────────────────────────────────
+function todayLong()  { return new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}); }
+function todayShort() { return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+document.getElementById('today-date').textContent = todayLong();
+document.getElementById('note-date').textContent  = todayShort();
 
-        editModal.classList.add("open");
-      }
+// ── Plants ────────────────────────────────────────────────
+const GARDEN = [
+  { pid:'monstera',      name:'Monstera Deliciosa', alias:'Swiss Cheese Plant',     img:'assets/MonsteraJournal.webp',        health:88, status:'good' },
+  { pid:'fiddle',        name:'Fiddle Leaf Fig',    alias:'Ficus lyrata',           img:'https://opb-img.plantbook.io/ficus%20lyrata.jpg', health:52, status:'warn' },
+  { pid:'snake',         name:'Snake Plant',        alias:'Sansevieria',            img:'assets/snake.jpg',                   health:95, status:'good' },
+  { pid:'pothos',        name:'Marble Pothos',      alias:'Epipremnum aureum',      img:'assets/pothos.jpg',                  health:35, status:'crit' },
+  { pid:'pothos-window', name:'Window Pothos',      alias:'Epipremnum aureum var.', img:'assets/pothoswindow.jpg',            health:74, status:'good' },
+  { pid:'trailing',      name:'Trailing Pothos',    alias:'Epipremnum aureum',      img:'assets/Watermark-1200-x-1800-1.jpg', health:81, status:'good' },
+];
 
-      function closeEditModal() {
-        editModal.classList.remove("open");
-        currentCardBeingEdited = null;
-      }
+const STATUS_TEXT = { good:'Doing well', warn:'Needs water', crit:'Needs attention' };
+// garden-count removed
+document.getElementById('collection-count').textContent = `${GARDEN.length} plants`;
 
-      function saveEditChanges() {
-        if (!currentCardBeingEdited) return;
+// Populate plant tag select
+const sel = document.getElementById('note-plant');
+GARDEN.forEach(p => { const o = document.createElement('option'); o.value=p.pid; o.textContent=p.name; sel.appendChild(o); });
 
-        const oldName = originalNameInput.value;
-        const newName = editNameInput.value;
-        const newNote = editNoteInput.value;
-        const file = editImgFileInput.files[0];
-        
-        const performSave = (imgData) => {
-            currentCardBeingEdited.querySelector(".card-name").innerText = newName;
-            currentCardBeingEdited.querySelector(".card-note").value = newNote;
-            
-            if (imgData) {
-                const imgTag = currentCardBeingEdited.querySelector(".card-img-tag");
-                imgTag.src = imgData;
-                imgTag.style.display = "block";
-                currentCardBeingEdited.querySelector(".img-fallback").style.display = "none";
-            }
+// ── Care state ────────────────────────────────────────────
+const careState = {};
+GARDEN.forEach(p => { careState[p.pid] = { water:false, sun:false, feed:false }; });
 
-            let myPlants = JSON.parse(localStorage.getItem("myPlants")) || [];
-            const plantIndex = myPlants.findIndex(p => p.name === oldName);
-            
-            if (plantIndex !== -1) {
-                myPlants[plantIndex].name = newName;
-                myPlants[plantIndex].note = newNote;
-                if (imgData) myPlants[plantIndex].image = imgData;
-                localStorage.setItem("myPlants", JSON.stringify(myPlants));
-            }
-            closeEditModal();
-        };
+function renderCollection() {
+  const col = document.getElementById('journal-collection');
+  // Custom inline SVGs for care buttons
+  const ICO_DROP = `<svg width="11" height="13" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><path d="M6 1C6 1 1 6 1 9C1 11.8 3.2 13 6 13C8.8 13 11 11.8 11 9C11 6 6 1 6 1Z"/></svg>`;
+  const ICO_SUN  = `<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" style="pointer-events:none"><circle cx="7" cy="7" r="2.5"/><line x1="7" y1="1" x2="7" y2="2.5"/><line x1="7" y1="11.5" x2="7" y2="13"/><line x1="1" y1="7" x2="2.5" y2="7"/><line x1="11.5" y1="7" x2="13" y2="7"/><line x1="2.9" y1="2.9" x2="3.9" y2="3.9"/><line x1="10.1" y1="10.1" x2="11.1" y2="11.1"/><line x1="11.1" y1="2.9" x2="10.1" y2="3.9"/><line x1="3.9" y1="10.1" x2="2.9" y2="11.1"/></svg>`;
+  const ICO_LEAF = `<svg width="12" height="13" viewBox="0 0 13 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><path d="M2 12C2 12 4 6 9 4C11 3 12 2 12 2C12 2 12 4 10 7C8 10 4 12 2 12Z"/><line x1="2" y1="12" x2="7" y2="7"/></svg>`;
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) { performSave(e.target.result); }
-            reader.readAsDataURL(file);
-        } 
-        else if (editImgUrlInput.value.trim() !== "") {
-            performSave(editImgUrlInput.value);
-        } 
-        else {
-            performSave(null);
-        }
-      }
+  col.innerHTML = GARDEN.map(p => {
+    const cs     = careState[p.pid];
+    const hClass = p.health < 40 ? 'crit' : p.health < 65 ? 'warn' : '';
+    return `
+    <div class="journal-plant-card" data-card="${p.pid}">
+      <div class="journal-plant-card__img">
+        <img src="${p.img}" alt="${p.name}" loading="lazy"
+             onerror="this.src='https://opb-img.plantbook.io/monstera%20deliciosa.jpg'"/>
+      </div>
+      <div class="journal-plant-card__body">
+        <div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:.4rem">
+            <div class="journal-plant-card__name">${p.name}</div>
+            <span class="plant-status ${p.status}">${STATUS_TEXT[p.status]}</span>
+          </div>
+          <div class="journal-plant-card__alias">${p.alias}</div>
+          <div class="health-bar__track">
+            <div class="health-bar__fill ${hClass}" style="width:${p.health}%"></div>
+          </div>
+        </div>
+        <div class="journal-plant-card__care">
+          <button class="care-btn ${cs.water?'active':''}" data-care="water" data-pid="${p.pid}">
+            ${ICO_DROP}
+            <span style="pointer-events:none">${cs.water?'Watered ✓':'Water'}</span>
+          </button>
+          <button class="care-btn ${cs.sun?'active':''}" data-care="sun" data-pid="${p.pid}">
+            ${ICO_SUN}
+            <span style="pointer-events:none">${cs.sun?'Sun ✓':'Sun'}</span>
+          </button>
+          <button class="care-btn ${cs.feed?'active':''}" data-care="feed" data-pid="${p.pid}">
+            ${ICO_LEAF}
+            <span style="pointer-events:none">${cs.feed?'Fed ✓':'Feed'}</span>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
 
-      function deleteEntry() {
-        const nameToDelete = originalNameInput.value;
-        if (confirm(`Are you sure you want to remove ${nameToDelete} from your journal?`)) {
-            let myPlants = JSON.parse(localStorage.getItem("myPlants")) || [];
-            myPlants = myPlants.filter(p => p.name !== nameToDelete);
-            localStorage.setItem("myPlants", JSON.stringify(myPlants));
-            closeEditModal();
-            loadJournal();
-        }
-      }
+document.getElementById('journal-collection').addEventListener('click', e => {
+  const btn = e.target.closest('[data-care]');
+  if (!btn) return;
+  const pid  = btn.dataset.pid;
+  const type = btn.dataset.care;
+  careState[pid][type] = !careState[pid][type];
+  const labels = { water:'watered', sun:'got some sun', feed:'fed' };
+  const icons  = { water:'water_drop', sun:'wb_sunny', feed:'eco' };
+  const plant  = GARDEN.find(p => p.pid === pid);
+  if (careState[pid][type]) {
+    addLogEntry(plant.name, `${plant.name} ${labels[type]}.`, []);
+  }
+  showToast(careState[pid][type] ? `${plant.name} ${labels[type]}` : `Undone`, icons[type]);
+  renderCollection();
+});
 
-      /* --- OTHER LOGIC --- */
-      function completeQuest(btn) {
-        const rect = btn.getBoundingClientRect();
-        const x = (rect.left + rect.width / 2) / window.innerWidth;
-        const y = (rect.top + rect.height / 2) / window.innerHeight;
-        confetti({ particleCount: 150, spread: 70, origin: { x: x, y: y }, colors: ["#2d6a4f", "#fab1a0", "#ffeaa7", "#95d5b2"] });
-        btn.disabled = true;
-        btn.innerText = "Done! +XP";
-      }
+// ── Log entries ───────────────────────────────────────────
+let LOG_ENTRIES = [
+  { plant:'Monstera Deliciosa', date:'Mar 28, 2026', text:'Watered thoroughly — soil was getting dry. New leaf unfurling on the south side.', images:[] },
+  { plant:'Fiddle Leaf Fig',    date:'Mar 27, 2026', text:'Rotated 90° toward the light. Leaves looking perkier already.', images:[] },
+  { plant:'Snake Plant',        date:'Mar 25, 2026', text:'Fed with diluted liquid fertiliser. Growth has been consistent this month.', images:[] },
+  { plant:'Marble Pothos',      date:'Mar 22, 2026', text:'Trimmed a few yellowing leaves. Added a moss pole for the longer trailing vine.', images:[] },
+  { plant:'Window Pothos',      date:'Mar 20, 2026', text:'Misted the leaves and wiped them down with a damp cloth. Looking glossy.', images:[] },
+  { plant:'Trailing Pothos',    date:'Mar 18, 2026', text:'Watered after the top inch dried out completely. Roots look healthy.', images:[] },
+  { plant:'Monstera Deliciosa', date:'Oct 24, 2025', text:'Repotted into a bigger terracotta pot — roots were filling the whole base. Added perlite to the mix.', images:[] },
+  { plant:'Fiddle Leaf Fig',    date:'Oct 21, 2025', text:'Leaves wiped down with neem oil. Moved closer to the window. Hoping this helps with the drooping.', images:[] },
+  { plant:'Monstera Deliciosa', date:'Oct 17, 2025', text:"First full fenestration on a new leaf! It's been about 6 months since I got it — very happy.", images:[] },
+  { plant:'Snake Plant',        date:'Oct 10, 2025', text:'Watered for the first time in 3 weeks. Soil was completely dry. Looking perky again.', images:[] },
+];
 
-      const addModal = document.getElementById("addEntryModal");
-      function openAddModal() {
-        addModal.classList.add("open");
-        loadUserPlants(); 
-      }
-      function closeAddModal() { addModal.classList.remove("open"); }
+function addLogEntry(plant, text, images = []) {
+  LOG_ENTRIES.unshift({ plant, date: todayShort(), text, images });
+  // log-count removed
+  renderLogHistory();
+}
 
-      function loadUserPlants() {
-        const select = document.getElementById("plantSelect");
-        select.innerHTML = '<option value="" disabled selected>Select from your garden...</option>';
-        let myPlants = JSON.parse(localStorage.getItem("myPlants")) || [];
-        myPlants.forEach((plant) => {
-          let option = document.createElement("option");
-          option.value = plant.name;
-          option.text = plant.name;
-          select.appendChild(option);
-        });
-      }
+function makeEntryHTML(e, i) {
+  const imgStrip = e.images && e.images.length
+    ? `<div class="log-entry__img-strip">${e.images.map(img =>
+        `<img class="log-entry__img" src="${img.dataUrl}" alt="photo"/>`
+      ).join('')}</div>`
+    : '';
+  return `
+  <div class="log-entry" data-idx="${i}">
+    <div class="log-entry__header">
+      <span class="log-entry__plant">${e.plant}</span>
+      <span class="log-entry__date">${e.date}</span>
+    </div>
+    <div class="log-entry__text">${e.text}</div>
+    ${imgStrip}
+  </div>`;
+}
 
-      function submitNewEntry() {
-        const plantName = document.getElementById("plantSelect").value;
-        const note = document.getElementById("newEntryText").value;
-        if (!plantName) return alert("Select a plant!");
+function renderLogHistory() {
+  const el     = document.getElementById('log-history');
+  el.innerHTML = LOG_ENTRIES.slice(0,4).map(makeEntryHTML).join('');
+  el.querySelectorAll('.log-entry').forEach(entry =>
+    entry.addEventListener('click', () => entry.classList.toggle('expanded'))
+  );
+}
 
-        let myPlants = JSON.parse(localStorage.getItem("myPlants"));
-        const plantIndex = myPlants.findIndex(p => p.name === plantName);
-        if(plantIndex !== -1) {
-            myPlants[plantIndex].note = note;
-            localStorage.setItem("myPlants", JSON.stringify(myPlants));
-        }
-        closeAddModal();
-        loadJournal(); 
-      }
+function renderHistoryModal() {
+  const body     = document.getElementById('history-modal-body');
+  body.innerHTML = LOG_ENTRIES.map(makeEntryHTML).join('');
+  body.querySelectorAll('.log-entry').forEach(entry =>
+    entry.addEventListener('click', () => entry.classList.toggle('expanded'))
+  );
+}
 
-      function handleImgError(img) {
-        img.style.display = "none";
-        img.nextElementSibling.style.display = "block";
-      }
-      function toggleCare(btn) { btn.classList.toggle("active"); }
-      function setMood(btn) {
-        btn.parentElement.querySelectorAll(".mood-btn").forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
-      }
+// ── Image attachments ─────────────────────────────────────
+let pendingImages = []; // array of { dataUrl, name }
 
-      /* --- HISTORY WITH CUSTOM IMAGES AND RICH DATA --- */
-      const plantHistoryData = {
-        "Monstera Deliciosa": [
-          {
-            date: "Oct 20, 2025",
-            note: "A new fenestrated leaf finally opened up! It's beautiful.",
-            care: ["☀️", "💧"],
-            mood: "🌿",
-            image: "assets/MonsteraJournal.webp" // History image matched
-          },
-          {
-            date: "Oct 15, 2025",
-            note: "Rotated the pot 90 degrees to keep growth even.",
-            care: ["☀️"],
-            mood: "😌",
-          },
-          {
-            date: "Oct 10, 2025",
-            note: "Wiped dust off leaves. It looks shinier!",
-            care: ["💧", "☀️"],
-            mood: "😌",
-          }
-        ],
-        "Golden Pothos": [
-          {
-            date: "Oct 18, 2025",
-            note: "Leaves looked a bit droopy. Perked right up after water.",
-            care: ["💧"],
-            mood: "😌",
-            image: "assets/pothos.jpg" // History image matched
-          },
-          {
-            date: "Oct 01, 2025",
-            note: "Watering day. Added a drop of fertilizer.",
-            care: ["💧", "🧪"],
-            mood: "⚡",
-          }
-        ],
-      };
+document.getElementById('note-img-btn').addEventListener('click', () => {
+  document.getElementById('note-img-input').click();
+});
 
-      function openHistory(name) {
-        document.getElementById("historyModal").classList.add("open");
-        document.getElementById("historyTitle").innerText = "History: " + name;
-        const list = document.getElementById("historyList");
-        list.innerHTML = ""; 
+document.getElementById('note-img-input').addEventListener('change', function() {
+  const files = Array.from(this.files);
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      pendingImages.push({ dataUrl: e.target.result, name: file.name });
+      renderNoteImgs();
+    };
+    reader.readAsDataURL(file);
+  });
+  this.value = ''; // reset so same file can be re-selected
+});
 
-        const logs = plantHistoryData[name] || [{ date: "Today", note: "Started tracking this plant.", care: [], mood: "🌱" }];
-        
-        logs.forEach(log => {
-            const entry = document.createElement('div');
-            entry.className = 'history-entry';
-            
-            let imgHtml = '';
-            if (log.image) {
-                imgHtml = `<div style="margin-top:10px;"><img src="${log.image}" style="max-width:100%; max-height:200px; border:2px solid #eee; border-radius:4px; object-fit:cover;"></div>`;
-            }
+function renderNoteImgs() {
+  const strip = document.getElementById('note-imgs');
+  strip.innerHTML = pendingImages.map((img, i) => `
+    <span class="journal-note__img-remove">
+      <img class="journal-note__img-thumb" src="${img.dataUrl}" alt="attachment ${i+1}"/>
+      <button class="journal-note__img-remove-btn" data-rm="${i}" title="Remove">×</button>
+    </span>`).join('');
+  strip.querySelectorAll('[data-rm]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      pendingImages.splice(+btn.dataset.rm, 1);
+      renderNoteImgs();
+    });
+  });
+}
 
-            entry.innerHTML = `
-                <div style="background:var(--color-ink); color:white; display:inline-block; padding:0 5px; transform:rotate(-2deg); font-family:var(--font-heading);">${log.date}</div>
-                <div style="float:right;">${log.care.join(" ")} | Mood: ${log.mood}</div>
-                <p style="margin-top:5px;">${log.note}</p>
-                ${imgHtml}
-                <hr style="border:0; border-bottom:1px dashed #ccc; margin:10px 0;">
-            `;
-            list.appendChild(entry);
-        });
-      }
-      function closeHistoryModal() { document.getElementById("historyModal").classList.remove("open"); }
+// ── Save note ─────────────────────────────────────────────
+document.getElementById('note-save').addEventListener('click', () => {
+  const text  = document.getElementById('note-textarea').value.trim();
+  const pid   = document.getElementById('note-plant').value;
+  const pName = pid ? (GARDEN.find(p => p.pid === pid)?.name ?? 'General') : 'General';
+  if (!text && pendingImages.length === 0) {
+    showToast('Write something first!', 'edit_note');
+    return;
+  }
+  addLogEntry(pName, text || '(photo note)', [...pendingImages]);
+  document.getElementById('note-textarea').value = '';
+  document.getElementById('note-plant').value    = '';
+  pendingImages = [];
+  renderNoteImgs();
+  showToast('Note saved', 'check_circle');
+});
 
-      window.onclick = function (event) {
-        if (event.target == addModal) closeAddModal();
-        if (event.target == document.getElementById("historyModal")) closeHistoryModal();
-        if (event.target == editModal) closeEditModal();
-      };
-      
-      const quests = ["Mist leaves.", "Rotate pot.", "Check soil moisture."];
-      document.getElementById("daily-mindfulness").innerText = quests[Math.floor(Math.random() * quests.length)];
-    </script>
-  </body>
+document.getElementById('note-textarea').addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') document.getElementById('note-save').click();
+});
+
+// ── History modal ─────────────────────────────────────────
+const histOverlay = document.getElementById('history-modal-overlay');
+
+function openHistoryModal() {
+  renderHistoryModal();
+  histOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeHistoryModal() {
+  histOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('see-all-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  openHistoryModal();
+});
+document.getElementById('history-modal-close').addEventListener('click', e => {
+  e.stopPropagation();
+  closeHistoryModal();
+});
+histOverlay.addEventListener('click', e => {
+  if (e.target === histOverlay) closeHistoryModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && histOverlay.classList.contains('open')) closeHistoryModal();
+});
+
+// ── Mood / intention — just a grounding micro-interaction ──
+document.getElementById('mood-picker').addEventListener('click', e => {
+  const btn = e.target.closest('[data-mood]');
+  if (!btn) return;
+  document.querySelectorAll('.intention-mood-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+});
+
+// ── Page transitions ──────────────────────────────────────
+(function() {
+  const loader = document.getElementById('pp-loader');
+  // intercept all same-origin link clicks
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('mailto') || href.startsWith('http')) return;
+    e.preventDefault();
+    loader.classList.add('active');
+    document.body.classList.add('pp-leaving');
+    setTimeout(() => { window.location.href = href; }, 220);
+  });
+  // hide loader when page is ready (handles back-nav)
+  window.addEventListener('pageshow', () => {
+    loader.classList.remove('active');
+    document.body.classList.remove('pp-leaving');
+  });
+})();
+
+// ── Init ──────────────────────────────────────────────────
+renderCollection();
+renderLogHistory();
+</script>
+<style>
+/* Journal history modal — guarantee centred and in viewport regardless of scroll */
+#history-modal-overlay {
+  position: fixed !important;
+  top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+  width: 100vw !important; height: 100dvh !important;
+  z-index: 9999 !important;
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(5,15,5,0.55) !important;
+  backdrop-filter: blur(5px) !important;
+  padding: 1.5rem !important;
+  box-sizing: border-box !important;
+}
+#history-modal-overlay.open {
+  display: flex !important;
+}
+.history-modal {
+  background: #fff !important;
+  border-radius: 16px !important;
+  width: 100% !important;
+  max-width: 520px !important;
+  max-height: 82dvh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,.25) !important;
+  position: relative !important;
+  margin: auto !important;
+}
+.history-modal__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--clr-outline-variant);
+  flex-shrink: 0;
+}
+.history-modal__title { font-size: 1rem; font-weight: 700; color: var(--clr-primary); }
+.history-modal__close {
+  background: none; border: none; cursor: pointer;
+  color: var(--clr-outline); display: flex; align-items: center; padding: .2rem;
+}
+.history-modal__body {
+  flex: 1; overflow-y: auto; padding: 1rem 1.25rem 1.5rem;
+  scrollbar-width: thin;
+}
+
+  /* ── Mobile nav: logo left, bell+avatar+burger right ── */
+  @media(max-width:768px){
+    .pp-nav__inner{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:0!important;padding:0 1rem!important;}
+    .pp-nav__links{display:none!important;}
+    .pp-nav__search{display:none!important;}
+    .pp-nav__actions{display:flex!important;align-items:center!important;gap:.15rem!important;margin-left:auto!important;}
+    .pp-nav__burger{display:flex!important;}
+  }
+</style>
+</body>
 </html>

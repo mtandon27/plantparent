@@ -1,197 +1,519 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plant Parent</title>
-    <link
-      rel="icon"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>"
-    />
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plant Parent</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23173809'/><path d='M50 92 L50 44' stroke='%23c5efad' stroke-width='6' stroke-linecap='round'/><path d='M50 62 C33 62 23 48 30 35 C37 35 46 45 50 62Z' fill='%23c5efad'/><path d='M50 49 C67 45 77 55 70 68 C63 68 53 58 50 49Z' fill='%2395d5b2'/><circle cx='50' cy='26' r='14' fill='%23c5efad'/><circle cx='50' cy='26' r='7' fill='%23173809'/></svg>"/>
+  <link rel="stylesheet" href="plant-parent.css"/>
+  <style>
+  /* ── TYPEWRITER CURSOR ── */
+  .type-text::after {
+    content: '|';
+    display: inline;
+    animation: blink .75s step-end infinite;
+    color: #52a87a;
+    margin-left: 1px;
+  }
+  .type-text.done::after { display: none; }
+  @keyframes blink { 50% { opacity: 0; } }
 
-    <link rel="stylesheet" href="global.css" />
-  </head>
+  /* ── HERO HEADLINE: ghost/live layers — zero layout shift, zero flicker ──
+     Ghost: visibility:hidden, holds the exact two-line space from frame 1.
+     Live:  absolute on top, typed into. Accent empty until fade fires. */
+  .hero-headline {
+    position: relative;
+    margin: 0;
+  }
+  .hero-headline__ghost {
+    visibility: hidden;
+    font-family: var(--font-sans);
+    font-size: clamp(1.25rem, 5vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -.03em;
+    white-space: nowrap; /* each line stays on one line */
+  }
+  /* ghost-line2 forces the second phrase onto its own line */
+  .hero-headline__ghost .ghost-line2 { display: block; white-space: nowrap; }
 
-  <body>
-    <div id="vine-left" class="vine-grower"></div>
-  <div id="vine-right" class="vine-grower"></div>
-    <nav>
-      <a href="index.html" class="nav-brand"><span>🌱 PLANT PARENT</span></a>
-      <ul class="nav-links">
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="browse.html">Explore</a></li>
-        <li><a href="journal.html">Journal</a></li>
-      </ul>
+  .hero-headline__live {
+    position: absolute;
+    inset: 0;
+    font-family: var(--font-sans);
+    font-size: clamp(1.25rem, 5vw, 3.6rem);
+    font-weight: 700;
+    color: var(--clr-primary);
+    line-height: 1.2;
+    letter-spacing: -.03em;
+    white-space: nowrap;
+  }
+  /* accent (line 2) also forced to single line */
+  .hero-accent { white-space: nowrap; }
+  .hero-accent {
+    display: block;
+    opacity: 0;
+    transition: opacity .85s ease;
+  }
+  .hero-accent.visible { opacity: 1; }
+
+  /* ── HERO: single centered column, no gif ── */
+  .hero-section {
+    width: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 5rem 2rem 4rem;
+  }
+  .hero-section__inner {
+    max-width: 680px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  .hero-section__inner p {
+    font-size: clamp(.95rem, 1.8vw, 1.1rem);
+    color: var(--clr-on-surface-variant);
+    line-height: 1.75;
+    max-width: 520px;
+  }
+  /* Ghost text centered too */
+  .hero-headline__ghost,
+  .hero-headline__live {
+    text-align: center;
+  }
+  .hero-cta-row {
+    display: flex;
+    gap: .75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  @media(max-width: 600px) {
+    .hero-section { padding: 3.5rem 1rem 3rem; }
+    /* allow section to stretch to show full nowrap headline */
+    .hero-section__inner { max-width: 100%; }
+  }
+
+  /* ── How It Works ── */
+  .how-section{max-width:1100px;margin:0 auto;padding:3rem 0 2.5rem;text-align:center;}
+  .how-section h2{font-size:1.8rem;font-weight:700;color:var(--clr-primary);margin-bottom:.35rem;}
+  .how-sub{font-size:.88rem;color:var(--clr-outline);margin-bottom:2.5rem;}
+  .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+  @media(max-width:640px){.steps-grid{grid-template-columns:1fr;gap:1rem;}}
+  .step-card{background:#fff;border:1.5px solid var(--clr-outline-variant);border-radius:var(--radius-xl);padding:2rem 1.5rem 1.75rem;text-align:center;}
+  .step-num{width:32px;height:32px;background:var(--clr-primary-fixed);color:var(--clr-primary);border-radius:50%;font-weight:700;font-size:.78rem;display:inline-flex;align-items:center;justify-content:center;margin:0 auto .9rem;}
+  .step-icon-svg{width:52px;height:52px;display:block;margin:0 auto .85rem;}
+  .step-card h3{font-size:1rem;font-weight:700;color:var(--clr-primary);margin-bottom:.35rem;}
+  .step-card p{font-size:.8rem;color:var(--clr-on-surface-variant);line-height:1.55;}
+
+  /* ── Explore cards ── */
+  .explore-need-card{border:1.5px solid var(--clr-outline-variant);border-radius:var(--radius-xl);overflow:hidden;background:#fff;cursor:pointer;display:block;text-decoration:none;transition:box-shadow .2s,transform .18s;}
+  .explore-need-card:hover{box-shadow:0 8px 28px rgba(23,56,9,.1);transform:translateY(-3px);}
+  .explore-need-card__img{display:flex;align-items:center;justify-content:center;height:200px;overflow:hidden;}
+  .explore-need-card__img img{width:100%;height:100%;object-fit:contain;padding:1rem;display:block;}
+  .explore-need-card__body{padding:.85rem 1rem 1.1rem;border-top:1px solid var(--clr-outline-variant);}
+  .explore-need-card__label{font-size:.9rem;font-weight:700;color:var(--clr-primary);margin-bottom:.15rem;}
+  .explore-need-card__desc{font-size:.75rem;color:var(--clr-outline);line-height:1.4;}
+
+  /* ── Journal notebook ── */
+  .notebook-wrap{position:relative;background:#fffef5;border:1.5px solid #d4ccb0;border-radius:8px;overflow:hidden;box-shadow:3px 4px 16px rgba(0,0,0,.07);}
+  .notebook-wrap::before{content:'';position:absolute;left:44px;top:0;bottom:0;width:1.5px;background:#f0b0b0;opacity:.7;z-index:1;}
+  .notebook-wrap::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent,transparent 27px,#e8e0c8 27px,#e8e0c8 28px);background-position:0 36px;pointer-events:none;z-index:0;}
+  .notebook-entries{position:relative;z-index:2;padding:1.25rem 1.1rem 1.25rem 3.5rem;display:flex;flex-direction:column;gap:.1rem;}
+  .nb-entry{padding:.55rem 0;}
+  .nb-entry__meta{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.18rem;}
+  .nb-entry__plant{font-size:.72rem;font-weight:700;color:var(--clr-primary);text-transform:uppercase;letter-spacing:.05em;}
+  .nb-entry__date{font-size:.65rem;color:var(--clr-outline);}
+  .nb-entry__text{font-size:.84rem;color:#3a3010;line-height:1.75;font-style:italic;}
+  .notebook-holes{position:absolute;left:0;top:0;bottom:0;width:24px;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:1.5rem 0;z-index:3;}
+  .notebook-hole{width:10px;height:10px;border-radius:50%;background:#f6f5f0;border:1px solid #d4ccb0;flex-shrink:0;}
+
+  /* ── Green quote ── */
+  .quote-band-green{text-align:center;padding:2.5rem 1.5rem 3rem;color:#2d6a4f;font-size:1.05rem;font-style:italic;font-weight:500;opacity:0;transition:opacity 1s ease;}
+  .quote-band-green.visible{opacity:1;}
+
+  /* ── Mobile nav ── */
+  @media(max-width:768px){
+    .pp-nav__inner{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:0!important;padding:0 1rem!important;}
+    .pp-nav__links{display:none!important;}
+    .pp-nav__actions{display:flex!important;align-items:center!important;gap:.15rem!important;margin-left:auto!important;}
+    .pp-nav__search{display:none!important;}
+    .pp-nav__burger{display:flex!important;}
+  }
+  .pp-nav__drawer-panel a{display:block;font-size:1rem;font-weight:500;color:var(--clr-on-surface-variant);padding:.85rem 1rem;border-radius:var(--radius-md);border-bottom:1px solid var(--clr-outline-variant);transition:background .15s,color .15s;}
+  .pp-nav__drawer-panel a:last-child{border-bottom:none;}
+  .pp-nav__drawer-panel a:hover,.pp-nav__drawer-panel a.active{background:var(--clr-primary-fixed);color:var(--clr-primary);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="pp-nav">
+  <div class="pp-nav__inner">
+    <a href="index.html" class="pp-nav__logo">
+      <div class="pp-nav__logo-icon">
+        <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+          <path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/>
+          <path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/>
+          <path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/>
+          <circle cx="15" cy="8" r="4.5" fill="#173809"/>
+          <circle cx="15" cy="8" r="2.5" fill="#c5efad"/>
+          <path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="#173809" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <span class="pp-nav__logo-text">Plant Parent</span>
+    </a>
+    <ul class="pp-nav__links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="browse.html">Explore</a></li>
+      <li><a href="journal.html">Journal</a></li>
+    </ul>
+    <!-- desktop: search + bell + avatar. mobile: bell + avatar + burger all right-aligned -->
+    <div class="pp-nav__actions">
+      <div class="pp-nav__search">
+        <span class="material-symbols-outlined" style="font-size:.9rem;color:var(--clr-outline);flex-shrink:0">search</span>
+        <input type="text" placeholder="Search plants…" id="nav-search" autocomplete="off"/>
+      </div>
+      <button class="pp-nav__icon-btn" data-notify aria-label="Notifications"><span class="material-symbols-outlined">notifications</span></button>
+      <button class="pp-nav__avatar" aria-label="Profile">MT</button>
+    </div>
+    <button class="pp-nav__burger" id="burger-btn" aria-label="Menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+</nav>
+
+<div class="pp-nav__drawer" id="nav-drawer">
+  <div class="pp-nav__drawer-backdrop" id="drawer-backdrop"></div>
+  <div class="pp-nav__drawer-panel">
+    <button class="pp-nav__drawer-close" id="drawer-close"><span class="material-symbols-outlined">close</span></button>
+    <a href="index.html" class="active">Home</a>
+    <a href="browse.html">Explore</a>
+    <a href="journal.html">Journal</a>
+  </div>
+</div>
+
+<!-- ═══ HERO — centered, no gif ═══ -->
+<section class="hero-section">
+  <div class="hero-section__inner">
+    <div class="hero-headline" aria-hidden="true">
+      <!-- Ghost: holds layout space, invisible -->
+      <div class="hero-headline__ghost">
+        Become the plant parent<span class="ghost-line2">you were meant to be.</span>
+      </div>
+      <!-- Live: typed on top -->
+      <div class="hero-headline__live">
+        <span class="type-text" id="type-text"></span>
+        <span class="hero-accent" id="hero-accent"></span>
+      </div>
+    </div>
+    <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Become the plant parent you were meant to be.</h1>
+    <p>Plant Parent is a <strong>mindful care tracker</strong> for your indoor/outdoor garden. Document growth, track watering schedules, and create daily rituals with your plants.</p>
+    <div class="hero-cta-row">
+      <a href="browse.html" class="btn btn-primary">Find Plants</a>
+      <a href="journal.html" class="btn btn-surface">Open Journal</a>
+    </div>
+  </div>
+</section>
+
+<main class="pp-main" style="padding-top:2rem">
+
+  <!-- ═══ HOW IT WORKS — custom SVG icons ═══ -->
+  <div class="how-section">
+    <h2>How It Works</h2>
+    <p class="how-sub">Three simple steps to a thriving garden.</p>
+    <div class="steps-grid">
+
+      <!-- Step 1: Find — magnifying glass over a leaf -->
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <svg class="step-icon-svg" viewBox="0 0 52 52" fill="none">
+          <!-- book/plant pages -->
+          <rect x="8" y="12" width="18" height="28" rx="3" fill="#c5efad" stroke="#173809" stroke-width="1.5"/>
+          <rect x="26" y="12" width="18" height="28" rx="3" fill="#e8f5e9" stroke="#173809" stroke-width="1.5"/>
+          <line x1="26" y1="12" x2="26" y2="40" stroke="#173809" stroke-width="1.5"/>
+          <!-- spine -->
+          <rect x="24" y="10" width="4" height="32" rx="2" fill="#a9d293"/>
+
+          <!-- magnifier -->
+          <circle cx="38" cy="36" r="7" fill="none" stroke="#173809" stroke-width="2"/>
+          <circle cx="38" cy="36" r="4" fill="white" opacity=".6"/>
+          <line x1="43" y1="41" x2="47" y2="45" stroke="#173809" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+        <h3>Find</h3>
+        <p>Browse species to discover plants that match your space, light level, and lifestyle.</p>
+      </div>
+
+      <!-- Step 2: Track — clipboard with checkmarks -->
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <svg class="step-icon-svg" viewBox="0 0 52 52" fill="none">
+          <!-- clipboard body -->
+          <rect x="10" y="14" width="32" height="34" rx="4" fill="#c5efad" stroke="#173809" stroke-width="1.5"/>
+          <!-- clip at top -->
+          <rect x="20" y="10" width="12" height="8" rx="3" fill="#a9d293" stroke="#173809" stroke-width="1.4"/>
+          <!-- row 1: check + line -->
+          <circle cx="18" cy="26" r="3.5" fill="#173809"/>
+          <path d="M16 26 L17.5 27.5 L20.5 24.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="24" y1="26" x2="36" y2="26" stroke="#173809" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- row 2: check + line -->
+          <circle cx="18" cy="34" r="3.5" fill="#52a87a"/>
+          <path d="M16 34 L17.5 35.5 L20.5 32.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="24" y1="34" x2="36" y2="34" stroke="#173809" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- row 3: empty circle + shorter line -->
+          <circle cx="18" cy="42" r="3.5" fill="none" stroke="#173809" stroke-width="1.4"/>
+          <line x1="24" y1="42" x2="33" y2="42" stroke="#173809" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>
+        </svg>
+        <h3>Track</h3>
+        <p>Log watering, sunlight, and feeding. Keep a visual history of each plant's health over time.</p>
+      </div>
+
+      <!-- Step 3: Grow — sprouting plant from soil -->
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <svg class="step-icon-svg" viewBox="0 0 52 52" fill="none">
+          <!-- soil mound -->
+          <ellipse cx="26" cy="42" rx="18" ry="6" fill="#c5efad" stroke="#173809" stroke-width="1.5"/>
+          <!-- main stem -->
+          <line x1="26" y1="42" x2="26" y2="20" stroke="#173809" stroke-width="2.2" stroke-linecap="round"/>
+          <!-- left leaf -->
+          <path d="M26 32 C18 30 12 22 16 16 C20 16 25 26 26 32Z" fill="#52a87a" stroke="#2d6a4f" stroke-width="1"/>
+          <!-- right leaf -->
+          <path d="M26 26 C34 22 42 26 40 34 C36 34 28 28 26 26Z" fill="#2d6a4f" stroke="#173809" stroke-width="1"/>
+          <!-- top bud -->
+          <circle cx="26" cy="16" r="5" fill="#c5efad" stroke="#173809" stroke-width="1.5"/>
+          <path d="M24 16 C24 13 28 13 28 16" stroke="#173809" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+          <!-- sparkle dots -->
+          <circle cx="38" cy="14" r="1.5" fill="#52a87a"/>
+          <circle cx="42" cy="20" r="1" fill="#a9d293"/>
+          <circle cx="14" cy="18" r="1.2" fill="#74c2a8"/>
+        </svg>
+        <h3>Grow</h3>
+        <p>Complete daily care rituals. As your plants grow, you build small grounding habits that stick.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ FIND PLANTS FOR YOUR SPACE ═══ -->
+  <section style="margin-bottom:3rem">
+    <div style="margin-bottom:1.5rem">
+      <h2 style="font-size:1.5rem;font-weight:700;color:var(--clr-primary)">Find plants for your space</h2>
+      <p style="font-size:.85rem;color:var(--clr-outline);margin-top:.25rem">Explore species based on your light, lifestyle, and household needs.</p>
+    </div>
+    <div class="plant-row" id="explore-need-cards">
+      <!-- Air Purifying -->
+      <a class="explore-need-card" href="browse.html?filter=air-purifying">
+        <div class="explore-need-card__img" style="background:#e8f5f0;padding:0;overflow:hidden">
+          <img src="assets/air.png" alt="Air Purifying plant" style="width:100%;height:100%;object-fit:contain;display:block;padding:1rem"/>
+        </div>
+        <div class="explore-need-card__body">
+          <div class="explore-need-card__label">Air Purifying</div>
+          <div class="explore-need-card__desc">Plants that freshen and clean the air</div>
+        </div>
+      </a>
+      <!-- Pet Friendly -->
+      <a class="explore-need-card" href="browse.html?filter=pet-friendly">
+        <div class="explore-need-card__img" style="background:#fdf5ef;padding:0;overflow:hidden">
+          <img src="assets/pet.png" alt="Pet Friendly plant" style="width:100%;height:100%;object-fit:contain;display:block;padding:1rem"/>
+        </div>
+        <div class="explore-need-card__body">
+          <div class="explore-need-card__label">Pet Friendly</div>
+          <div class="explore-need-card__desc">Safe for cats, dogs, and curious paws</div>
+        </div>
+      </a>
+      <!-- Low Light -->
+      <a class="explore-need-card" href="browse.html?filter=low-light">
+        <div class="explore-need-card__img" style="background:#eeedf5;padding:0;overflow:hidden">
+          <img src="assets/night.png" alt="Low Light plant" style="width:100%;height:100%;object-fit:contain;display:block;padding:1rem"/>
+        </div>
+        <div class="explore-need-card__body">
+          <div class="explore-need-card__label">Low Light</div>
+          <div class="explore-need-card__desc">Thrives in dim rooms and shaded corners</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ JOURNAL TEASER — notebook with past notes only ═══ -->
+  <section class="journal-teaser">
+    <div>
+      <h2 class="journal-teaser__title">From your<br/>Plant Journal</h2>
+
+      <!-- Notebook-style container -->
+      <div class="notebook-wrap" style="position:relative">
+        <!-- hole punches -->
+        <div class="notebook-holes">
+          <div class="notebook-hole"></div>
+          <div class="notebook-hole"></div>
+          <div class="notebook-hole"></div>
+          <div class="notebook-hole"></div>
+        </div>
+        <div class="notebook-entries">
+          <div class="nb-entry">
+            <div class="nb-entry__meta">
+              <span class="nb-entry__plant">Monstera Deliciosa</span>
+              <span class="nb-entry__date">May 12</span>
+            </div>
+            <div class="nb-entry__text">First leaf split! Consistent fertilisation paying off. Fenestration looking healthy and full.</div>
+          </div>
+          <div class="nb-entry" style="padding-top:.85rem">
+            <div class="nb-entry__meta">
+              <span class="nb-entry__plant">All Plants</span>
+              <span class="nb-entry__date">May 08</span>
+            </div>
+            <div class="nb-entry__text">Pest prevention done. Neem oil across the nursery. No sign of gnats this week.</div>
+          </div>
+          <div class="nb-entry" style="padding-top:.85rem">
+            <div class="nb-entry__meta">
+              <span class="nb-entry__plant">Snake Plant</span>
+              <span class="nb-entry__date">May 03</span>
+            </div>
+            <div class="nb-entry__text">Watered after 3 weeks. Soil was bone dry. Looking perky and upright again.</div>
+          </div>
+        </div>
+      </div>
+
+      <a href="journal.html" class="btn btn-primary" style="margin-top:1.25rem;width:100%;justify-content:center">Open Journal</a>
+    </div>
+
+    <!-- compact notebook SVG — ruled page with notes, small size -->
+    <div class="journal-teaser__img" style="display:flex;align-items:center;justify-content:center;background:#f0ede4;border-radius:var(--radius-xl);padding:1.5rem">
+      <svg viewBox="0 0 220 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:220px;height:auto;filter:drop-shadow(2px 4px 10px rgba(0,0,0,.1))">
+        <!-- page shadow -->
+        <rect x="18" y="18" width="188" height="234" rx="6" fill="#e0d8c8" opacity=".6"/>
+        <!-- notebook page -->
+        <rect x="14" y="12" width="188" height="234" rx="6" fill="#fffef5" stroke="#d4ccb0" stroke-width="1.5"/>
+        <!-- red margin line -->
+        <line x1="44" y1="12" x2="44" y2="246" stroke="#f0a0a0" stroke-width="1" opacity=".6"/>
+        <!-- hole punches -->
+        <circle cx="14" cy="52" r="5" fill="#f0ede4" stroke="#d0c8b0" stroke-width="1"/>
+        <circle cx="14" cy="100" r="5" fill="#f0ede4" stroke="#d0c8b0" stroke-width="1"/>
+        <circle cx="14" cy="148" r="5" fill="#f0ede4" stroke="#d0c8b0" stroke-width="1"/>
+        <circle cx="14" cy="196" r="5" fill="#f0ede4" stroke="#d0c8b0" stroke-width="1"/>
+        <!-- ruled lines -->
+        <line x1="14" y1="44" x2="202" y2="44" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="60" x2="202" y2="60" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="76" x2="202" y2="76" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="92" x2="202" y2="92" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="108" x2="202" y2="108" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="124" x2="202" y2="124" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="140" x2="202" y2="140" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="156" x2="202" y2="156" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="172" x2="202" y2="172" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="188" x2="202" y2="188" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="204" x2="202" y2="204" stroke="#e4dcc8" stroke-width=".9"/>
+        <line x1="14" y1="220" x2="202" y2="220" stroke="#e4dcc8" stroke-width=".9"/>
+        <!-- Note 1 label + handwriting -->
+        <text x="50" y="40" font-size="7" fill="#8b7340" font-family="system-ui" font-weight="700" text-transform="uppercase" letter-spacing="1">MONSTERA</text>
+        <path d="M50 58 Q75 56 104 58 Q128 60 152 58" stroke="#b09840" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+        <path d="M50 74 Q70 72 96 74 Q116 76 136 74" stroke="#b09840" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".75"/>
+        <!-- divider -->
+        <line x1="50" y1="88" x2="165" y2="88" stroke="#d4ccb0" stroke-width=".8" stroke-dasharray="3 3"/>
+        <!-- Note 2 label + handwriting -->
+        <text x="50" y="106" font-size="7" fill="#8b7340" font-family="system-ui" font-weight="700">SNAKE PLANT</text>
+        <path d="M50 122 Q78 120 108 122 Q134 124 158 122" stroke="#b09840" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <path d="M50 138 Q68 136 90 138 Q110 140 128 138" stroke="#b09840" stroke-width="1.1" stroke-linecap="round" fill="none" opacity=".7"/>
+        <!-- divider -->
+        <line x1="50" y1="152" x2="165" y2="152" stroke="#d4ccb0" stroke-width=".8" stroke-dasharray="3 3"/>
+        <!-- Note 3 label + handwriting -->
+        <text x="50" y="170" font-size="7" fill="#8b7340" font-family="system-ui" font-weight="700">ALL PLANTS</text>
+        <path d="M50 186 Q72 184 100 186 Q124 188 148 186" stroke="#b09840" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <path d="M50 202 Q66 200 86 202 Q104 204 120 202" stroke="#b09840" stroke-width="1.1" stroke-linecap="round" fill="none" opacity=".65"/>
+        <!-- date stamp -->
+
+        <!-- small pencil -->
+        <g class="pencil-anim">
+          <rect x="160" y="166" width="7" height="28" rx="2.5" fill="#f59e0b"/>
+          <rect x="160" y="163" width="7" height="6" rx="1.2" fill="#9ca3af"/>
+          <rect x="161" y="160" width="5" height="5" rx="1.5" fill="#fca5a5"/>
+          <path d="M160 194 L163.5 203 L167 194Z" fill="#d4a96a"/>
+          <polygon points="163.5,203 162.5,199.5 164.5,199.5" fill="#374151"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pp-footer">
+  <div class="pp-footer__inner">
+    <div class="pp-footer__brand" style="display:flex;align-items:center;gap:.4rem"><svg width="22" height="22" viewBox="0 0 30 30" fill="none" style="flex-shrink:0"><path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/><path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/><path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/><circle cx="15" cy="8" r="4.5" fill="#173809"/><circle cx="15" cy="8" r="2.5" fill="#c5efad"/><path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="#173809" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><span>Plant Parent</span></div>
+    <nav class="pp-footer__links">
+      <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a>
     </nav>
+    <p class="pp-footer__copy">© 2026 Manvi Tandon. All rights reserved.</p>
+  </div>
+</footer>
 
-    <section class="hero" style="text-align: center; padding: 6rem 2rem">
-      <div class="hero-content">
-        <h1
-          id="typewriter-headline"
-          class="typing-cursor"
-          style="
-            font-family: var(--font-heading);
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            line-height: 1;
-            min-height: 3.5rem;
-          "
-        ></h1>
+<nav class="pp-tab-bar">
+  <a href="index.html" class="pp-tab-bar__item active"><span class="material-symbols-outlined">home</span>Home</a>
+  <a href="browse.html" class="pp-tab-bar__item"><span class="material-symbols-outlined">search</span>Explore</a>
+  <a href="journal.html" class="pp-tab-bar__item"><span class="material-symbols-outlined">auto_stories</span>Journal</a>
+</nav>
 
-        <p style="font-size: 1.3rem; margin-bottom: 2rem; color: #444">
-        Plant Parent is a <strong>mindful care tracker</strong> for your
-          indoor garden. Document growth, track watering schedules, and
-          cultivate a moment of peace with your plants every day.
-        </p>
-        <div
-          style="
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-          "
-        >
-          <a href="browse.html" class="primary-btn">Find Plants</a>
-          <a
-            href="journal.html"
-            class="primary-btn"
-            style="
-              background: var(--color-paper);
-              color: var(--color-ink);
-              border: 3px solid var(--color-ink);
-              font-weight: bold;
-              text-shadow: none;
-            "
-            >Open Journal</a
-          >
-        </div>
-      </div>
-    </section>
+<div class="pp-loader" id="pp-loader">
+  <div class="pp-loader__ring">
+    <svg class="ring" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="24" stroke="#e8e6e1" stroke-width="3"/><path d="M28 4 A24 24 0 0 1 52 28" stroke="#173809" stroke-width="3" stroke-linecap="round"/></svg>
+    <svg class="mark" viewBox="0 0 30 30" fill="none"><path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/><path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/><path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/><circle cx="15" cy="8" r="4.5" fill="#173809"/><circle cx="15" cy="8" r="2.5" fill="#c5efad"/></svg>
+  </div>
+</div>
+<div class="toast-container" id="toast-container"></div>
 
-    <section
-      class="features"
-      style="max-width: 1000px; margin: 0 auto; padding: 2rem 2rem 6rem 2rem"
-    >
-      <div style="text-align: center; margin-bottom: 3rem">
-        <h2
-          style="
-            font-family: var(--font-heading);
-            font-size: 2.5rem;
-            border-bottom: 2px solid var(--color-ink);
-            display: inline-block;
-          "
-        >
-          How It Works
-        </h2>
-      </div>
+<script>
+// Nav drawer
+const burgerBtn=document.getElementById('burger-btn'),navDrawer=document.getElementById('nav-drawer'),drawerClose=document.getElementById('drawer-close'),drawerBackdrop=document.getElementById('drawer-backdrop');
+function openDrawer(){navDrawer.classList.add('open');document.body.style.overflow='hidden';}
+function closeDrawer(){navDrawer.classList.remove('open');document.body.style.overflow='';}
+burgerBtn.addEventListener('click',openDrawer);
+drawerClose.addEventListener('click',closeDrawer);
+drawerBackdrop.addEventListener('click',closeDrawer);
 
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-num">1</div>
-          <div style="text-align: center; margin-bottom: 15px">
-            <div class="sticker static" style="--rotate-deg: -3deg">📖</div>
-          </div>
-          <h3 style="font-family: var(--font-heading); font-size: 1.5rem">
-            Find
-          </h3>
-          <p>
-            Browse the database to find your plants or add your own. Create a
-            digital inventory of your garden.
-          </p>
-        </div>
+// ── TYPEWRITER ───────────────────────────────────────────────────────────────
+// Ghost holds layout. Accent is empty in HTML — text + .visible are set in the
+// same synchronous block so the browser paints them together: zero flicker.
+(function(){
+  const span   = document.getElementById('type-text');
+  const accent = document.getElementById('hero-accent');
+  const line1  = 'Become the plant parent';
+  const line2  = 'you were meant to be.';
+  let i = 0;
+  function tick(){
+    span.textContent = line1.slice(0, i + 1);
+    i++;
+    if(i < line1.length){
+      setTimeout(tick, 70);
+    } else {
+      span.classList.add('done');
+      setTimeout(function(){
+        accent.textContent = line2;
+        accent.style.color = '#52a87a';
+        accent.classList.add('visible');
+      }, 500);
+    }
+  }
+  setTimeout(tick, 400);
+})();
 
-        <div class="step-card">
-          <div class="step-num">2</div>
-          <div style="text-align: center; margin-bottom: 15px">
-            <div class="sticker static" style="--rotate-deg: 2deg">💧</div>
-          </div>
-          <h3 style="font-family: var(--font-heading); font-size: 1.5rem">
-            Track
-          </h3>
-          <p>
-            Log watering, sunlight, and more. Keep a visual history of your
-            plant's health over time.
-          </p>
-        </div>
+// Nav search
+document.getElementById('nav-search').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.value.trim())window.location=`browse.html?q=${encodeURIComponent(e.target.value.trim())}`;});
 
-        <div class="step-card">
-          <div class="step-num">3</div>
-          <div style="text-align: center; margin-bottom: 15px">
-            <div class="sticker static" style="--rotate-deg: -1deg">🧘</div>
-          </div>
-          <h3 style="font-family: var(--font-heading); font-size: 1.5rem">
-            Grow
-          </h3>
-          <p>
-            Complete daily mindfulness prompts. As your plants grow, you build
-            healthy, grounding habits.
-          </p>
-        </div>
-      </div>
+// Quote fade-in on scroll
+(function(){
+  const q = document.getElementById('quote-band');
+  if(!q) return;
+  const obs = new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){ q.classList.add('visible'); obs.disconnect(); }
+  }, {threshold:0.3});
+  obs.observe(q);
+})();
 
-      <div style="text-align: center; margin-top: 4rem">
-        <p
-          style="
-            font-family: var(--font-heading);
-            font-size: 1.5rem;
-            color: #666;
-          "
-        >
-          "To plant a garden is to believe in tomorrow."
-        </p>
-      </div>
-    </section>
-
-    <footer>
-      <p style="font-family: var(--font-heading); font-size: 1.2rem; margin: 0">
-        &copy; 2025 Manvi Tandon. All rights reserved.
-      </p>
-    </footer>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // 1. TYPEWRITER LOGIC
-        const textToType = "STOP KILLING YOUR PLANTS!";
-        const element = document.getElementById('typewriter-headline');
-        const typingSpeed = 100;
-        let charIndex = 0;
-
-        function type() {
-            if (charIndex < textToType.length) {
-                element.textContent += textToType.charAt(charIndex);
-                charIndex++;
-                setTimeout(type, typingSpeed);
-            } else {
-                // Wait 1 second after typing, then trigger the fade out
-                setTimeout(() => {
-                    element.classList.add('typing-finished');
-                }, 1000);
-            }
-        }
-        // Start typing after half a second
-        setTimeout(type, 500);
-
-        // 2. VINE GROWING LOGIC
-        const vineLeft = document.getElementById('vine-left');
-        const vineRight = document.getElementById('vine-right');
-
-        window.addEventListener('scroll', () => {
-            // Calculate how far down the page we are (0 to 1)
-            const scrollTop = window.scrollY;
-            const docHeight = document.body.scrollHeight - window.innerHeight;
-            
-            // Prevent division by zero if page is short
-            if (docHeight <= 0) return;
-
-            const scrollPercent = scrollTop / docHeight;
-
-            // Map scroll percentage to height (Max 100%)
-            const growthHeight = Math.min(scrollPercent * 100, 100) + '%';
-
-            vineLeft.style.height = growthHeight;
-            vineRight.style.height = growthHeight;
-        });
-    });
+// Page transitions
+(function(){const loader=document.getElementById('pp-loader');document.addEventListener('click',e=>{const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('mailto')||href.startsWith('http'))return;e.preventDefault();loader.classList.add('active');document.body.classList.add('pp-leaving');setTimeout(()=>{window.location.href=href;},220);});window.addEventListener('pageshow',()=>{loader.classList.remove('active');document.body.classList.remove('pp-leaving');});})();
 </script>
-  </body>
+</body>
 </html>
