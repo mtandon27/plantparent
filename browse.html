@@ -7,15 +7,20 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23173809'/><path d='M50 92 L50 44' stroke='%23c5efad' stroke-width='6' stroke-linecap='round'/><path d='M50 62 C33 62 23 48 30 35 C37 35 46 45 50 62Z' fill='%23c5efad'/><path d='M50 49 C67 45 77 55 70 68 C63 68 53 58 50 49Z' fill='%2395d5b2'/><circle cx='50' cy='26' r='14' fill='%23c5efad'/><circle cx='50' cy='26' r='7' fill='%23173809'/></svg>"/>
   <link rel="stylesheet" href="plant-parent.css"/>
   <style>
+    /* Cancel body pageFadeIn animation — it applies transform to body which
+       makes body the containing block for position:fixed children (side panel).
+       The panel then gets positioned relative to body offset, not the viewport. */
+    body { animation: none !important; }
+
     /* ── SIDE PANEL ── */
     .side-panel-overlay {
       position: fixed; inset: 0; z-index: 800;
       background: rgba(10,20,8,.45);
       backdrop-filter: blur(4px);
-      display: none; opacity: 0;
-      transition: opacity .22s ease;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity .22s ease, visibility .22s;
     }
-    .side-panel-overlay.open { display: block; opacity: 1; }
+    .side-panel-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
 
     .side-panel {
       position: fixed;
@@ -257,6 +262,18 @@ document.getElementById('burger-btn').addEventListener('click',()=>{document.get
 document.getElementById('drawer-close').addEventListener('click',()=>{document.getElementById('nav-drawer').classList.remove('open');document.body.style.overflow='';});
 document.getElementById('drawer-backdrop').addEventListener('click',()=>{document.getElementById('nav-drawer').classList.remove('open');document.body.style.overflow='';});
 
+// Cancel the body pageFadeIn animation so it never creates a fixed-position containing block
+document.body.style.animation = 'none';
+
+// Move side panel and overlay to the very end of <body> so they're always
+// the last elements painted and guaranteed above every stacking context
+(function(){
+  const overlay = document.getElementById('sp-overlay');
+  const panel   = document.getElementById('side-panel');
+  document.body.appendChild(overlay);
+  document.body.appendChild(panel);
+})();;
+
 function showToast(msg){const tc=document.getElementById('toast-container');const t=document.createElement('div');t.className='toast';t.innerHTML=`<span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">check_circle</span>${msg}`;tc.appendChild(t);setTimeout(()=>t.remove(),2800);}
 
 function lightLabel(lux){if(lux<=1000)return'Low light';if(lux<=4000)return'Medium indirect';if(lux<=8000)return'Bright indirect';return'Full sun';}
@@ -490,9 +507,12 @@ function openPanel(p){
     renderCards();
   };
 
+  // Reset panel scroll so it always opens at the top
+  sidePanel.querySelector('.sp-body').scrollTop = 0;
+
   spOverlay.classList.add('open');
   sidePanel.classList.add('open');
-  document.body.style.overflow='hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 
 function _updateFavBtn(btn, icon, active) {
@@ -510,7 +530,7 @@ function _updateFavBtn(btn, icon, active) {
 function closePanel(){
   spOverlay.classList.remove('open');
   sidePanel.classList.remove('open');
-  document.body.style.overflow='';
+  document.documentElement.style.overflow = '';
 }
 
 document.getElementById('sp-close').addEventListener('click',closePanel);
