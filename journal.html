@@ -439,14 +439,20 @@ document.getElementById('note-textarea').addEventListener('keydown', e => {
 // ── History modal ─────────────────────────────────────────
 const histOverlay = document.getElementById('history-modal-overlay');
 
+// Cancel body animation (transform on body breaks position:fixed children)
+document.body.style.animation = 'none';
+
+// Move modal to end of <body> so it always paints above every stacking context
+document.body.appendChild(histOverlay);
+
 function openHistoryModal() {
   renderHistoryModal();
   histOverlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 function closeHistoryModal() {
   histOverlay.classList.remove('open');
-  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
 }
 
 document.getElementById('see-all-btn').addEventListener('click', e => {
@@ -498,22 +504,32 @@ renderCollection();
 renderLogHistory();
 </script>
 <style>
+/* Cancel body pageFadeIn animation — transform on body breaks position:fixed children */
+body { animation: none !important; }
+
 /* Journal history modal — guarantee centred and in viewport regardless of scroll */
 #history-modal-overlay {
   position: fixed !important;
   top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
   width: 100vw !important; height: 100dvh !important;
   z-index: 9999 !important;
-  display: none !important;
+  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   background: rgba(5,15,5,0.55) !important;
   backdrop-filter: blur(5px) !important;
   padding: 1.5rem !important;
   box-sizing: border-box !important;
+  /* Hidden by default via opacity/visibility so CSS transitions work */
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity .22s ease, visibility .22s !important;
 }
 #history-modal-overlay.open {
-  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 .history-modal {
   background: #fff !important;
