@@ -6,6 +6,7 @@
   <title>Plant Parent</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23173809'/><path d='M50 92 L50 44' stroke='%23c5efad' stroke-width='6' stroke-linecap='round'/><path d='M50 62 C33 62 23 48 30 35 C37 35 46 45 50 62Z' fill='%23c5efad'/><path d='M50 49 C67 45 77 55 70 68 C63 68 53 58 50 49Z' fill='%2395d5b2'/><circle cx='50' cy='26' r='14' fill='%23c5efad'/><circle cx='50' cy='26' r='7' fill='%23173809'/></svg>"/>
   <link rel="stylesheet" href="plant-parent.css"/>
+  <script src="db.js"></script>
 </head>
 <body>
 
@@ -15,13 +16,13 @@
     <a href="index.html" class="pp-nav__logo">
       <div class="pp-nav__logo-icon">
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/>
-          <path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/>
-          <path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/>
-          <circle cx="15" cy="8" r="4.5" fill="#173809"/>
-          <circle cx="15" cy="8" r="2.5" fill="#c5efad"/>
-          <path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="#173809" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-          <path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M15 28 L15 13" stroke="var(--clr-primary-fixed)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="var(--clr-primary-fixed)"/>
+          <path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="var(--clr-mustard)"/>
+          <circle cx="15" cy="8" r="4.5" fill="var(--clr-primary-fixed)"/>
+          <circle cx="15" cy="8" r="2.5" fill="var(--clr-ink)"/>
+          <path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="var(--clr-primary-fixed)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="var(--clr-mustard)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
         </svg>
       </div>
       <span class="pp-nav__logo-text">Plant Parent</span>
@@ -36,10 +37,17 @@
         <span class="material-symbols-outlined" style="font-size:.9rem;color:var(--clr-outline);flex-shrink:0">search</span>
         <input type="text" placeholder="Search plants…" id="nav-search" autocomplete="off"/>
       </div>
-      <button class="pp-nav__icon-btn" aria-label="Notifications">
-        <span class="material-symbols-outlined">notifications</span>
-      </button>
-      <button class="pp-nav__avatar" aria-label="Profile">MT</button>
+      <button class="nav-signup-btn" id="nav-signup-btn" type="button">Sign Up</button>
+      <div class="notify-wrap">
+        <button class="pp-nav__icon-btn" id="nav-notify-btn" data-notify aria-label="Notifications">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <div class="notify-panel" id="notify-panel">
+          <div class="notify-panel__header">Notifications</div>
+          <div class="notify-panel__list" id="notify-list"></div>
+        </div>
+      </div>
+      <a href="profile.html" class="pp-nav__avatar" id="nav-avatar" aria-label="Profile">PP</a>
     </div>
     <button class="pp-nav__burger" id="burger-btn" aria-label="Menu">
       <span class="material-symbols-outlined">menu</span>
@@ -157,6 +165,183 @@
   </div>
 </div>
 
+<!-- EDIT / DELETE A PAST NOTE -->
+<div class="modal-overlay" id="edit-note-overlay">
+  <div class="modal" style="max-width:440px">
+    <button class="modal__close" id="edit-note-close"><span class="material-symbols-outlined">close</span></button>
+    <div style="padding:1.75rem 1.75rem 0">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;margin-bottom:1rem">
+        <span style="font-weight:700;color:var(--clr-primary);font-size:.85rem" id="edit-note-plant"></span>
+        <span style="font-size:.72rem;color:var(--clr-outline)" id="edit-note-date"></span>
+      </div>
+      <label class="form-field">
+        <span>Note</span>
+        <textarea id="edit-note-text" rows="4"></textarea>
+      </label>
+    </div>
+    <div style="padding:0 1.75rem 1.75rem;display:flex;gap:.65rem">
+      <button type="button" class="btn btn-surface" id="edit-note-delete" style="color:var(--clr-terracotta)">
+        <span class="material-symbols-outlined" style="font-size:1.1rem">delete</span> Delete
+      </button>
+      <button type="button" class="btn btn-primary" id="edit-note-save" style="flex:1;justify-content:center">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN UP GATE — required before anything gets saved -->
+<div class="modal-overlay" id="signup-overlay">
+  <div class="modal add-plant-modal">
+    <button class="modal__close" id="signup-close"><span class="material-symbols-outlined">close</span></button>
+    <div class="add-plant-modal__header">
+      <svg class="add-plant-mascot" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="32" cy="53" rx="15" ry="5" fill="var(--clr-sand)"/>
+        <path d="M30 44 C22 39 18 27 24 17 C32 21 34 35 30 44Z" fill="var(--clr-primary-fixed)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M34 44 C42 39 46 29 42 21 C36 25 33 35 34 44Z" fill="var(--clr-mustard)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M32 44 C30 37 31 31 34 27 C37 32 36 39 32 44Z" fill="var(--clr-sage)" stroke="var(--clr-ink)" stroke-width="1.6" stroke-linejoin="round"/>
+        <rect x="16" y="44" width="32" height="7" rx="3" fill="var(--clr-secondary)" stroke="var(--clr-ink)" stroke-width="2"/>
+        <path d="M18 49 L46 49 L42 59 L22 59 Z" fill="var(--clr-tertiary)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="26" cy="52" r="1.7" fill="var(--clr-ink)"/>
+        <circle cx="38" cy="52" r="1.7" fill="var(--clr-ink)"/>
+        <path d="M28 56c2 2 6 2 8 0" stroke="var(--clr-ink)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <ellipse cx="23" cy="54" rx="2" ry="1.3" fill="var(--clr-tertiary)" opacity=".45"/>
+        <ellipse cx="41" cy="54" rx="2" ry="1.3" fill="var(--clr-tertiary)" opacity=".45"/>
+      </svg>
+      <div>
+        <div class="add-plant-modal__title">Create your account</div>
+        <div class="add-plant-modal__sub">Sign up to start saving plants and journal entries.</div>
+      </div>
+    </div>
+    <form id="signup-form" class="add-plant-form">
+      <label class="form-field">
+        <span>Name <em>*</em></span>
+        <input type="text" id="su-name" placeholder="Jane Doe" required autocomplete="name"/>
+      </label>
+      <label class="form-field">
+        <span>Username <em>*</em></span>
+        <input type="text" id="su-username" placeholder="janedoe22" required autocomplete="username"/>
+      </label>
+      <label class="form-field">
+        <span>Password <em>*</em></span>
+        <div class="password-field">
+          <input type="password" id="su-password" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password"/>
+          <button type="button" class="password-toggle" id="su-password-toggle" aria-label="Show password">
+            <span class="material-symbols-outlined">visibility</span>
+          </button>
+        </div>
+      </label>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Create account</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADD CUSTOM PLANT MODAL -->
+<div class="modal-overlay" id="add-plant-overlay">
+  <div class="modal add-plant-modal">
+    <button class="modal__close" id="add-plant-close"><span class="material-symbols-outlined">close</span></button>
+    <div class="add-plant-modal__header">
+      <svg class="add-plant-mascot" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="32" cy="53" rx="15" ry="5" fill="var(--clr-sand)"/>
+        <path d="M30 44 C22 39 18 27 24 17 C32 21 34 35 30 44Z" fill="var(--clr-primary-fixed)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M34 44 C42 39 46 29 42 21 C36 25 33 35 34 44Z" fill="var(--clr-mustard)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M32 44 C30 37 31 31 34 27 C37 32 36 39 32 44Z" fill="var(--clr-sage)" stroke="var(--clr-ink)" stroke-width="1.6" stroke-linejoin="round"/>
+        <rect x="16" y="44" width="32" height="7" rx="3" fill="var(--clr-secondary)" stroke="var(--clr-ink)" stroke-width="2"/>
+        <path d="M18 49 L46 49 L42 59 L22 59 Z" fill="var(--clr-tertiary)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="26" cy="52" r="1.7" fill="var(--clr-ink)"/>
+        <circle cx="38" cy="52" r="1.7" fill="var(--clr-ink)"/>
+        <path d="M28 56c2 2 6 2 8 0" stroke="var(--clr-ink)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <ellipse cx="23" cy="54" rx="2" ry="1.3" fill="var(--clr-tertiary)" opacity=".45"/>
+        <ellipse cx="41" cy="54" rx="2" ry="1.3" fill="var(--clr-tertiary)" opacity=".45"/>
+      </svg>
+      <div>
+        <div class="add-plant-modal__title">Add a plant</div>
+        <div class="add-plant-modal__sub">Not in our catalog? Add it and start tracking its growth.</div>
+      </div>
+    </div>
+    <form id="add-plant-form" class="add-plant-form">
+      <label class="form-field">
+        <span>Nickname <em>*</em></span>
+        <input type="text" id="ap-name" placeholder="e.g. Big Bertha" required autocomplete="off"/>
+      </label>
+      <label class="form-field">
+        <span>Species / label</span>
+        <input type="text" id="ap-alias" placeholder="e.g. Backyard fig cutting" autocomplete="off"/>
+      </label>
+      <div class="form-row">
+        <label class="form-field">
+          <span>Watering</span>
+          <select id="ap-watering">
+            <option value="7">Weekly</option>
+            <option value="14" selected>Every ~2 weeks</option>
+            <option value="21">Every ~3 weeks</option>
+            <option value="30">Monthly+</option>
+          </select>
+        </label>
+        <label class="form-field">
+          <span>Light need</span>
+          <select id="ap-light">
+            <option value="800">Low light</option>
+            <option value="2000" selected>Medium indirect</option>
+            <option value="6000">Bright indirect</option>
+            <option value="10000">Full sun</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-field">
+        <span>Photo</span>
+        <label for="ap-photo" class="file-upload-btn">
+          <span class="material-symbols-outlined">photo_camera</span>
+          <span class="file-upload-btn__name" id="ap-photo-name">Choose a photo…</span>
+        </label>
+        <input type="file" id="ap-photo" accept="image/*" style="display:none"/>
+        <div class="add-plant-form__preview" id="ap-photo-preview"></div>
+      </div>
+      <label class="form-field">
+        <span>Notes</span>
+        <textarea id="ap-notes" rows="2" placeholder="Where it came from, why it's special…"></textarea>
+      </label>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Add to my garden</button>
+    </form>
+  </div>
+</div>
+
+<!-- GROWTH TIMELINE MODAL -->
+<div class="modal-overlay" id="growth-overlay">
+  <div class="modal growth-modal">
+    <button class="modal__close" id="growth-close"><span class="material-symbols-outlined">close</span></button>
+    <div class="growth-modal__header">
+      <img class="growth-modal__avatar" id="growth-avatar" src="" alt=""/>
+      <div>
+        <div class="growth-modal__title" id="growth-title"></div>
+        <div class="growth-modal__sub" id="growth-sub"></div>
+      </div>
+    </div>
+    <div class="growth-modal__body">
+      <form id="growth-form" class="growth-form">
+        <div class="growth-form__row">
+          <textarea id="growth-note" rows="2" placeholder="What changed? New leaf, repot, height check…"></textarea>
+        </div>
+        <div class="growth-form__row">
+          <label class="form-field" style="margin-bottom:0;flex:1">
+            <span>Height (cm, optional)</span>
+            <input type="number" id="growth-height" min="0" step="0.5" placeholder="e.g. 42"/>
+          </label>
+        </div>
+        <div class="form-field" style="margin-bottom:0">
+          <span>Photo (optional)</span>
+          <label for="growth-photo" class="file-upload-btn">
+            <span class="material-symbols-outlined">photo_camera</span>
+            <span class="file-upload-btn__name" id="growth-photo-name">Choose a photo…</span>
+          </label>
+          <input type="file" id="growth-photo" accept="image/*" style="display:none"/>
+        </div>
+        <div id="growth-photo-preview" class="add-plant-form__preview"></div>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-start">Log growth entry</button>
+      </form>
+      <div id="growth-timeline" class="timeline"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Loading overlay -->
 <div class="pp-loader" id="pp-loader">
   <div class="pp-loader__ring">
@@ -165,11 +350,11 @@
       <path d="M28 4 A24 24 0 0 1 52 28" stroke="#173809" stroke-width="3" stroke-linecap="round"/>
     </svg>
     <svg class="mark" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/>
-      <path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/>
-      <path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/>
-      <circle cx="15" cy="8" r="4.5" fill="#173809"/>
-      <circle cx="15" cy="8" r="2.5" fill="#c5efad"/>
+      <path d="M15 28 L15 13" stroke="var(--clr-primary)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="var(--clr-primary)"/>
+      <path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="var(--clr-mustard)"/>
+      <circle cx="15" cy="8" r="4.5" fill="var(--clr-primary)"/>
+      <circle cx="15" cy="8" r="2.5" fill="var(--clr-primary-fixed)"/>
     </svg>
   </div>
 </div>
@@ -180,7 +365,7 @@
 <!-- Footer -->
 <footer class="pp-footer">
   <div class="pp-footer__inner">
-    <div class="pp-footer__brand" style="display:flex;align-items:center;gap:.4rem"><svg width="22" height="22" viewBox="0 0 30 30" fill="none" style="flex-shrink:0"><path d="M15 28 L15 13" stroke="#173809" stroke-width="2" stroke-linecap="round"/><path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="#173809"/><path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="#2d6a4f"/><circle cx="15" cy="8" r="4.5" fill="#173809"/><circle cx="15" cy="8" r="2.5" fill="#c5efad"/><path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="#173809" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="#2d6a4f" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><span>Plant Parent</span></div>
+    <div class="pp-footer__brand" style="display:flex;align-items:center;gap:.4rem"><svg width="22" height="22" viewBox="0 0 30 30" fill="none" style="flex-shrink:0"><path d="M15 28 L15 13" stroke="var(--clr-primary)" stroke-width="2" stroke-linecap="round"/><path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="var(--clr-primary)"/><path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="var(--clr-mustard)"/><circle cx="15" cy="8" r="4.5" fill="var(--clr-primary)"/><circle cx="15" cy="8" r="2.5" fill="var(--clr-primary-fixed)"/><path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="var(--clr-primary)" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="var(--clr-mustard)" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><span>Plant Parent</span></div>
     <nav class="pp-footer__links">
       <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a>
     </nav>
@@ -243,27 +428,44 @@ function todayShort() { return new Date().toLocaleDateString('en-US',{month:'sho
 document.getElementById('today-date').textContent = todayLong();
 document.getElementById('note-date').textContent  = todayShort();
 
-// ── Plants ────────────────────────────────────────────────
-const GARDEN = [
-  { pid:'monstera',      name:'Monstera Deliciosa', alias:'Swiss Cheese Plant',     img:'assets/MonsteraJournal.webp',        health:88, status:'good' },
-  { pid:'fiddle',        name:'Fiddle Leaf Fig',    alias:'Ficus lyrata',           img:'https://opb-img.plantbook.io/ficus%20lyrata.jpg', health:52, status:'warn' },
-  { pid:'snake',         name:'Snake Plant',        alias:'Sansevieria',            img:'assets/snake.jpg',                   health:95, status:'good' },
-  { pid:'pothos',        name:'Marble Pothos',      alias:'Epipremnum aureum',      img:'assets/pothos.jpg',                  health:35, status:'crit' },
-  { pid:'pothos-window', name:'Window Pothos',      alias:'Epipremnum aureum var.', img:'assets/pothoswindow.jpg',            health:74, status:'good' },
-  { pid:'trailing',      name:'Trailing Pothos',    alias:'Epipremnum aureum',      img:'assets/Watermark-1200-x-1800-1.jpg', health:81, status:'good' },
-];
+// ── Mascot (empty states + Add Plant modal header) ─────────
+const MASCOT_SVG = `<svg class="pp-empty-state__mascot" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="32" cy="53" rx="15" ry="5" fill="var(--clr-sand)"/>
+  <path d="M30 44 C22 39 18 27 24 17 C32 21 34 35 30 44Z" fill="var(--clr-primary-fixed)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M34 44 C42 39 46 29 42 21 C36 25 33 35 34 44Z" fill="var(--clr-mustard)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M32 44 C30 37 31 31 34 27 C37 32 36 39 32 44Z" fill="var(--clr-sage)" stroke="var(--clr-ink)" stroke-width="1.6" stroke-linejoin="round"/>
+  <rect x="16" y="44" width="32" height="7" rx="3" fill="var(--clr-secondary)" stroke="var(--clr-ink)" stroke-width="2"/>
+  <path d="M18 49 L46 49 L42 59 L22 59 Z" fill="var(--clr-tertiary)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="26" cy="52" r="1.7" fill="var(--clr-ink)"/>
+  <circle cx="38" cy="52" r="1.7" fill="var(--clr-ink)"/>
+  <path d="M28 56c2 2 6 2 8 0" stroke="var(--clr-ink)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  <ellipse cx="23" cy="54" rx="2" ry="1.3" fill="var(--clr-tertiary)" opacity=".45"/>
+  <ellipse cx="41" cy="54" rx="2" ry="1.3" fill="var(--clr-tertiary)" opacity=".45"/>
+</svg>`;
 
+// ── Plants (garden) — real data from PPDB ──────────────────
+let GARDEN = [];
 const STATUS_TEXT = { good:'Doing well', warn:'Needs water', crit:'Needs attention' };
-// garden-count removed
-document.getElementById('collection-count').textContent = `${GARDEN.length} plants`;
+const careState = {}; // per-session "already logged today" flags, keyed by gardenId
 
-// Populate plant tag select
-const sel = document.getElementById('note-plant');
-GARDEN.forEach(p => { const o = document.createElement('option'); o.value=p.pid; o.textContent=p.name; sel.appendChild(o); });
+function isToday(iso){
+  if (!iso) return false;
+  const d = new Date(iso), n = new Date();
+  return d.getFullYear()===n.getFullYear() && d.getMonth()===n.getMonth() && d.getDate()===n.getDate();
+}
+function plantImage(p){ return p.image || 'https://opb-img.plantbook.io/monstera%20deliciosa.jpg'; }
+function refreshCareState(){
+  GARDEN.forEach(p => { careState[p.id] = { water:isToday(p.lastWateredAt), sun:isToday(p.lastSunAt), feed:isToday(p.lastFedAt) }; });
+}
 
-// ── Care state ────────────────────────────────────────────
-const careState = {};
-GARDEN.forEach(p => { careState[p.pid] = { water:false, sun:false, feed:false }; });
+async function loadGarden(){
+  GARDEN = await PPDB.listGarden();
+  refreshCareState();
+  document.getElementById('collection-count').textContent = GARDEN.length ? `${GARDEN.length} plant${GARDEN.length!==1?'s':''}` : '';
+  const sel = document.getElementById('note-plant');
+  sel.innerHTML = '<option value="">Tag a plant…</option>';
+  GARDEN.forEach(p => { const o = document.createElement('option'); o.value=p.id; o.textContent=p.displayName; sel.appendChild(o); });
+}
 
 function renderCollection() {
   const col = document.getElementById('journal-collection');
@@ -272,36 +474,44 @@ function renderCollection() {
   const ICO_SUN  = `<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" style="pointer-events:none"><circle cx="7" cy="7" r="2.5"/><line x1="7" y1="1" x2="7" y2="2.5"/><line x1="7" y1="11.5" x2="7" y2="13"/><line x1="1" y1="7" x2="2.5" y2="7"/><line x1="11.5" y1="7" x2="13" y2="7"/><line x1="2.9" y1="2.9" x2="3.9" y2="3.9"/><line x1="10.1" y1="10.1" x2="11.1" y2="11.1"/><line x1="11.1" y1="2.9" x2="10.1" y2="3.9"/><line x1="3.9" y1="10.1" x2="2.9" y2="11.1"/></svg>`;
   const ICO_LEAF = `<svg width="12" height="13" viewBox="0 0 13 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><path d="M2 12C2 12 4 6 9 4C11 3 12 2 12 2C12 2 12 4 10 7C8 10 4 12 2 12Z"/><line x1="2" y1="12" x2="7" y2="7"/></svg>`;
 
-  col.innerHTML = GARDEN.map(p => {
-    const cs     = careState[p.pid];
-    const hClass = p.health < 40 ? 'crit' : p.health < 65 ? 'warn' : '';
+  const addTile = `
+    <div class="add-plant-tile" id="add-plant-tile">
+      <div class="add-plant-tile__icon">+</div>
+      <div class="add-plant-tile__label">Add a plant</div>
+    </div>`;
+
+  const cards = GARDEN.map(p => {
+    const cs     = careState[p.id];
+    const health = PPDB.util.computeHealth(p);
+    const status = PPDB.util.healthStatus(health);
+    const hClass = status === 'good' ? '' : status;
     return `
-    <div class="journal-plant-card" data-card="${p.pid}">
+    <div class="journal-plant-card" data-card="${p.id}">
       <div class="journal-plant-card__img">
-        <img src="${p.img}" alt="${p.name}" loading="lazy"
+        <img src="${plantImage(p)}" alt="${PPDB.util.escapeHtml(p.displayName)}" loading="lazy"
              onerror="this.src='https://opb-img.plantbook.io/monstera%20deliciosa.jpg'"/>
       </div>
       <div class="journal-plant-card__body">
         <div>
           <div style="display:flex;align-items:baseline;justify-content:space-between;gap:.4rem">
-            <div class="journal-plant-card__name">${p.name}</div>
-            <span class="plant-status ${p.status}">${STATUS_TEXT[p.status]}</span>
+            <div class="journal-plant-card__name">${PPDB.util.escapeHtml(p.displayName)}</div>
+            <span class="plant-status ${status}">${STATUS_TEXT[status]}</span>
           </div>
-          <div class="journal-plant-card__alias">${p.alias}</div>
+          <div class="journal-plant-card__alias">${PPDB.util.escapeHtml(p.alias || (p.isCustom ? 'Custom plant' : ''))}</div>
           <div class="health-bar__track">
-            <div class="health-bar__fill ${hClass}" style="width:${p.health}%"></div>
+            <div class="health-bar__fill ${hClass}" style="width:${health}%"></div>
           </div>
         </div>
         <div class="journal-plant-card__care">
-          <button class="care-btn ${cs.water?'active':''}" data-care="water" data-pid="${p.pid}">
+          <button class="care-btn ${cs.water?'active':''}" data-care="water" data-gid="${p.id}">
             ${ICO_DROP}
             <span style="pointer-events:none">${cs.water?'Watered ✓':'Water'}</span>
           </button>
-          <button class="care-btn ${cs.sun?'active':''}" data-care="sun" data-pid="${p.pid}">
+          <button class="care-btn ${cs.sun?'active':''}" data-care="sun" data-gid="${p.id}">
             ${ICO_SUN}
             <span style="pointer-events:none">${cs.sun?'Sun ✓':'Sun'}</span>
           </button>
-          <button class="care-btn ${cs.feed?'active':''}" data-care="feed" data-pid="${p.pid}">
+          <button class="care-btn ${cs.feed?'active':''}" data-care="feed" data-gid="${p.id}">
             ${ICO_LEAF}
             <span style="pointer-events:none">${cs.feed?'Fed ✓':'Feed'}</span>
           </button>
@@ -309,76 +519,346 @@ function renderCollection() {
       </div>
     </div>`;
   }).join('');
+
+  const empty = GARDEN.length ? '' : `
+    <div class="pp-empty-state">
+      ${MASCOT_SVG}
+      <div class="pp-empty-state__title">Your garden is empty</div>
+      <div class="pp-empty-state__text">Save a plant from Explore, or add one of your own to start tracking its growth.</div>
+    </div>`;
+
+  col.innerHTML = addTile + cards + empty;
+  document.getElementById('add-plant-tile').addEventListener('click', () => openAddPlantModal());
 }
 
-document.getElementById('journal-collection').addEventListener('click', e => {
-  const btn = e.target.closest('[data-care]');
-  if (!btn) return;
-  const pid  = btn.dataset.pid;
-  const type = btn.dataset.care;
-  careState[pid][type] = !careState[pid][type];
-  const labels = { water:'watered', sun:'got some sun', feed:'fed' };
-  const icons  = { water:'water_drop', sun:'wb_sunny', feed:'eco' };
-  const plant  = GARDEN.find(p => p.pid === pid);
-  if (careState[pid][type]) {
-    addLogEntry(plant.name, `${plant.name} ${labels[type]}.`, []);
+document.getElementById('journal-collection').addEventListener('click', async e => {
+  const careBtn = e.target.closest('[data-care]');
+  if (careBtn) {
+    if (!(await requireAccount())) return;
+    const gid  = careBtn.dataset.gid;
+    const type = careBtn.dataset.care;
+    if (careState[gid] && careState[gid][type]) {
+      showToast('Already logged today', 'check_circle');
+      return;
+    }
+    await PPDB.logCare(gid, type);
+    const row = await PPDB.getGardenItem(gid);
+    const idx = GARDEN.findIndex(g => g.id === gid);
+    if (idx > -1) GARDEN[idx] = row;
+    refreshCareState();
+    const labels = { water:'watered', sun:'got some sun', feed:'fed' };
+    const icons  = { water:'water_drop', sun:'wb_sunny', feed:'eco' };
+    await PPDB.addJournalEntry({ gardenId: gid, plantName: row.displayName, text: `${row.displayName} ${labels[type]}.` });
+    showToast(`${row.displayName} ${labels[type]}`, icons[type]);
+    renderCollection();
+    await loadAndRenderJournal();
+    return;
   }
-  showToast(careState[pid][type] ? `${plant.name} ${labels[type]}` : `Undone`, icons[type]);
-  renderCollection();
+  const card = e.target.closest('.journal-plant-card');
+  if (card) openGrowthModal(card.dataset.card);
 });
 
-// ── Log entries ───────────────────────────────────────────
-let LOG_ENTRIES = [
-  { plant:'Monstera Deliciosa', date:'Mar 28, 2026', text:'Watered thoroughly — soil was getting dry. New leaf unfurling on the south side.', images:[] },
-  { plant:'Fiddle Leaf Fig',    date:'Mar 27, 2026', text:'Rotated 90° toward the light. Leaves looking perkier already.', images:[] },
-  { plant:'Snake Plant',        date:'Mar 25, 2026', text:'Fed with diluted liquid fertiliser. Growth has been consistent this month.', images:[] },
-  { plant:'Marble Pothos',      date:'Mar 22, 2026', text:'Trimmed a few yellowing leaves. Added a moss pole for the longer trailing vine.', images:[] },
-  { plant:'Window Pothos',      date:'Mar 20, 2026', text:'Misted the leaves and wiped them down with a damp cloth. Looking glossy.', images:[] },
-  { plant:'Trailing Pothos',    date:'Mar 18, 2026', text:'Watered after the top inch dried out completely. Roots look healthy.', images:[] },
-  { plant:'Monstera Deliciosa', date:'Oct 24, 2025', text:'Repotted into a bigger terracotta pot — roots were filling the whole base. Added perlite to the mix.', images:[] },
-  { plant:'Fiddle Leaf Fig',    date:'Oct 21, 2025', text:'Leaves wiped down with neem oil. Moved closer to the window. Hoping this helps with the drooping.', images:[] },
-  { plant:'Monstera Deliciosa', date:'Oct 17, 2025', text:"First full fenestration on a new leaf! It's been about 6 months since I got it — very happy.", images:[] },
-  { plant:'Snake Plant',        date:'Oct 10, 2025', text:'Watered for the first time in 3 weeks. Soil was completely dry. Looking perky again.', images:[] },
-];
+// ── Log entries — real data from PPDB ──────────────────────
+let LOG_ENTRIES = [];
 
-function addLogEntry(plant, text, images = []) {
-  LOG_ENTRIES.unshift({ plant, date: todayShort(), text, images });
-  // log-count removed
+async function loadAndRenderJournal(){
+  LOG_ENTRIES = await PPDB.listJournalEntries();
   renderLogHistory();
 }
 
 function makeEntryHTML(e, i) {
-  const imgStrip = e.images && e.images.length
-    ? `<div class="log-entry__img-strip">${e.images.map(img =>
+  const imgStrip = e.photos && e.photos.length
+    ? `<div class="log-entry__img-strip">${e.photos.map(img =>
         `<img class="log-entry__img" src="${img.dataUrl}" alt="photo"/>`
       ).join('')}</div>`
     : '';
   return `
-  <div class="log-entry" data-idx="${i}">
+  <div class="log-entry" data-id="${e.id}">
     <div class="log-entry__header">
-      <span class="log-entry__plant">${e.plant}</span>
-      <span class="log-entry__date">${e.date}</span>
+      <span class="log-entry__plant">${PPDB.util.escapeHtml(e.plantName)}</span>
+      <span class="log-entry__date">${PPDB.util.formatDateShort(e.date)}</span>
     </div>
-    <div class="log-entry__text">${e.text}</div>
+    <div class="log-entry__text">${PPDB.util.escapeHtml(e.text)}</div>
     ${imgStrip}
   </div>`;
 }
 
 function renderLogHistory() {
-  const el     = document.getElementById('log-history');
+  const el = document.getElementById('log-history');
+  if (!LOG_ENTRIES.length) {
+    el.innerHTML = `
+      <div class="log-entry">
+        <span class="log-entry__example-tag">Example</span>
+        <div class="log-entry__header">
+          <span class="log-entry__plant">Monstera Deliciosa</span>
+          <span class="log-entry__date">Today</span>
+        </div>
+        <div class="log-entry__text">Watered thoroughly today — spotted a new leaf unfurling on the south side! 🌱</div>
+      </div>
+      <p class="growth-empty" style="padding-top:0">Your notes will show up here like this, one sticky note per entry. Write your first one above.</p>`;
+    document.getElementById('see-all-btn').style.display = 'none';
+    return;
+  }
+  document.getElementById('see-all-btn').style.display = '';
   el.innerHTML = LOG_ENTRIES.slice(0,4).map(makeEntryHTML).join('');
-  el.querySelectorAll('.log-entry').forEach(entry =>
-    entry.addEventListener('click', () => entry.classList.toggle('expanded'))
+  el.querySelectorAll('.log-entry[data-id]').forEach(entry =>
+    entry.addEventListener('click', () => openEditNoteModal(entry.dataset.id))
   );
 }
 
 function renderHistoryModal() {
   const body     = document.getElementById('history-modal-body');
-  body.innerHTML = LOG_ENTRIES.map(makeEntryHTML).join('');
-  body.querySelectorAll('.log-entry').forEach(entry =>
-    entry.addEventListener('click', () => entry.classList.toggle('expanded'))
+  body.innerHTML = LOG_ENTRIES.length ? LOG_ENTRIES.map(makeEntryHTML).join('') : `<div class="growth-empty">No journal entries yet.</div>`;
+  body.querySelectorAll('.log-entry[data-id]').forEach(entry =>
+    entry.addEventListener('click', () => openEditNoteModal(entry.dataset.id))
   );
 }
+
+// ── Edit / delete a past note ────────────────────────────────
+const editNoteOverlay = document.getElementById('edit-note-overlay');
+let editingNoteId = null;
+
+async function openEditNoteModal(id){
+  const entry = await PPDB.getJournalEntry(id);
+  if (!entry) return;
+  editingNoteId = id;
+  document.getElementById('edit-note-plant').textContent = entry.plantName;
+  document.getElementById('edit-note-date').textContent = PPDB.util.formatDateShort(entry.date);
+  document.getElementById('edit-note-text').value = entry.text;
+  editNoteOverlay.classList.add('open');
+  document.documentElement.style.overflow = 'hidden';
+}
+function closeEditNoteModal(){
+  editNoteOverlay.classList.remove('open');
+  document.documentElement.style.overflow = '';
+  editingNoteId = null;
+}
+document.getElementById('edit-note-close').addEventListener('click', closeEditNoteModal);
+editNoteOverlay.addEventListener('click', e => { if (e.target === editNoteOverlay) closeEditNoteModal(); });
+
+document.getElementById('edit-note-save').addEventListener('click', async () => {
+  if (!editingNoteId) return;
+  const text = document.getElementById('edit-note-text').value.trim();
+  if (!text) { showToast('Note can\'t be empty', 'edit_note'); return; }
+  await PPDB.updateJournalEntry(editingNoteId, { text });
+  closeEditNoteModal();
+  await loadAndRenderJournal();
+  showToast('Note updated', 'check_circle');
+});
+
+document.getElementById('edit-note-delete').addEventListener('click', async () => {
+  if (!editingNoteId) return;
+  if (!confirm('Delete this note? This can\'t be undone.')) return;
+  await PPDB.deleteJournalEntry(editingNoteId);
+  closeEditNoteModal();
+  await loadAndRenderJournal();
+  showToast('Note deleted', 'delete');
+});
+
+// ── Growth timeline modal ───────────────────────────────────
+const growthOverlay = document.getElementById('growth-overlay');
+let currentGardenId = null;
+let growthPhotoDataUrl = null;
+
+async function openGrowthModal(gardenId){
+  currentGardenId = gardenId;
+  const p = GARDEN.find(g => g.id === gardenId);
+  if (!p) return;
+  document.getElementById('growth-avatar').src = plantImage(p);
+  document.getElementById('growth-title').textContent = p.displayName;
+  document.getElementById('growth-sub').textContent = p.alias || (p.isCustom ? 'Custom plant' : '');
+  document.getElementById('growth-note').value = '';
+  document.getElementById('growth-height').value = '';
+  document.getElementById('growth-photo').value = '';
+  document.getElementById('growth-photo-name').textContent = 'Choose a photo…';
+  document.getElementById('growth-photo-preview').innerHTML = '';
+  growthPhotoDataUrl = null;
+  await renderGrowthTimeline(gardenId);
+  growthOverlay.classList.add('open');
+  document.documentElement.style.overflow = 'hidden';
+}
+function closeGrowthModal(){
+  growthOverlay.classList.remove('open');
+  document.documentElement.style.overflow = '';
+}
+document.getElementById('growth-close').addEventListener('click', closeGrowthModal);
+growthOverlay.addEventListener('click', e => { if (e.target === growthOverlay) closeGrowthModal(); });
+
+async function renderGrowthTimeline(gardenId){
+  const logs = await PPDB.listGrowthLogs(gardenId);
+  const el = document.getElementById('growth-timeline');
+  if (!logs.length) {
+    el.innerHTML = `<div class="growth-empty">No growth entries yet — log the first one above.</div>`;
+    return;
+  }
+  el.innerHTML = logs.map((l, i) => `
+    <div class="timeline-item">
+      <div class="timeline-item__dot-col">
+        <div class="timeline-item__dot"></div>
+        ${i < logs.length-1 ? '<div class="timeline-item__line"></div>' : ''}
+      </div>
+      <div class="timeline-item__body">
+        <div class="timeline-item__date">${PPDB.util.formatDateShort(l.date)}${l.heightCm ? ` · ${l.heightCm}cm` : ''}</div>
+        ${l.note ? `<div class="timeline-item__text">${PPDB.util.escapeHtml(l.note)}</div>` : ''}
+        ${l.photoDataUrl ? `<img src="${l.photoDataUrl}" alt="growth photo" style="margin-top:.5rem;border-radius:10px;max-width:100%;max-height:180px;object-fit:cover;display:block"/>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('growth-photo').addEventListener('change', function(){
+  const file = this.files[0];
+  if (!file) return;
+  document.getElementById('growth-photo-name').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    growthPhotoDataUrl = e.target.result;
+    document.getElementById('growth-photo-preview').innerHTML = `<img src="${growthPhotoDataUrl}" alt="preview"/>`;
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('growth-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!(await requireAccount())) return;
+  const note = document.getElementById('growth-note').value.trim();
+  const heightCm = parseFloat(document.getElementById('growth-height').value) || null;
+  if (!note && !heightCm && !growthPhotoDataUrl) { showToast('Add a note, height, or photo first', 'edit_note'); return; }
+  await PPDB.addGrowthLog({ gardenId: currentGardenId, note, heightCm, photoDataUrl: growthPhotoDataUrl });
+  const p = GARDEN.find(g => g.id === currentGardenId);
+  if (p && note) await PPDB.addJournalEntry({ gardenId: currentGardenId, plantName: p.displayName, text: note });
+  document.getElementById('growth-note').value = '';
+  document.getElementById('growth-height').value = '';
+  document.getElementById('growth-photo').value = '';
+  document.getElementById('growth-photo-name').textContent = 'Choose a photo…';
+  document.getElementById('growth-photo-preview').innerHTML = '';
+  growthPhotoDataUrl = null;
+  await renderGrowthTimeline(currentGardenId);
+  await loadAndRenderJournal();
+  showToast('Growth entry logged');
+});
+
+// ── Sign up gate — nothing gets saved until an account exists ──────────────
+const signupOverlay = document.getElementById('signup-overlay');
+function openSignupGate(){
+  document.getElementById('signup-form').reset();
+  signupOverlay.classList.add('open');
+  document.documentElement.style.overflow = 'hidden';
+}
+function closeSignupGate(){
+  signupOverlay.classList.remove('open');
+  document.documentElement.style.overflow = '';
+}
+document.getElementById('signup-close').addEventListener('click', closeSignupGate);
+signupOverlay.addEventListener('click', e => { if (e.target === signupOverlay) closeSignupGate(); });
+const suPasswordToggle = document.getElementById('su-password-toggle');
+suPasswordToggle.addEventListener('click', () => {
+  const input = document.getElementById('su-password');
+  const icon = suPasswordToggle.querySelector('.material-symbols-outlined');
+  const showing = input.type === 'text';
+  input.type = showing ? 'password' : 'text';
+  icon.textContent = showing ? 'visibility' : 'visibility_off';
+  suPasswordToggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+});
+document.getElementById('signup-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = document.getElementById('su-name').value.trim();
+  const username = document.getElementById('su-username').value.trim();
+  const password = document.getElementById('su-password').value;
+  if (!name || !username || !password) return;
+  await PPDB.createAccount({ name, username, password });
+  closeSignupGate();
+  const navAvatar = document.getElementById('nav-avatar');
+  if (navAvatar) navAvatar.textContent = PPDB.util.initials(name);
+  document.getElementById('nav-signup-btn').classList.remove('show');
+  showToast(`Welcome, ${name}! You can save plants now.`);
+});
+document.getElementById('nav-signup-btn').addEventListener('click', openSignupGate);
+
+// ── Notifications — real care reminders from the garden ─────────────────────
+async function renderNotifications(){
+  const garden = await PPDB.listGarden();
+  const items = garden
+    .map(p => ({ p, health: PPDB.util.computeHealth(p), status: PPDB.util.healthStatus(PPDB.util.computeHealth(p)) }))
+    .filter(x => x.status !== 'good')
+    .sort((a,b) => a.health - b.health);
+
+  const btn = document.getElementById('nav-notify-btn');
+  const list = document.getElementById('notify-list');
+  if(!items.length){
+    btn.classList.remove('has-alerts');
+    list.innerHTML = `<div class="notify-panel__empty">🌱 You're all caught up — no plants need attention.</div>`;
+    return;
+  }
+  btn.classList.add('has-alerts');
+  list.innerHTML = items.slice(0,6).map(({p,status}) => `
+    <a href="journal.html" class="notify-item">
+      <div class="notify-item__icon ${status}">${status==='crit'?'💧':'⏰'}</div>
+      <div>
+        <div class="notify-item__title">${PPDB.util.escapeHtml(p.displayName)}</div>
+        <div class="notify-item__sub">${status==='crit' ? 'Needs water now' : 'Water coming due soon'}</div>
+      </div>
+    </a>`).join('');
+}
+document.getElementById('nav-notify-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  document.getElementById('notify-panel').classList.toggle('open');
+});
+document.addEventListener('click', e => {
+  const panel = document.getElementById('notify-panel');
+  if(panel.classList.contains('open') && !e.target.closest('.notify-wrap')) panel.classList.remove('open');
+});
+async function requireAccount(){
+  if (await PPDB.hasAccount()) return true;
+  openSignupGate();
+  return false;
+}
+
+// ── Add Custom Plant modal ──────────────────────────────────
+const addPlantOverlay = document.getElementById('add-plant-overlay');
+let apPhotoDataUrl = null;
+
+async function openAddPlantModal(){
+  if (!(await requireAccount())) return;
+  document.getElementById('add-plant-form').reset();
+  document.getElementById('ap-photo-preview').innerHTML = '';
+  document.getElementById('ap-photo-name').textContent = 'Choose a photo…';
+  apPhotoDataUrl = null;
+  addPlantOverlay.classList.add('open');
+  document.documentElement.style.overflow = 'hidden';
+}
+function closeAddPlantModal(){
+  addPlantOverlay.classList.remove('open');
+  document.documentElement.style.overflow = '';
+}
+document.getElementById('add-plant-close').addEventListener('click', closeAddPlantModal);
+addPlantOverlay.addEventListener('click', e => { if (e.target === addPlantOverlay) closeAddPlantModal(); });
+
+document.getElementById('ap-photo').addEventListener('change', function(){
+  const file = this.files[0];
+  if (!file) return;
+  document.getElementById('ap-photo-name').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    apPhotoDataUrl = e.target.result;
+    document.getElementById('ap-photo-preview').innerHTML = `<img src="${apPhotoDataUrl}" alt="preview"/>`;
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('add-plant-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const displayName = document.getElementById('ap-name').value.trim();
+  if (!displayName) return;
+  const alias = document.getElementById('ap-alias').value.trim();
+  const wateringDays = parseInt(document.getElementById('ap-watering').value, 10);
+  const lightNeed = parseInt(document.getElementById('ap-light').value, 10);
+  const notes = document.getElementById('ap-notes').value.trim();
+  await PPDB.addCustomPlant({ displayName, alias, image: apPhotoDataUrl, wateringDays, lightNeed, notes });
+  closeAddPlantModal();
+  await loadGarden();
+  renderCollection();
+  showToast(`${displayName} added to your garden`);
+});
 
 // ── Image attachments ─────────────────────────────────────
 let pendingImages = []; // array of { dataUrl, name }
@@ -416,19 +896,23 @@ function renderNoteImgs() {
 }
 
 // ── Save note ─────────────────────────────────────────────
-document.getElementById('note-save').addEventListener('click', () => {
+document.getElementById('note-save').addEventListener('click', async () => {
   const text  = document.getElementById('note-textarea').value.trim();
-  const pid   = document.getElementById('note-plant').value;
-  const pName = pid ? (GARDEN.find(p => p.pid === pid)?.name ?? 'General') : 'General';
+  const gid   = document.getElementById('note-plant').value;
+  const pName = gid ? (GARDEN.find(p => p.id === gid)?.displayName ?? 'General') : 'General';
   if (!text && pendingImages.length === 0) {
     showToast('Write something first!', 'edit_note');
     return;
   }
-  addLogEntry(pName, text || '(photo note)', [...pendingImages]);
+  if (!(await requireAccount())) {
+    return;
+  }
+  await PPDB.addJournalEntry({ gardenId: gid || null, plantName: pName, text: text || '(photo note)', photos: [...pendingImages] });
   document.getElementById('note-textarea').value = '';
   document.getElementById('note-plant').value    = '';
   pendingImages = [];
   renderNoteImgs();
+  await loadAndRenderJournal();
   showToast('Note saved', 'check_circle');
 });
 
@@ -500,8 +984,16 @@ document.getElementById('mood-picker').addEventListener('click', e => {
 })();
 
 // ── Init ──────────────────────────────────────────────────
-renderCollection();
-renderLogHistory();
+(async function init(){
+  const profile = await PPDB.getProfile();
+  const navAvatar = document.getElementById('nav-avatar');
+  if (navAvatar) navAvatar.textContent = PPDB.util.initials(profile.name);
+  document.getElementById('nav-signup-btn').classList.toggle('show', !profile.accountCreated);
+  await loadGarden();
+  renderCollection();
+  await loadAndRenderJournal();
+  await renderNotifications();
+})();
 </script>
 <style>
 /* Cancel body pageFadeIn animation — transform on body breaks position:fixed children */
@@ -532,7 +1024,8 @@ body { animation: none !important; }
   pointer-events: auto !important;
 }
 .history-modal {
-  background: #fff !important;
+  background: var(--clr-surface-lowest) !important;
+  border: 2px solid var(--clr-ink) !important;
   border-radius: 16px !important;
   width: 100% !important;
   max-width: 520px !important;
@@ -556,7 +1049,7 @@ body { animation: none !important; }
   color: var(--clr-outline); display: flex; align-items: center; padding: .2rem;
 }
 .history-modal__body {
-  flex: 1; overflow-y: auto; padding: 1rem 1.25rem 1.5rem;
+  flex: 1; overflow-y: auto; padding: 1.25rem 1.35rem 1.5rem;
   scrollbar-width: thin;
 }
 

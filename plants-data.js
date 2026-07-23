@@ -1,4 +1,4 @@
-{
+window.PLANT_CATALOG = {
   "count": 99,
   "plants": [
     {
@@ -2884,4 +2884,4 @@
       ]
     }
   ]
-}
+};

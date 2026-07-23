@@ -1,33 +1,35 @@
 # 🌱 Plant Parent
-Plant Parent is a plant care journal designed to help you track your indoor garden while cultivating mindfulness. Built with a nostalgic pixel-art aesthetic, it allows users to "adopt" plants, log their care routine, and earn badges for being a great plant parent.
+Plant Parent is a plant care journal designed to help you track your indoor garden while cultivating mindfulness. It allows users to browse a species catalog, "adopt" plants (or add their own), log their care routine, and track growth over time — with a fun, green-and-earthy visual style.
 
 ### 📖 About the Data
-The plant data and imagery in the Explore section of this application are sourced from the [Open Plantbook API](https://open.plantbook.io/).
+The plant catalog in the Explore section is sourced from the [Open Plantbook API](https://open.plantbook.io/), then hand-enriched with additional care details.
 
-**Data Sourcing:** Plant details such as scientific names, watering requirements (```min_watering_benchmark_days```), sunlight needs (```min_light_lux```), and toxicity information were retrieved from the Open Plantbook database.
+**Data Sourcing:** Plant details such as scientific names, watering requirements (```min_watering_benchmark_days```), sunlight needs (```min_light_lux```), and toxicity information were retrieved from the Open Plantbook database, then expanded with ```category```, ```difficulty```, ```growth_rate```, ```description```, ```common_issues```, and ```propagation``` for a more complete species reference (99 plants total).
 
 **Imagery:** The plant images used in the Plant cards are sourced via the Open Plantbook image CDN.
 
-**Implementation:** To ensure a fast and offline-friendly experience for this static web application, a curated subset of the API data was processed and stored in a local plants.json file, which the application fetches on load.
+**Implementation:** The catalog lives in ```plants.json``` (data of record) and is also mirrored into ```plants-data.js```, a plain ```window.PLANT_CATALOG = {...}``` script the app actually loads. Using a ```<script>``` tag instead of ```fetch()``` means Explore works even when you open ```index.html``` straight from disk — browsers block ```fetch()``` of local files, but not ```<script src>```.
 
 ### ✨ Features
 
 * Interactive Journal: log watering, sunlight, and fertilizer with quick buttons everyday. Add personal notes and track your mood alongside your plant's health.
 
-* Daily Quests: Complete mindful tasks to earn XP.
+* Growth Tracking: log a photo, note, and height for any plant in your garden and watch its timeline build over time.
 
-* Badges: Unlock stickers for streaks and milestones.
+* Add Your Own Plant: found a cutting or a plant that isn't in our catalog? Add it as a custom plant and track it exactly like any other.
 
-* Plant Database: Browse a catalog of plants, filter by "Pet Safe" or "Easy Care," and "Adopt" them into your personal garden.
+* Plant Database: browse a catalog of 99 species, filter by "Pet Safe," "Easy Care," and more, and read each plant's description, common issues, and propagation methods.
 
-* Local Storage: (coming soon) Your garden and journal entries are saved directly to your browser—no login required.
+* Profile: a real profile with your name, photo, bio, and stats (plants, journal entries, days as a plant parent).
+
+* Real persistence: your profile, garden, custom plants, growth logs, journal entries, and favourites are stored in a structured client-side database (IndexedDB) — no login, no server, no data loss on refresh.
 
 ### 🛠️ Tech Stack
-* HTML5: Semantic structure for the Journal, Explore, and Home pages.
+* HTML5: Semantic structure for the Home, Explore, Journal, and Profile pages.
 
-* CSS3: Custom properties (variables) for theming, CSS Grid for layout, and keyframe animations for the "growing" vines and typewriter effects.
+* CSS3: Custom properties (variables) for theming, CSS Grid/Flexbox for layout, and keyframe animations for hover and page-transition effects.
 
-* JavaScript: Handles all logic, like fetching and parsing the plants.json data.
+* JavaScript: All app logic, including a small IndexedDB wrapper (```db.js```) shared by every page for reading/writing the user's profile, garden, growth logs, journal, and favourites.
 
 ### 🚀 How to Run
 Clone or download this repository or hosted on Github pages [here](https://mtandon27.github.io/plantparent/index.html).
@@ -37,8 +39,11 @@ Ensure the following files are in the same directory:
 index.html
 journal.html
 browse.html
-global.css
+profile.html
+db.js
+plant-parent.css
 plants.json
+plants-data.js
 assets/ folder (containing images)
 ```
 

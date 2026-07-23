@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plant Parent — Profile</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23173809'/><path d='M50 92 L50 44' stroke='%23c5efad' stroke-width='6' stroke-linecap='round'/><path d='M50 62 C33 62 23 48 30 35 C37 35 46 45 50 62Z' fill='%23c5efad'/><path d='M50 49 C67 45 77 55 70 68 C63 68 53 58 50 49Z' fill='%2395d5b2'/><circle cx='50' cy='26' r='14' fill='%23c5efad'/><circle cx='50' cy='26' r='7' fill='%23173809'/></svg>"/>
+  <link rel="stylesheet" href="plant-parent.css"/>
+  <script src="db.js"></script>
+  <style>
+    body { animation: none !important; }
+
+    .profile-hero {
+      display: flex; align-items: center; gap: 1.5rem;
+      background: var(--clr-sand); border-radius: var(--radius-xl);
+      padding: 2rem; margin-bottom: 2rem;
+    }
+    @media (max-width: 560px) { .profile-hero { flex-direction: column; text-align: center; } }
+    .profile-avatar-wrap { position: relative; flex-shrink: 0; cursor: pointer; }
+    .profile-avatar {
+      width: 96px; height: 96px; border-radius: 50%;
+      background: var(--clr-mustard); color: var(--clr-ink);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 700; overflow: hidden;
+      border: 3px solid var(--clr-ink); box-shadow: 0 4px 16px rgba(36,31,20,.15);
+    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-avatar-edit {
+      position: absolute; bottom: 0; right: 0;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--clr-primary); color: var(--clr-on-primary);
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--clr-ink); pointer-events: none;
+    }
+    .profile-avatar-edit .material-symbols-outlined { font-size: 1rem; }
+    .profile-hero__body { flex: 1; min-width: 0; }
+    .profile-name-input {
+      font-family: var(--font-sans); font-size: 1.5rem; font-weight: 700;
+      color: var(--clr-primary); background: none; border: none; outline: none;
+      width: 100%; padding: .2rem 0; border-bottom: 1.5px solid transparent;
+      transition: border-color .15s;
+    }
+    .profile-name-input:focus { border-bottom-color: var(--clr-primary); }
+    .profile-bio-input {
+      font-family: var(--font-sans); font-size: .88rem; color: var(--clr-on-surface-variant);
+      background: none; border: none; outline: none; resize: none;
+      width: 100%; line-height: 1.5; padding: .2rem 0; border-bottom: 1.5px solid transparent;
+      transition: border-color .15s;
+    }
+    .profile-bio-input:focus { border-bottom-color: var(--clr-outline-variant); }
+    .profile-joined { font-size: .74rem; color: var(--clr-outline); margin-top: .4rem; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-bottom: 2rem; }
+    @media (max-width: 560px) { .stat-row { grid-template-columns: 1fr; } }
+    .stat-tile {
+      background: var(--clr-surface-lowest); border: 2px solid var(--clr-ink); border-radius: var(--radius-lg);
+      padding: 1.25rem 1.4rem; text-align: center;
+    }
+    .stat-tile__num { font-size: 1.8rem; font-weight: 700; color: var(--clr-primary); }
+    .stat-tile__label { font-size: .78rem; color: var(--clr-outline); margin-top: .2rem; }
+
+    .profile-section-title { font-size: 1.05rem; font-weight: 700; color: var(--clr-primary); margin-bottom: 1rem; }
+    .recent-plants { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 2rem; }
+    .recent-plant-row {
+      display: flex; align-items: center; gap: .8rem;
+      background: var(--clr-surface-lowest); border: 2px solid var(--clr-ink); border-radius: var(--radius-md);
+      padding: .6rem .9rem;
+    }
+    .recent-plant-row img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; background: var(--clr-surface-low); flex-shrink: 0; }
+    .recent-plant-row__name { font-size: .88rem; font-weight: 600; color: var(--clr-on-surface); }
+    .recent-plant-row__meta { font-size: .74rem; color: var(--clr-outline); }
+
+    @media(max-width:768px){
+      .pp-nav__inner{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:0!important;padding:0 1rem!important;}
+      .pp-nav__links{display:none!important;}
+      .pp-nav__search{display:none!important;}
+      .pp-nav__actions{display:flex!important;align-items:center!important;gap:.15rem!important;margin-left:auto!important;}
+      .pp-nav__burger{display:flex!important;}
+    }
+    .pp-nav__drawer-panel a{display:block;font-size:1rem;font-weight:500;color:var(--clr-on-surface-variant);padding:.85rem 1rem;border-radius:var(--radius-md);border-bottom:1px solid var(--clr-outline-variant);transition:background .15s,color .15s;}
+    .pp-nav__drawer-panel a:last-child{border-bottom:none;}
+    .pp-nav__drawer-panel a:hover,.pp-nav__drawer-panel a.active{background:var(--clr-primary-fixed);color:var(--clr-primary);}
+  </style>
+</head>
+<body>
+
+<nav class="pp-nav">
+  <div class="pp-nav__inner">
+    <a href="index.html" class="pp-nav__logo">
+      <div class="pp-nav__logo-icon">
+        <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+          <path d="M15 28 L15 13" stroke="var(--clr-primary-fixed)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="var(--clr-primary-fixed)"/>
+          <path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="var(--clr-mustard)"/>
+          <circle cx="15" cy="8" r="4.5" fill="var(--clr-primary-fixed)"/>
+          <circle cx="15" cy="8" r="2.5" fill="var(--clr-ink)"/>
+          <path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="var(--clr-primary-fixed)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="var(--clr-mustard)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <span class="pp-nav__logo-text">Plant Parent</span>
+    </a>
+    <ul class="pp-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="browse.html">Explore</a></li>
+      <li><a href="journal.html">Journal</a></li>
+    </ul>
+    <div class="pp-nav__actions">
+      <div class="pp-nav__search">
+        <span class="material-symbols-outlined" style="font-size:.9rem;color:var(--clr-outline);flex-shrink:0">search</span>
+        <input type="text" placeholder="Search plants…" id="nav-search" autocomplete="off"/>
+      </div>
+      <div class="notify-wrap">
+        <button class="pp-nav__icon-btn" id="nav-notify-btn" data-notify aria-label="Notifications"><span class="material-symbols-outlined">notifications</span></button>
+        <div class="notify-panel" id="notify-panel">
+          <div class="notify-panel__header">Notifications</div>
+          <div class="notify-panel__list" id="notify-list"></div>
+        </div>
+      </div>
+      <a href="profile.html" class="pp-nav__avatar" id="nav-avatar" aria-label="Profile" style="outline:2px solid var(--clr-primary-fixed)">PP</a>
+    </div>
+    <button class="pp-nav__burger" id="burger-btn" aria-label="Menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+</nav>
+
+<div class="pp-nav__drawer" id="nav-drawer">
+  <div class="pp-nav__drawer-backdrop" id="drawer-backdrop"></div>
+  <div class="pp-nav__drawer-panel">
+    <button class="pp-nav__drawer-close" id="drawer-close"><span class="material-symbols-outlined">close</span></button>
+    <a href="index.html">Home</a>
+    <a href="browse.html">Explore</a>
+    <a href="journal.html">Journal</a>
+  </div>
+</div>
+
+<main class="pp-main">
+
+  <!-- Shown until an account has been created — nothing saves before this -->
+  <div id="signup-view" style="max-width:420px;margin:2rem auto 0">
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" style="margin:0 auto 1rem">
+        <ellipse cx="32" cy="53" rx="15" ry="5" fill="var(--clr-sand)"/>
+        <path d="M30 44 C22 39 18 27 24 17 C32 21 34 35 30 44Z" fill="var(--clr-primary-fixed)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M34 44 C42 39 46 29 42 21 C36 25 33 35 34 44Z" fill="var(--clr-mustard)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M32 44 C30 37 31 31 34 27 C37 32 36 39 32 44Z" fill="var(--clr-sage)" stroke="var(--clr-ink)" stroke-width="1.6" stroke-linejoin="round"/>
+        <rect x="16" y="44" width="32" height="7" rx="3" fill="var(--clr-secondary)" stroke="var(--clr-ink)" stroke-width="2"/>
+        <path d="M18 49 L46 49 L42 59 L22 59 Z" fill="var(--clr-tertiary)" stroke="var(--clr-ink)" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="26" cy="52" r="1.7" fill="var(--clr-ink)"/>
+        <circle cx="38" cy="52" r="1.7" fill="var(--clr-ink)"/>
+        <path d="M28 56c2 2 6 2 8 0" stroke="var(--clr-ink)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <ellipse cx="23" cy="54" rx="2" ry="1.3" fill="var(--clr-tertiary)" opacity=".45"/>
+        <ellipse cx="41" cy="54" rx="2" ry="1.3" fill="var(--clr-tertiary)" opacity=".45"/>
+      </svg>
+      <h1 style="font-size:1.4rem;font-weight:700;color:var(--clr-primary);margin-bottom:.4rem">Create your account</h1>
+      <p style="font-size:.85rem;color:var(--clr-outline)">Sign up before you can save plants, favourites, or journal entries.</p>
+    </div>
+    <form id="signup-form">
+      <label class="form-field">
+        <span>Name <em>*</em></span>
+        <input type="text" id="su-name" placeholder="Jane Doe" required autocomplete="name"/>
+      </label>
+      <label class="form-field">
+        <span>Username <em>*</em></span>
+        <input type="text" id="su-username" placeholder="janedoe22" required autocomplete="username"/>
+      </label>
+      <label class="form-field">
+        <span>Password <em>*</em></span>
+        <div class="password-field">
+          <input type="password" id="su-password" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password"/>
+          <button type="button" class="password-toggle" id="su-password-toggle" aria-label="Show password">
+            <span class="material-symbols-outlined">visibility</span>
+          </button>
+        </div>
+      </label>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Create account</button>
+    </form>
+  </div>
+
+  <!-- Shown once an account exists -->
+  <div id="profile-view" style="display:none">
+    <div class="profile-hero">
+      <div class="profile-avatar-wrap" id="avatar-wrap">
+        <div class="profile-avatar" id="profile-avatar">PP</div>
+        <div class="profile-avatar-edit"><span class="material-symbols-outlined">photo_camera</span></div>
+        <input type="file" id="avatar-input" accept="image/*" style="display:none"/>
+      </div>
+      <div class="profile-hero__body">
+        <input type="text" class="profile-name-input" id="profile-name" placeholder="Your name"/>
+        <textarea class="profile-bio-input" id="profile-bio" rows="2" placeholder="Add a short bio — what do you grow?"></textarea>
+        <div class="profile-joined" id="profile-joined"></div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-tile"><div class="stat-tile__num" id="stat-plants">0</div><div class="stat-tile__label">Plants in garden</div></div>
+      <div class="stat-tile"><div class="stat-tile__num" id="stat-entries">0</div><div class="stat-tile__label">Journal entries</div></div>
+      <div class="stat-tile"><div class="stat-tile__num" id="stat-days">0</div><div class="stat-tile__label">Days as a plant parent</div></div>
+    </div>
+
+    <div>
+      <div class="profile-section-title">Recently added</div>
+      <div class="recent-plants" id="recent-plants"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="pp-footer">
+  <div class="pp-footer__inner">
+    <div class="pp-footer__brand" style="display:flex;align-items:center;gap:.4rem"><svg width="22" height="22" viewBox="0 0 30 30" fill="none" style="flex-shrink:0"><path d="M15 28 L15 13" stroke="var(--clr-primary)" stroke-width="2" stroke-linecap="round"/><path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="var(--clr-primary)"/><path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="var(--clr-mustard)"/><circle cx="15" cy="8" r="4.5" fill="var(--clr-primary)"/><circle cx="15" cy="8" r="2.5" fill="var(--clr-primary-fixed)"/><path d="M15 27 C13 27 11 26 11 24 C11 22 13 22 14 24" stroke="var(--clr-primary)" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M15 27 C17 27 19 26 19 24 C19 22 17 22 16 24" stroke="var(--clr-mustard)" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><span>Plant Parent</span></div>
+    <nav class="pp-footer__links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></nav>
+    <p class="pp-footer__copy">© 2026 Manvi Tandon. All rights reserved.</p>
+  </div>
+</footer>
+
+<nav class="pp-tab-bar">
+  <a href="index.html" class="pp-tab-bar__item"><span class="material-symbols-outlined">home</span>Home</a>
+  <a href="browse.html" class="pp-tab-bar__item"><span class="material-symbols-outlined">search</span>Explore</a>
+  <a href="journal.html" class="pp-tab-bar__item"><span class="material-symbols-outlined">auto_stories</span>Journal</a>
+</nav>
+
+<div class="pp-loader" id="pp-loader">
+  <div class="pp-loader__ring">
+    <svg class="ring" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="24" stroke="#e8e6e1" stroke-width="3"/><path d="M28 4 A24 24 0 0 1 52 28" stroke="#173809" stroke-width="3" stroke-linecap="round"/></svg>
+    <svg class="mark" viewBox="0 0 30 30" fill="none"><path d="M15 28 L15 13" stroke="var(--clr-primary)" stroke-width="2" stroke-linecap="round"/><path d="M15 18 C10 18 7 14 9 10 C11 10 14 13 15 18Z" fill="var(--clr-primary)"/><path d="M15 14 C20 13 23 16 21 20 C19 20 16 17 15 14Z" fill="var(--clr-mustard)"/><circle cx="15" cy="8" r="4.5" fill="var(--clr-primary)"/><circle cx="15" cy="8" r="2.5" fill="var(--clr-primary-fixed)"/></svg>
+  </div>
+</div>
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// Nav drawer
+document.getElementById('burger-btn').addEventListener('click',()=>{document.getElementById('nav-drawer').classList.add('open');document.body.style.overflow='hidden';});
+document.getElementById('drawer-close').addEventListener('click',()=>{document.getElementById('nav-drawer').classList.remove('open');document.body.style.overflow='';});
+document.getElementById('drawer-backdrop').addEventListener('click',()=>{document.getElementById('nav-drawer').classList.remove('open');document.body.style.overflow='';});
+
+function showToast(msg, icon='check_circle'){
+  const tc=document.getElementById('toast-container');
+  const t=document.createElement('div'); t.className='toast';
+  t.innerHTML=`<span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">${icon}</span>${msg}`;
+  tc.appendChild(t); setTimeout(()=>t.remove(),2800);
+}
+
+document.getElementById('nav-search').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.value.trim())window.location=`browse.html?q=${encodeURIComponent(e.target.value.trim())}`;});
+
+function renderAvatar(profile){
+  const el = document.getElementById('profile-avatar');
+  const initials = PPDB.util.initials(profile.name);
+  el.innerHTML = profile.photoDataUrl ? `<img src="${profile.photoDataUrl}" alt="Your photo"/>` : initials;
+  const navAvatar = document.getElementById('nav-avatar');
+  if (navAvatar) navAvatar.innerHTML = profile.photoDataUrl ? `<img src="${profile.photoDataUrl}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>` : initials;
+}
+
+let saveTimer = null;
+function debounceSave(patch){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    const profile = await PPDB.saveProfile(patch);
+    renderAvatar(profile);
+    showToast('Profile saved');
+  }, 500);
+}
+
+document.getElementById('profile-name').addEventListener('input', e => debounceSave({ name: e.target.value }));
+document.getElementById('profile-bio').addEventListener('input', e => debounceSave({ bio: e.target.value }));
+
+document.getElementById('avatar-wrap').addEventListener('click', () => document.getElementById('avatar-input').click());
+document.getElementById('avatar-input').addEventListener('change', function(){
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const profile = await PPDB.saveProfile({ photoDataUrl: e.target.result });
+    renderAvatar(profile);
+    showToast('Photo updated');
+  };
+  reader.readAsDataURL(file);
+});
+
+async function renderRecentPlants(){
+  const garden = await PPDB.listGarden();
+  const el = document.getElementById('recent-plants');
+  if (!garden.length){
+    el.innerHTML = `<div class="growth-empty">No plants yet — <a href="browse.html" style="color:var(--clr-primary);font-weight:600">go find some</a>.</div>`;
+    return;
+  }
+  el.innerHTML = garden.slice(0,5).map(p => `
+    <div class="recent-plant-row">
+      <img src="${p.image || 'https://opb-img.plantbook.io/monstera%20deliciosa.jpg'}" alt="${PPDB.util.escapeHtml(p.displayName)}" onerror="this.src='https://opb-img.plantbook.io/monstera%20deliciosa.jpg'"/>
+      <div>
+        <div class="recent-plant-row__name">${PPDB.util.escapeHtml(p.displayName)}</div>
+        <div class="recent-plant-row__meta">${PPDB.util.escapeHtml(p.alias || (p.isCustom ? 'Custom plant' : ''))} · added ${PPDB.util.formatDateShort(p.addedAt)}</div>
+      </div>
+    </div>`).join('');
+}
+
+async function renderNotifications(){
+  const garden = await PPDB.listGarden();
+  const items = garden
+    .map(p => ({ p, health: PPDB.util.computeHealth(p), status: PPDB.util.healthStatus(PPDB.util.computeHealth(p)) }))
+    .filter(x => x.status !== 'good')
+    .sort((a,b) => a.health - b.health);
+
+  const btn = document.getElementById('nav-notify-btn');
+  const list = document.getElementById('notify-list');
+  if(!items.length){
+    btn.classList.remove('has-alerts');
+    list.innerHTML = `<div class="notify-panel__empty">🌱 You're all caught up — no plants need attention.</div>`;
+    return;
+  }
+  btn.classList.add('has-alerts');
+  list.innerHTML = items.slice(0,6).map(({p,status}) => `
+    <a href="journal.html" class="notify-item">
+      <div class="notify-item__icon ${status}">${status==='crit'?'💧':'⏰'}</div>
+      <div>
+        <div class="notify-item__title">${PPDB.util.escapeHtml(p.displayName)}</div>
+        <div class="notify-item__sub">${status==='crit' ? 'Needs water now' : 'Water coming due soon'}</div>
+      </div>
+    </a>`).join('');
+}
+document.getElementById('nav-notify-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  document.getElementById('notify-panel').classList.toggle('open');
+});
+document.addEventListener('click', e => {
+  const panel = document.getElementById('notify-panel');
+  if(panel.classList.contains('open') && !e.target.closest('.notify-wrap')) panel.classList.remove('open');
+});
+
+async function showSignedInView(){
+  document.getElementById('signup-view').style.display = 'none';
+  const view = document.getElementById('profile-view');
+  view.style.display = 'block';
+
+  const profile = await PPDB.getProfile();
+  document.getElementById('profile-name').value = profile.name || '';
+  document.getElementById('profile-bio').value = profile.bio || '';
+  document.getElementById('profile-joined').textContent = `Plant parent since ${PPDB.util.formatDateShort(profile.joinedAt)}`;
+  renderAvatar(profile);
+  await renderNotifications();
+
+  const stats = await PPDB.getStats();
+  document.getElementById('stat-plants').textContent = stats.gardenCount;
+  document.getElementById('stat-entries').textContent = stats.journalCount;
+  document.getElementById('stat-days').textContent = stats.daysSinceJoined;
+
+  await renderRecentPlants();
+}
+
+const suPasswordToggle = document.getElementById('su-password-toggle');
+suPasswordToggle.addEventListener('click', () => {
+  const input = document.getElementById('su-password');
+  const icon = suPasswordToggle.querySelector('.material-symbols-outlined');
+  const showing = input.type === 'text';
+  input.type = showing ? 'password' : 'text';
+  icon.textContent = showing ? 'visibility' : 'visibility_off';
+  suPasswordToggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+});
+document.getElementById('signup-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = document.getElementById('su-name').value.trim();
+  const username = document.getElementById('su-username').value.trim();
+  const password = document.getElementById('su-password').value;
+  if (!name || !username || !password) return;
+  await PPDB.createAccount({ name, username, password });
+  showToast(`Welcome, ${name}! Your account is ready.`);
+  await showSignedInView();
+});
+
+(async function init(){
+  if (await PPDB.hasAccount()) {
+    await showSignedInView();
+  } else {
+    document.getElementById('signup-view').style.display = 'block';
+    document.getElementById('profile-view').style.display = 'none';
+  }
+})();
+
+// Page transitions
+(function(){
+  const loader=document.getElementById('pp-loader');
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href]');
+    if(!a)return;
+    const href=a.getAttribute('href');
+    if(!href||href.startsWith('#')||href.startsWith('mailto')||href.startsWith('http'))return;
+    e.preventDefault();
+    loader.classList.add('active');
+    document.body.classList.add('pp-leaving');
+    setTimeout(()=>{window.location.href=href;},220);
+  });
+  window.addEventListener('pageshow',()=>{loader.classList.remove('active');document.body.classList.remove('pp-leaving');});
+})();
+</script>
+</body>
+</html>
