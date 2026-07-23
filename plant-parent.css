@@ -4,7 +4,7 @@
 
 /* ---------- Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
 /* ---------- Design tokens — warm/earthy palette ---------- */
@@ -59,7 +59,6 @@
 
   --font-sans:    'DM Sans', system-ui, sans-serif;
   --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-hand:    'Caveat', cursive;
   --font-serif:  'DM Sans', system-ui, sans-serif; /* legacy alias */
 
   --radius-sm:   0.6rem;
@@ -1806,11 +1805,11 @@ body.pp-leaving {
   flex-shrink: 0;
 }
 .log-entry__text {
-  font-family: var(--font-hand);
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 500;
   color: var(--clr-ink);
-  line-height: 1.28;
+  line-height: 1.45;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;

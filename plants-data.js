@@ -1457,7 +1457,7 @@ window.PLANT_CATALOG = {
       "min_light_lux": 2000,
       "toxicity": true,
       "tags": [],
-      "image_url": "https://opb-img.plantbook.io/monstera%20adansonii.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Monstera_adansonii_79319231.jpg",
       "min_temp": 18,
       "max_temp": 27,
       "min_env_humid": 50,
@@ -1511,7 +1511,7 @@ window.PLANT_CATALOG = {
       "min_light_lux": 2000,
       "toxicity": true,
       "tags": [],
-      "image_url": "https://opb-img.plantbook.io/philodendron%20brasil.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Philodendron_hederaceum_hederaceum_Brasil_0zz.jpg",
       "min_temp": 18,
       "max_temp": 27,
       "min_env_humid": 40,
@@ -1540,7 +1540,7 @@ window.PLANT_CATALOG = {
       "tags": [
         "low-maintenance"
       ],
-      "image_url": "https://opb-img.plantbook.io/epipremnum%20aureum%20neon.jpg",
+      "image_url": "https://opb-img.plantbook.io/epipremnum%20aureum%20%27neon%27.jpg",
       "min_temp": 18,
       "max_temp": 27,
       "min_env_humid": 30,
@@ -1570,7 +1570,7 @@ window.PLANT_CATALOG = {
         "pet-friendly",
         "low-maintenance"
       ],
-      "image_url": "https://opb-img.plantbook.io/peperomia%20obtusifolia.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/19/Peperomia_obtusifolia_3-OB9.jpg",
       "min_temp": 18,
       "max_temp": 26,
       "min_env_humid": 40,
@@ -1657,7 +1657,7 @@ window.PLANT_CATALOG = {
       "min_light_lux": 2500,
       "toxicity": true,
       "tags": [],
-      "image_url": "https://opb-img.plantbook.io/senecio%20radicans.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/91/String_of_Bananas.JPG",
       "min_temp": 17,
       "max_temp": 26,
       "min_env_humid": 30,
@@ -1866,7 +1866,7 @@ window.PLANT_CATALOG = {
       "tags": [
         "pet-friendly"
       ],
-      "image_url": "https://opb-img.plantbook.io/calathea%20lancifolia.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/CalatheaLancifolia.jpg",
       "min_temp": 18,
       "max_temp": 27,
       "min_env_humid": 50,
@@ -2041,7 +2041,7 @@ window.PLANT_CATALOG = {
         "pet-friendly",
         "low-maintenance"
       ],
-      "image_url": "https://opb-img.plantbook.io/tillandsia%20ionantha.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Purple_sky_plant_-_Andrey_Zharkikh.jpg",
       "min_temp": 16,
       "max_temp": 27,
       "min_env_humid": 40,
@@ -2100,7 +2100,7 @@ window.PLANT_CATALOG = {
       "tags": [
         "pet-friendly"
       ],
-      "image_url": "https://opb-img.plantbook.io/pachira%20aquatica.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Flickr_-_archer10_%28Dennis%29_-_Guatemala-1376.jpg",
       "min_temp": 18,
       "max_temp": 27,
       "min_env_humid": 40,
@@ -2355,7 +2355,7 @@ window.PLANT_CATALOG = {
       "tags": [
         "pet-friendly"
       ],
-      "image_url": "https://opb-img.plantbook.io/fittonia%20albivenis.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/72/Colpfl25.jpg",
       "min_temp": 18,
       "max_temp": 27,
       "min_env_humid": 50,
@@ -2465,7 +2465,7 @@ window.PLANT_CATALOG = {
       "tags": [
         "pet-friendly"
       ],
-      "image_url": "https://opb-img.plantbook.io/bougainvillea%20glabra.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Bugenwilla.D%C5%82ugo_kwitnaca_roslina.jpg/3840px-Bugenwilla.D%C5%82ugo_kwitnaca_roslina.jpg",
       "min_temp": 18,
       "max_temp": 32,
       "min_env_humid": 30,
@@ -2494,7 +2494,7 @@ window.PLANT_CATALOG = {
       "tags": [
         "pet-friendly"
       ],
-      "image_url": "https://opb-img.plantbook.io/hibiscus%20rosa-sinensis.jpg",
+      "image_url": "https://opb-img.plantbook.io/hibiscus%20rosa%20sinensis.jpg",
       "min_temp": 18,
       "max_temp": 30,
       "min_env_humid": 40,
@@ -2550,7 +2550,7 @@ window.PLANT_CATALOG = {
       "min_light_lux": 6000,
       "toxicity": true,
       "tags": [],
-      "image_url": "https://opb-img.plantbook.io/pelargonium%20hortorum.jpg",
+      "image_url": "https://opb-img.plantbook.io/pelargonium%20x%20hortorum.jpg",
       "min_temp": 15,
       "max_temp": 27,
       "min_env_humid": 30,
@@ -2579,7 +2579,7 @@ window.PLANT_CATALOG = {
       "tags": [
         "pet-friendly"
       ],
-      "image_url": "https://opb-img.plantbook.io/petunia%20hybrida.jpg",
+      "image_url": "https://opb-img.plantbook.io/petunia%20x%20hybrida.jpg",
       "min_temp": 15,
       "max_temp": 27,
       "min_env_humid": 30,
